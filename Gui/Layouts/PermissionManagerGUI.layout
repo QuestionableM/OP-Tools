@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout" version="3.2.0">
+    <Widget type="Widget" skin="BackgroundInteractableWide" position_real="0.0 0.0 0.398438 0.398438" name="BackPanel">
+        <Widget type="TextBox" skin="TextBox" position_real="0 0.0735294 1 0.110294" align="HStretch Top" name="Title">
+            <Property key="Caption" value="#ffff00P E R M I S S I O N   M A N A G E R#ffffff"/>
+            <Property key="FontName" value="SM_HeaderLarge_Medium"/>
+            <Property key="TextAlign" value="Center"/>
+            <Property key="TextShadow" value="true"/>
+        </Widget>
+        <Widget type="Button" skin="PrimaryButton" position_real="0.0514706 0.828431 0.20098 0.110294" align="Left Bottom" name="PrevPlayer">
+            <Property key="Caption" value="&lt;&lt;"/>
+            <Property key="FontName" value="SM_ItemTitle"/>
+            <Property key="TextAlign" value="Center"/>
+        </Widget>
+        <Widget type="Button" skin="PrimaryButton" position_real="0.730392 0.828431 0.20098 0.110294" align="Right Bottom" name="NextPlayer">
+            <Property key="Caption" value="&gt;&gt;"/>
+            <Property key="FontName" value="SM_ItemTitle"/>
+            <Property key="TextAlign" value="Center"/>
+        </Widget>
+        <Widget type="TextBox" skin="TextBox" position_real="0 0.191176 1 0.0931373" align="HStretch Top" name="SelectedPlayer">
+            <Property key="FontName" value="SM_ItemTitle"/>
+            <Property key="TextAlign" value="Center"/>
+            <Property key="TextShadow" value="true"/>
+            <Property key="Caption" value="Selected player"/>
+            <Property key="Visible" value="false"/>
+        </Widget>
+        <Widget type="Button" skin="PrimaryButton" position_real="0.0514706 0.45098 0.401961 0.122549" align="Left Top" name="AdminToolPermission">
+            <Property key="Caption" value="Admin Tool"/>
+            <Property key="FontName" value="SM_ItemTitle"/>
+            <Property key="TextAlign" value="Center"/>
+            <Property key="Visible" value="false"/>
+        </Widget>
+        <Widget type="Button" skin="PrimaryButton" position_real="0.0514706 0.610294 0.401961 0.122549" align="Left Top" name="FreeCameraPermission">
+            <Property key="Caption" value="Free camera"/>
+            <Property key="FontName" value="SM_ItemTitle"/>
+            <Property key="TextAlign" value="Center"/>
+            <Property key="Visible" value="false"/>
+        </Widget>
+        <Widget type="Button" skin="PrimaryButton" position_real="0.531863 0.45098 0.401961 0.122549" align="Right Top" name="WorldCleanerPermission">
+            <Property key="Caption" value="WorldCleaner"/>
+            <Property key="FontName" value="SM_ItemTitle"/>
+            <Property key="TextAlign" value="Center"/>
+            <Property key="Visible" value="false"/>
+        </Widget>
+        <Widget type="Button" skin="PrimaryButton" position_real="0.531863 0.610294 0.401961 0.122549" align="Right Top" name="PlayerKickerPermission">
+            <Property key="Caption" value="PlayerKicker"/>
+            <Property key="FontName" value="SM_ItemTitle"/>
+            <Property key="TextAlign" value="Center"/>
+            <Property key="Visible" value="false"/>
+        </Widget>
+        <Widget type="EditBox" skin="TextBox" position_real="0 0.289216 1 0.110294" align="HStretch Top" name="SP_text">
+            <Property key="Caption" value="Which tools would you allow this player to use?"/>
+            <Property key="ReadOnly" value="true"/>
+            <Property key="WordWrap" value="true"/>
+            <Property key="MultiLine" value="true"/>
+            <Property key="TextAlign" value="Center"/>
+            <Property key="FontName" value="SM_ItemTitle"/>
+            <Property key="NeedMouse" value="false"/>
+            <Property key="TextShadow" value="true"/>
+            <Property key="Visible" value="false"/>
+        </Widget>
+        <Widget type="TextBox" skin="TextBox" position_real="0 0.401961 1 0.20098" align="HStretch VStretch" name="SP_label">
+            <Property key="Caption" value="#ffaa00SELECT A PLAYER#ffffff"/>
+            <Property key="TextShadow" value="true"/>
+            <Property key="FontName" value="SM_HeaderLarge_Medium"/>
+            <Property key="TextAlign" value="Center"/>
+        </Widget>
+        <Widget type="TextBox" skin="TextBox" position_real="0 0.401961 1 0.20098" align="HStretch Top" name="WaitingData">
+            <Property key="Caption" value="Waiting for data"/>
+            <Property key="FontName" value="SM_ItemTitle"/>
+            <Property key="TextAlign" value="Center"/>
+            <Property key="TextShadow" value="true"/>
+            <Property key="Visible" value="false"/>
+        </Widget>
+    </Widget>
+</MyGUI>

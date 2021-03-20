@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout" version="3.2.0">
+    <Widget type="Widget" skin="BackgroundInteractableWide" position_real="0.0 0.0 0.398438 0.398438" name="BackPanel">
+        <Widget type="TextBox" skin="TextBox" position_real="0 0.0808824 1 0.132353" align="HStretch Top" name="Title">
+            <Property key="Caption" value="W O R L D   C L E A N E R"/>
+            <Property key="TextAlign" value="Center"/>
+            <Property key="FontName" value="SM_HeaderLarge_Medium"/>
+            <Property key="TextColour" value="1 0.949219 0"/>
+            <Property key="TextShadow" value="true"/>
+        </Widget>
+        <Widget type="Button" skin="PrimaryButton" position_real="0.0514706 0.669118 0.426471 0.129902" align="Left Bottom" name="DeleteEverything">
+            <Property key="Caption" value="Everything"/>
+            <Property key="TextAlign" value="Center"/>
+            <Property key="FontName" value="SM_ItemTitle"/>
+        </Widget>
+        <Widget type="Button" skin="PrimaryButton" position_real="0.522059 0.669118 0.426471 0.129902" align="Right Bottom" name="AllBodies">
+            <Property key="Caption" value="All bodies"/>
+            <Property key="FontName" value="SM_ItemTitle"/>
+            <Property key="TextAlign" value="Center"/>
+        </Widget>
+        <Widget type="Button" skin="PrimaryButton" position_real="0.0514706 0.514706 0.426471 0.129902" align="Left Bottom" name="LoseOnly">
+            <Property key="Caption" value="All lose bodies"/>
+            <Property key="FontName" value="SM_ItemTitle"/>
+            <Property key="TextAlign" value="Center"/>
+        </Widget>
+        <Widget type="Button" skin="PrimaryButton" position_real="0.522059 0.514706 0.426471 0.129902" align="Right Bottom" name="OpTools">
+            <Property key="Caption" value="All Op Tools"/>
+            <Property key="FontName" value="SM_ItemTitle"/>
+            <Property key="TextAlign" value="Center"/>
+        </Widget>
+        <Widget type="Button" skin="PrimaryButton" position_real="0.0514706 0.360294 0.426471 0.129902" align="Left Bottom" name="Lifts">
+            <Property key="Caption" value="All lifts"/>
+            <Property key="FontName" value="SM_ItemTitle"/>
+            <Property key="TextAlign" value="Center"/>
+        </Widget>
+        <Widget type="Button" skin="PrimaryButton" position_real="0.522059 0.360294 0.426471 0.129902" align="Right Bottom" name="Units">
+            <Property key="Caption" value="All units"/>
+            <Property key="FontName" value="SM_ItemTitle"/>
+            <Property key="TextAlign" value="Center"/>
+        </Widget>
+        <Widget type="TextBox" skin="TextBox" position_real="0 0.269608 1 0.0931373" align="HStretch Bottom" name="Desc">
+            <Property key="Caption" value="Choose the stuff that you would like to delete:"/>
+            <Property key="TextAlign" value="Center"/>
+            <Property key="FontName" value="SM_ItemTitle"/>
+            <Property key="TextShadow" value="true"/>
+        </Widget>
+        <Widget type="Button" skin="PrimaryButton" position_real="0.286765 0.823529 0.426471 0.129902" align="HCenter Bottom" name="CObject">
+            <Property key="Caption" value="Certain object"/>
+            <Property key="FontName" value="SM_ItemTitle"/>
+            <Property key="TextAlign" value="Center"/>
+        </Widget>
+    </Widget>
+</MyGUI>

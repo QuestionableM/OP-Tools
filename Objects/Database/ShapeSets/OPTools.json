@@ -1,0 +1,177 @@
+{
+   "partList": [
+      	{
+			"uuid": "387edd9e-ed0f-4ea6-bf3c-2b40851225e7",
+			"name": "admin_tool",
+			"renderable": {
+            	"lodList": [
+					{
+						"mesh": "$SURVIVAL_DATA/Objects/Mesh/interactive/obj_interactive_sensor_off.fbx",
+						"pose0": "$SURVIVAL_DATA/Objects/Mesh/interactive/obj_interactive_sensor_on.fbx",
+						"subMeshMap": {
+							"submesh0": {
+								"material": "PoseAnimDifAsgNor",
+								"textureList": [
+									"$SURVIVAL_DATA/Objects/Textures/interactive/obj_interactive_sensor_04_dif.tga",
+									"$SURVIVAL_DATA/Objects/Textures/interactive/obj_interactive_sensor_04_asg.tga",
+									"$SURVIVAL_DATA/Objects/Textures/interactive/obj_interactive_sensor_04_nor.tga"
+								]
+							}
+						}
+					}
+				]
+			},
+			"scripted": { "filename": "$MOD_DATA/Scripts/AdminTool/AdminTool.lua", "classname": "AdminTool" },
+			"rotationSet": "PropFull",
+			"color": "375000",
+			"box": { "x": 1, "y": 1, "z": 1 },
+			"ratings": { "density": 10, "durability": 10, "friction": 10, "buoyancy": 0 },
+			"flammable": false,
+			"density": 1250.0,
+         	"physicsMaterial": "Metal",
+			"qualityLevel": 0,
+			"stackSize": 1,
+			"restrictions": { "destructable": false, "erasable": true, "buildable": true, "usable": true, "connectable": false, "liftable": false, "convertibleToDynamic": false, "paintable": true }
+		},
+		{
+			"uuid": "c8e4139d-b93d-4df5-a292-382ad21215a9",
+			"name": "player_kicker",
+			"renderable": {
+				"lodList": [
+					{
+						"mesh": "$GAME_DATA/Objects/Mesh/interactive/obj_interactive_logicgate_off.fbx",
+						"pose0": "$GAME_DATA/Objects/Mesh/interactive/obj_interactive_logicgate_on.fbx",
+						"includes": [ "POSITION", "UV0", "UV1", "NORMAL", "TANGENTS", "BLEND_INDICES", "BLEND_WEIGHTS" ],
+						"subMeshMap": {
+							"logicgate": {
+								"material": "PoseAnimDifAsgNorAo",
+								"textureList": [
+									"$GAME_DATA/Objects/Textures/interactive/obj_interactive_logicgate_dif.tga",
+									"$GAME_DATA/Objects/Textures/interactive/obj_interactive_logicgate_asg.tga",
+									"$GAME_DATA/Objects/Textures/interactive/obj_interactive_logicgate_nor.tga",
+									"$GAME_DATA/Objects/Textures/interactive/obj_interactive_logicgate_ao.tga"
+								]
+							},
+							"screen": {
+								"material": "UVAnimDifAsgNor",
+								"custom": { "uv0": { "u": 0.16666667, "v": 0.1645 } },
+								"textureList": [
+									"$GAME_DATA/Objects/Textures/interactive/obj_interactive_logicgate_dif.tga",
+									"$GAME_DATA/Objects/Textures/interactive/obj_interactive_logicgate_asg.tga",
+									"$GAME_DATA/Objects/Textures/interactive/obj_interactive_logicgate_nor.tga"
+								]
+							}
+						}
+					}
+				]
+			},
+			"scripted": { "filename": "$MOD_DATA/Scripts/PlayerCrasher/PlayerCrasher.lua", "classname": "PlayerCrasher" },
+			"rotationSet": "PropFull",
+			"color": "375000",
+			"box": { "x": 1, "y": 1, "z": 1 },
+			"ratings": { "density": 10, "durability": 10, "friction": 10, "buoyancy": 0 },
+			"flammable": false,
+			"density": 1250.0,
+         	"physicsMaterial": "Metal",
+			"qualityLevel": 0,
+			"stackSize": 1,
+			"restrictions": { "destructable": false, "erasable": true, "buildable": true, "usable": true, "connectable": false, "liftable": false, "convertibleToDynamic": false, "paintable": true }
+		},
+		{
+			"uuid": "26888ae6-d636-425d-87b9-1f75da083bfb",
+			"name": "world_cleaner",
+			"renderable": {
+				"lodList": [
+					{
+						"mesh": "$GAME_DATA/Objects/Mesh/decor/obj_decor_toiletroll.fbx",
+						"subMeshList": [
+							{
+								"material": "DifAsgNor",
+								"textureList": [
+									"$GAME_DATA/Objects/Textures/decor/obj_decor_toiletroll_dif.tga",
+									"$GAME_DATA/Objects/Textures/decor/obj_decor_toiletroll_asg.tga",
+									"$GAME_DATA/Objects/Textures/decor/obj_decor_toiletroll_nor.tga"
+								]
+							}
+						]
+					}
+				]
+			},
+			"scripted": { "filename": "$MOD_DATA/Scripts/WorldCleaner/WorldCleaner.lua", "classname": "WorldCleaner" },
+			"color": "375000",
+			"ratings": { "density": 10, "durability": 10, "friction": 10, "buoyancy": 0 },
+			"flammable": false,
+			"density": 250.0,
+			"cylinder": { "diameter": 1, "depth": 1, "margin": 0.04, "axis": "Y" },
+			"rotationSet": "PropY",
+			"sticky": "-Y+Y",
+			"qualityLevel": 0,
+			"stackSize": 1,
+			"restrictions": { "destructable": false, "erasable": true, "buildable": true, "usable": true, "connectable": false, "liftable": false, "convertibleToDynamic": false, "paintable": true }
+		},
+		{
+			"uuid": "94a05693-da51-4910-b311-705299dc3656",
+			"name": "camera_tool",
+			"renderable": {
+				"lodList": [
+					{
+						"mesh": "$GAME_DATA/Objects/Mesh/decor/obj_decor_mug.fbx",
+						"subMeshList": [
+							{
+								"material": "DifAsgNor",
+								"textureList": [
+									"$GAME_DATA/Objects/Textures/decor/obj_decor_mug_dif.tga",
+									"$GAME_DATA/Objects/Textures/decor/obj_decor_mug_asg.tga",
+									"$GAME_DATA/Objects/Textures/decor/obj_decor_mug_nor.tga"
+								]
+							}
+						]
+					}
+				]
+			},
+			"scripted": { "filename": "$MOD_DATA/Scripts/FreeCamera/FreeCam.lua", "classname": "FreeCam" },
+			"color": "375000",
+			"ratings": { "density": 10, "durability": 10, "friction": 10, "buoyancy": 0 },
+			"flammable": false,
+			"density": 250.0,
+			"cylinder": { "diameter": 1, "depth": 1, "margin": 0.04, "axis": "Y" },
+			"rotationSet": "PropY",
+			"sticky": "-Y+Y",
+			"qualityLevel": 0,
+			"stackSize": 1,
+			"restrictions": { "destructable": false, "erasable": true, "buildable": true, "usable": true, "connectable": false, "liftable": false, "convertibleToDynamic": false, "paintable": true }
+		},
+		{
+			"uuid": "07545436-fb40-459d-aaac-88ad5a9e4fc5",
+			"name": "permission_manager",
+			"renderable": {
+				"lodList": [
+					{
+						"mesh": "$GAME_DATA/Objects/Mesh/decor/obj_decor_babyduck.fbx",
+						"subMeshList": [
+							{
+								"material": "DifAsgNor",
+								"textureList": [
+									"$GAME_DATA/Objects/Textures/decor/obj_decor_babyduck_dif.tga",
+									"$GAME_DATA/Objects/Textures/decor/obj_decor_babyduck_asg.tga",
+									"$GAME_DATA/Objects/Textures/decor/obj_decor_babyduck_nor.tga"
+								]
+							}
+						]
+					}
+				]
+			},
+			"scripted": { "filename": "$MOD_DATA/Scripts/PermissionManager/PermissionManager.lua", "classname": "PermissionManager" },
+			"color": "375000",
+			"ratings": { "density": 10, "durability": 10, "friction": 10, "buoyancy": 0 },
+			"flammable": false,
+			"density": 250.0,
+			"cylinder": { "diameter": 1, "depth": 1, "margin": 0.04, "axis": "Y" },
+			"rotationSet": "PropY",
+			"sticky": "-Y+Y",
+			"qualityLevel": 0,
+			"stackSize": 1,
+			"restrictions": { "destructable": false, "erasable": true, "buildable": true, "usable": true, "connectable": false, "liftable": false, "convertibleToDynamic": false, "paintable": true }
+		}
+   	]
+}

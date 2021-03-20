@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout" version="3.2.0">
+    <Widget type="Widget" skin="BackgroundInteractableWide" position_real="0.0 0.0 0.25 0.348633" name="BackPanel">
+        <Widget type="TextBox" skin="TextBox" position_real="0 0.109244 1 0.156863" align="HStretch Top" name="GUITitle">
+            <Property key="Caption" value="#ffff00W A R N I N G#ffffff"/>
+            <Property key="FontName" value="SM_HeaderLarge_Medium"/>
+            <Property key="TextAlign" value="Center"/>
+            <Property key="TextShadow" value="true"/>
+        </Widget>
+        <Widget type="EditBox" skin="EditBoxEmpty" position_real="0.0234375 0.27451 0.929688 0.470588" align="HCenter VStretch" name="GUIDesc">
+            <Property key="FontName" value="SM_Text"/>
+            <Property key="Caption" value="DESCRIPTION"/>
+            <Property key="TextAlign" value="Top"/>
+            <Property key="MultiLine" value="true"/>
+            <Property key="WordWrap" value="true"/>
+            <Property key="ReadOnly" value="true"/>
+            <Property key="Static" value="true"/>
+            <Property key="TextShadow" value="false"/>
+            <UserString key="FontName" value="SM_Text"/>
+        </Widget>
+        <Widget type="Button" skin="SecondaryButton" position_real="0.078125 0.767507 0.359375 0.145658" align="Right Bottom" name="Yes">
+            <Property key="Caption" value="Yes"/>
+            <Property key="TextAlign" value="Center"/>
+            <Property key="FontName" value="SM_ItemTitle"/>
+        </Widget>
+        <Widget type="Button" skin="SecondaryButton" position_real="0.5625 0.767507 0.355469 0.142857" align="Left Bottom" name="No">
+            <Property key="Caption" value="No"/>
+            <Property key="FontName" value="SM_ItemTitle"/>
+            <Property key="TextAlign" value="Center"/>
+        </Widget>
+    </Widget>
+</MyGUI>

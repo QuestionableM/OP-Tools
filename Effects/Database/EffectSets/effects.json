@@ -1,0 +1,26 @@
+{
+    "Delete":{
+		"effectList":[
+			{"type":"particle","name":"hammer_metal","offset":{"x":0.0,"y":0.0,"z":0.0},"attached":false,"duration":1.0}
+		]
+    },
+    "DeleteAll":{
+        "maxInstances":128,
+		"effectList":[
+			{"type":"audio","name":"WeldTool - Sparks","offset":{"x":0.0,"y":0.0,"z":0.0},"duration":1.0},
+			{"type":"particle","name":"hammer_metal","offset":{"x":0.0,"y":0.0,"z":0.0},"attached":false,"duration":1.0}
+		]
+	},
+	"Paint":{
+		"effectList":[
+			{"type":"particle","name":"paint_smoke","offset":{"x":0.0,"y":0.0,"z":0.0},"attached":false,"duration":1.0}
+		]
+	},
+	"PaintAll":{
+		"maxInstances":128,
+		"effectList":[
+			{"type":"audio","name":"PaintTool - Paint","offset":{"x":0.0,"y":0.0,"z":0.0},"duration":1.0},
+			{"type":"particle","name":"paint_smoke","offset":{"x":0.0,"y":0.0,"z":0.0},"attached":false,"duration":1.0}
+		]
+    }
+}

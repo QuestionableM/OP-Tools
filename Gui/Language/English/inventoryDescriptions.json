@@ -1,0 +1,27 @@
+{
+    "387edd9e-ed0f-4ea6-bf3c-2b40851225e7": {
+        "title": "#ff0000Admin Tool",
+        "description": "#ffffffOnly allowed players can use this tool.\n\nIf you're allowed and you want to know more info about this tool then check the workshop page of #ffff00OP Tools#ffffff.",
+        "keywords": ["OP Tools", "Tool"]
+    },
+    "c8e4139d-b93d-4df5-a292-382ad21215a9": {
+        "title": "#ff0000Player Kicker",
+        "description": "#ffffffOnly allowed players can use this tool.",
+        "keywords": ["OP Tools", "Tool", "Kick", "Crash", "Player"]
+    },
+    "26888ae6-d636-425d-87b9-1f75da083bfb": {
+        "title": "#ff0000World Cleaner",
+        "description": "#ffffffOnly allowed players can use this tool.\n\nPlace it on any creation to instantly delete it.",
+        "keywords": ["OP Tools", "Tool", "Clean", "World"]
+    },
+    "94a05693-da51-4910-b311-705299dc3656": {
+        "title": "#ff0000Free Camera Tool",
+        "description": "#ffffffOnly allowed players can use this tool.\n\nIf you're allowed and you want to know more info about this tool then check the workshop page of #ffff00OP Tools#ffffff.",
+        "keywords": ["OP Tools", "Tool", "Camera"]
+    },
+    "07545436-fb40-459d-aaac-88ad5a9e4fc5": {
+        "title": "#ff0000Permission Manager",
+        "description": "#ffffffOnly server admin can use this tool.\n\nThis tool allows server admin to set permission to use certain tools for a player.",
+        "keywords": ["OP Tools", "Tool", "Manage", "Permission", "Allow"]
+    }
+}
