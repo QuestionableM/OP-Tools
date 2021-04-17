@@ -74,7 +74,7 @@ function FreeCam.client_onAction(self, movement, state)
                         self.camera.mode.options[self.camera.mode.page + 1].update(self, dataToSend, table.name)
                     end
                     if table.values.disableText ~= true then
-                        OP.display("highlight", false, ("#ffff00%s#ffffff set to #ffff00%s#ffffff"):format(table.name, table.values.value))
+                        OP.display("highlight", false, ("#ffff00%s#ffffff set to #ffff00%.2f#ffffff"):format(table.name, table.values.value))
                     end
                 elseif type(currentOption.subOptions) == "table" then
                     if self.camera.mode.optionPage > -1 then
@@ -97,7 +97,7 @@ function FreeCam.client_onAction(self, movement, state)
                                 if type(currentOption.numberNames) == "table" and currentOption.numberNames[_CurOption.values.displayNames] then
                                     OP.display("highlight", false, ("[#ffff00%s#ffffff/#ffff00%s#ffffff] #ffff00%s#ffffff set to #ffff00%s#ffffff"):format(_CurOption.values.value, #currentOption.numberNames[_CurOption.values.displayNames], _CurOption.name, currentOption.numberNames[_CurOption.values.displayNames][_CurOption.values.value].name))
                                 else
-                                    OP.display("highlight", false, ("#ffff00%s#ffffff set to #ffff00%s#ffffff"):format(_CurOption.name, _CurOption.values.value))
+                                    OP.display("highlight", false, ("#ffff00%s#ffffff set to #ffff00%.2f#ffffff"):format(_CurOption.name, _CurOption.values.value))
                                 end
                             end
                         elseif _ValuesType == "boolean" then
