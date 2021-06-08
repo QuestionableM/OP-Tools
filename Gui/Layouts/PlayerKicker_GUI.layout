@@ -1,49 +1,49 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <MyGUI type="Layout" version="3.2.0">
-    <Widget type="Widget" skin="BackgroundInteractableWide" position_real="0 0 0.398438 0.398438" name="BackPanel">
-        <Widget type="TextBox" skin="TextBox" position_real="0 0.0808824 1 0.0808824" align="HStretch Top" name="PK_Title">
-            <Property key="Caption" value="P L A Y E R   K I C K E R"/>
-            <Property key="TextAlign" value="Center"/>
-            <Property key="FontName" value="SM_HeaderLarge_Medium"/>
-            <Property key="TextColour" value="1 1 0"/>
-            <Property key="TextShadow" value="true"/>
-        </Widget>
-        <Widget type="TextBox" skin="TextBox" position_real="0 0.237745 1 0.0808824" align="HStretch Top" name="SelectedPlayer">
-            <Property key="Caption" value="Select a player"/>
-            <Property key="FontName" value="SM_ItemTitle"/>
-            <Property key="TextAlign" value="Center"/>
-            <Property key="TextShadow" value="true"/>
-        </Widget>
-        <Widget type="TextBox" skin="TextBox" position_real="0 0.323529 1 0.0808824" align="HStretch Top" name="CurrentSetting">
-            <Property key="Caption" value="Current mode: #ffff00Player crasher#ffffff"/>
-            <Property key="TextAlign" value="Center"/>
-            <Property key="TextShadow" value="true"/>
-            <Property key="FontName" value="SM_ItemTitle"/>
-        </Widget>
-        <Widget type="Button" skin="PrimaryButton" position_real="0.0514706 0.703431 0.448529 0.115196" align="Left Bottom" name="ChangeMode">
-            <Property key="Caption" value="Change mode"/>
-            <Property key="FontName" value="SM_ItemTitle"/>
-            <Property key="TextAlign" value="Center"/>
-        </Widget>
-        <Widget type="Button" skin="PrimaryButton" position_real="0.0514706 0.82598 0.154412 0.115196" align="Left Bottom" name="PrevPlayer">
-            <Property key="Caption" value="&lt;&lt;"/>
-            <Property key="FontName" value="SM_ItemTitle"/>
-            <Property key="TextAlign" value="Center"/>
-        </Widget>
-        <Widget type="Button" skin="PrimaryButton" position_real="0.794118 0.82598 0.154412 0.115196" align="Right Bottom" name="NextPlayer">
-            <Property key="Caption" value="&gt;&gt;"/>
-            <Property key="FontName" value="SM_ItemTitle"/>
-            <Property key="TextAlign" value="Center"/>
-        </Widget>
-        <Widget type="Button" skin="PrimaryButton" position_real="0.205882 0.82598 0.588235 0.115196" align="HStretch Bottom" name="KickCurrent">
-            <Property key="Caption" value="Kick selected player"/>
-            <Property key="FontName" value="SM_ItemTitle"/>
-            <Property key="TextAlign" value="Center"/>
-        </Widget>
-        <Widget type="Button" skin="PrimaryButton" position_real="0.5 0.703431 0.448529 0.115196" align="Right Bottom" name="KickEveryone">
-            <Property key="Caption" value="Kick everyone"/>
-            <Property key="FontName" value="SM_ItemTitle"/>
-            <Property key="TextAlign" value="Center"/>
-        </Widget>
-    </Widget>
+	<Widget type="Widget" skin="BackgroundInteractableWide" position_real="0 0 0.398438 0.398438" name="BackPanel">
+		<Widget type="TextBox" skin="TextBox" position_real="0 0.0808824 1 0.0808824" align="HStretch Top" name="PK_Title">
+			<Property key="Caption" value="P L A Y E R   K I C K E R"/>
+			<Property key="TextAlign" value="Center"/>
+			<Property key="FontName" value="SM_HeaderLarge_Medium"/>
+			<Property key="TextColour" value="1 1 0"/>
+			<Property key="TextShadow" value="true"/>
+		</Widget>
+		<Widget type="TextBox" skin="TextBox" position_real="0 0.237745 1 0.0808824" align="HStretch Top" name="SelectedPlayer">
+			<Property key="Caption" value="Select a Player"/>
+			<Property key="FontName" value="SM_ItemTitle"/>
+			<Property key="TextAlign" value="Center"/>
+			<Property key="TextShadow" value="true"/>
+		</Widget>
+		<Widget type="TextBox" skin="TextBox" position_real="0 0.323529 1 0.0808824" align="HStretch Top" name="CurrentSetting">
+			<Property key="Caption" value="Current mode: #ffff00Player crasher#ffffff"/>
+			<Property key="TextAlign" value="Center"/>
+			<Property key="TextShadow" value="true"/>
+			<Property key="FontName" value="SM_ItemTitle"/>
+		</Widget>
+		<Widget type="Button" skin="PrimaryButton" position_real="0.0514706 0.703431 0.448529 0.115196" align="Left Bottom" name="ChangeMode">
+			<Property key="Caption" value="Change mode"/>
+			<Property key="FontName" value="SM_ItemTitle"/>
+			<Property key="TextAlign" value="Center"/>
+		</Widget>
+		<Widget type="Button" skin="PrimaryButton" position_real="0.0514706 0.82598 0.154412 0.115196" align="Left Bottom" name="PrevPlayer">
+			<Property key="Caption" value="&lt;&lt;"/>
+			<Property key="FontName" value="SM_ItemTitle"/>
+			<Property key="TextAlign" value="Center"/>
+		</Widget>
+		<Widget type="Button" skin="PrimaryButton" position_real="0.794118 0.82598 0.154412 0.115196" align="Right Bottom" name="NextPlayer">
+			<Property key="Caption" value="&gt;&gt;"/>
+			<Property key="FontName" value="SM_ItemTitle"/>
+			<Property key="TextAlign" value="Center"/>
+		</Widget>
+		<Widget type="Button" skin="PrimaryButton" position_real="0.205882 0.82598 0.588235 0.115196" align="HStretch Bottom" name="KickCurrent">
+			<Property key="Caption" value="Kick selected player"/>
+			<Property key="FontName" value="SM_ItemTitle"/>
+			<Property key="TextAlign" value="Center"/>
+		</Widget>
+		<Widget type="Button" skin="PrimaryButton" position_real="0.5 0.703431 0.448529 0.115196" align="Right Bottom" name="KickEveryone">
+			<Property key="Caption" value="Kick everyone"/>
+			<Property key="FontName" value="SM_ItemTitle"/>
+			<Property key="TextAlign" value="Center"/>
+		</Widget>
+	</Widget>
 </MyGUI>

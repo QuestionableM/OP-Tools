@@ -1,10 +1,10 @@
 {
-   "partList": [
-      	{
+	"partList": [
+		{
 			"uuid": "387edd9e-ed0f-4ea6-bf3c-2b40851225e7",
 			"name": "admin_tool",
 			"renderable": {
-            	"lodList": [
+			"lodList": [
 					{
 						"mesh": "$SURVIVAL_DATA/Objects/Mesh/interactive/obj_interactive_sensor_off.fbx",
 						"pose0": "$SURVIVAL_DATA/Objects/Mesh/interactive/obj_interactive_sensor_on.fbx",
@@ -28,7 +28,7 @@
 			"ratings": { "density": 10, "durability": 10, "friction": 10, "buoyancy": 0 },
 			"flammable": false,
 			"density": 1250.0,
-         	"physicsMaterial": "Metal",
+			"physicsMaterial": "Metal",
 			"qualityLevel": 0,
 			"stackSize": 1,
 			"restrictions": { "destructable": false, "erasable": true, "buildable": true, "usable": true, "connectable": false, "liftable": false, "convertibleToDynamic": false, "paintable": true }
@@ -72,7 +72,7 @@
 			"ratings": { "density": 10, "durability": 10, "friction": 10, "buoyancy": 0 },
 			"flammable": false,
 			"density": 1250.0,
-         	"physicsMaterial": "Metal",
+			"physicsMaterial": "Metal",
 			"qualityLevel": 0,
 			"stackSize": 1,
 			"restrictions": { "destructable": false, "erasable": true, "buildable": true, "usable": true, "connectable": false, "liftable": false, "convertibleToDynamic": false, "paintable": true }
@@ -173,5 +173,5 @@
 			"stackSize": 1,
 			"restrictions": { "destructable": false, "erasable": true, "buildable": true, "usable": true, "connectable": false, "liftable": false, "convertibleToDynamic": false, "paintable": true }
 		}
-   	]
+	]
 }

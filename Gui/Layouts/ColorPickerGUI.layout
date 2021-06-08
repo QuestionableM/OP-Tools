@@ -1,64 +1,64 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <MyGUI type="Layout" version="3.2.0">
-    <Widget type="Widget" skin="BackgroundInteractableWide" position_real="0 0 0.390625 0.509259" align="Default" name="BackPanel">
-        <Widget type="TextBox" skin="TextBox" position_real="0.174667 0.0763636 0.650667 0.0763636" align="HCenter Top" name="Title">
-            <Property key="Caption" value="#ffff00C O L O R   P I C K E R#ffffff"/>
-            <Property key="FontName" value="InventoryTitle"/>
-            <Property key="TextAlign" value="Center"/>
-            <Property key="TextShadow" value="true"/>
-        </Widget>
-        <Widget type="Button" skin="PrimaryButton" position_real="0.38 0.827273 0.566667 0.1" align="Right Bottom" name="ApplyButton">
-            <Property key="Caption" value="Apply color"/>
-            <Property key="FontName" value="SM_ItemTitle"/>
-            <Property key="TextAlign" value="Center"/>
-        </Widget>
-        <Widget type="Button" skin="PrimaryButton" position_real="0.0533333 0.827273 0.26 0.1" align="Left Bottom" name="ValMultiplier">
-            <Property key="Caption" value="Multiplier: 1"/>
-            <Property key="TextAlign" value="Center"/>
-            <Property key="FontName" value="SM_ItemTitle"/>
-        </Widget>
-        <Widget type="Widget" skin="SearchBarBackground" position_real="0.0533333 0.218182 0.313333 0.572727" align="Left Top" name="ColorPickerBG">
-            <Widget type="TextBox" skin="TextBox" position_real="0.32766 0.165079 0.340426 0.222222" align="Left Top" name="R_value">
-                <Property key="Caption" value="#ff0000R#ffffff: #ffff000#ffffff"/>
-                <Property key="FontName" value="SM_ItemTitle"/>
-                <Property key="TextShadow" value="true"/>
-                <Property key="TextAlign" value="Center"/>
-            </Widget>
-            <Widget type="TextBox" skin="TextBox" position_real="0.32766 0.609524 0.340426 0.222222" align="Left Top" name="B_value">
-                <Property key="Caption" value="#0000ffB#ffffff: #ffff000#ffffff"/>
-                <Property key="FontName" value="SM_ItemTitle"/>
-                <Property key="TextShadow" value="true"/>
-                <Property key="TextAlign" value="Center"/>
-            </Widget>
-            <Widget type="TextBox" skin="TextBox" position_real="0.32766 0.387302 0.340426 0.222222" align="Left Top" name="G_value">
-                <Property key="Caption" value="#00ff00G#ffffff: #ffff000#ffffff"/>
-                <Property key="FontName" value="SM_ItemTitle"/>
-                <Property key="TextShadow" value="true"/>
-                <Property key="TextAlign" value="Center"/>
-            </Widget>
-            <Widget type="Button" skin="DressbotArrowLeft" position_real="0.0297872 0.387302 0.297872 0.222222" align="Left Top" name="G_LB"/>
-            <Widget type="Button" skin="DressbotArrowLeft" position_real="0.0297872 0.609524 0.297872 0.222222" align="Left Top" name="B_LB"/>
-            <Widget type="Button" skin="DressbotArrowLeft" position_real="0.0297872 0.165079 0.297872 0.222222" align="Left Top" name="R_LB"/>
-            <Widget type="Button" skin="DressbotArrowRight" position_real="0.668085 0.609524 0.297872 0.222222" align="Left Top" name="B_RB"/>
-            <Widget type="Button" skin="DressbotArrowRight" position_real="0.668085 0.165079 0.297872 0.222222" align="Left Top" name="R_RB"/>
-            <Widget type="Button" skin="DressbotArrowRight" position_real="0.668085 0.387302 0.297872 0.222222" align="Left Top" name="G_RB"/>
-        </Widget>
-        <Widget type="Widget" skin="SearchBarBackground" position_real="0.393333 0.218182 0.553333 0.572727" align="Right Top" name="ColorPreviewBG">
-            <Widget type="EditBox" skin="TextBox" position_real="0.0240964 0.031746 0.951807 0.936508" align="HStretch Top" name="ColorPreview">
-                <Property key="Caption" value="COLOR PREVIEW"/>
-                <Property key="FontName" value="SM_ItemTitle"/>
-                <Property key="TextAlign" value="Center"/>
-                <Property key="WordWrap" value="true"/>
-                <Property key="TextShadow" value="true"/>
-                <Property key="VisibleVScroll" value="false"/>
-                <Property key="VisibleHScroll" value="false"/>
-                <Property key="TabPrinting" value="false"/>
-                <Property key="ReadOnly" value="true"/>
-                <Property key="MultiLine" value="true"/>
-                <Property key="InvertSelected" value="false"/>
-                <Property key="NeedMouse" value="false"/>
-                <Property key="NeedKey" value="false"/>
-            </Widget>
-        </Widget>
-    </Widget>
+	<Widget type="Widget" skin="BackgroundInteractableWide" position_real="0 0 0.390625 0.509259" align="Default" name="BackPanel">
+		<Widget type="TextBox" skin="TextBox" position_real="0.174667 0.0763636 0.650667 0.0763636" align="HCenter Top" name="Title">
+			<Property key="Caption" value="#ffff00C O L O R   P I C K E R#ffffff"/>
+			<Property key="FontName" value="InventoryTitle"/>
+			<Property key="TextAlign" value="Center"/>
+			<Property key="TextShadow" value="true"/>
+		</Widget>
+		<Widget type="Button" skin="PrimaryButton" position_real="0.38 0.827273 0.566667 0.1" align="Right Bottom" name="ApplyButton">
+			<Property key="Caption" value="Apply color"/>
+			<Property key="FontName" value="SM_ItemTitle"/>
+			<Property key="TextAlign" value="Center"/>
+		</Widget>
+		<Widget type="Button" skin="PrimaryButton" position_real="0.0533333 0.827273 0.26 0.1" align="Left Bottom" name="ValMultiplier">
+			<Property key="Caption" value="Multiplier: 1"/>
+			<Property key="TextAlign" value="Center"/>
+			<Property key="FontName" value="SM_ItemTitle"/>
+		</Widget>
+		<Widget type="Widget" skin="SearchBarBackground" position_real="0.0533333 0.218182 0.313333 0.572727" align="Left Top" name="ColorPickerBG">
+			<Widget type="TextBox" skin="TextBox" position_real="0.32766 0.165079 0.340426 0.222222" align="Left Top" name="R_value">
+				<Property key="Caption" value="#ff0000R#ffffff: #ffff000#ffffff"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextShadow" value="true"/>
+				<Property key="TextAlign" value="Center"/>
+			</Widget>
+			<Widget type="TextBox" skin="TextBox" position_real="0.32766 0.609524 0.340426 0.222222" align="Left Top" name="B_value">
+				<Property key="Caption" value="#0000ffB#ffffff: #ffff000#ffffff"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextShadow" value="true"/>
+				<Property key="TextAlign" value="Center"/>
+			</Widget>
+			<Widget type="TextBox" skin="TextBox" position_real="0.32766 0.387302 0.340426 0.222222" align="Left Top" name="G_value">
+				<Property key="Caption" value="#00ff00G#ffffff: #ffff000#ffffff"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextShadow" value="true"/>
+				<Property key="TextAlign" value="Center"/>
+			</Widget>
+			<Widget type="Button" skin="DressbotArrowLeft" position_real="0.0297872 0.387302 0.297872 0.222222" align="Left Top" name="G_LB"/>
+			<Widget type="Button" skin="DressbotArrowLeft" position_real="0.0297872 0.609524 0.297872 0.222222" align="Left Top" name="B_LB"/>
+			<Widget type="Button" skin="DressbotArrowLeft" position_real="0.0297872 0.165079 0.297872 0.222222" align="Left Top" name="R_LB"/>
+			<Widget type="Button" skin="DressbotArrowRight" position_real="0.668085 0.609524 0.297872 0.222222" align="Left Top" name="B_RB"/>
+			<Widget type="Button" skin="DressbotArrowRight" position_real="0.668085 0.165079 0.297872 0.222222" align="Left Top" name="R_RB"/>
+			<Widget type="Button" skin="DressbotArrowRight" position_real="0.668085 0.387302 0.297872 0.222222" align="Left Top" name="G_RB"/>
+		</Widget>
+		<Widget type="Widget" skin="SearchBarBackground" position_real="0.393333 0.218182 0.553333 0.572727" align="Right Top" name="ColorPreviewBG">
+			<Widget type="EditBox" skin="TextBox" position_real="0.0240964 0.031746 0.951807 0.936508" align="HStretch Top" name="ColorPreview">
+				<Property key="Caption" value="COLOR PREVIEW"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextAlign" value="Center"/>
+				<Property key="WordWrap" value="true"/>
+				<Property key="TextShadow" value="true"/>
+				<Property key="VisibleVScroll" value="false"/>
+				<Property key="VisibleHScroll" value="false"/>
+				<Property key="TabPrinting" value="false"/>
+				<Property key="ReadOnly" value="true"/>
+				<Property key="MultiLine" value="true"/>
+				<Property key="InvertSelected" value="false"/>
+				<Property key="NeedMouse" value="false"/>
+				<Property key="NeedKey" value="false"/>
+			</Widget>
+		</Widget>
+	</Widget>
 </MyGUI>

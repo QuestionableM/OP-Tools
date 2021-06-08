@@ -1,90 +1,109 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <MyGUI type="Layout" version="3.2.0">
-    <Widget type="Widget" skin="BackgroundInteractableWide" position_real="0.0 0.0 0.5 0.404297" name="BackPanel">
-        <Widget type="TextBox" skin="TextBox" position_real="0 0.0724638 1 0.120773" align="HCenter Top">
-            <Property key="Caption" value="#ffff00A D M I N   T O O L#ffffff"/>
-            <Property key="TextAlign" value="Center"/>
-            <Property key="FontName" value="SM_HeaderLarge_Medium"/>
-            <Property key="TextShadow" value="true"/>
-        </Widget>
-        <Widget type="Widget" skin="BackgroundPopup" position_real="0 0.362319 1 0.640097" align="HStretch VStretch" name="FiltersPage">
-            <Property key="Visible" value="true"/>
-            <Widget type="Button" skin="PrimaryButton" position_real="0.0292969 0.0566038 0.449219 0.241509" align="Left Top" name="FilterAll">
-                <Property key="Caption" value="Filter All"/>
-                <Property key="FontName" value="SM_ItemTitle"/>
-                <Property key="TextAlign" value="Center"/>
-            </Widget>
-            <Widget type="Button" skin="PrimaryButton" position_real="0.519531 0.0566038 0.449219 0.241509" align="Right Top" name="ColorFilter">
-                <Property key="Caption" value="Color Filter"/>
-                <Property key="FontName" value="SM_ItemTitle"/>
-                <Property key="TextAlign" value="Center"/>
-            </Widget>
-            <Widget type="Button" skin="PrimaryButton" position_real="0.0292969 0.373585 0.449219 0.241509" align="Left Top" name="ObjectFilter">
-                <Property key="Caption" value="Object Filter"/>
-                <Property key="FontName" value="SM_ItemTitle"/>
-                <Property key="TextAlign" value="Center"/>
-            </Widget>
-            <Widget type="Button" skin="PrimaryButton" position_real="0.519531 0.373585 0.449219 0.241509" align="Right Top" name="MatFilter">
-                <Property key="Caption" value="Material Filter"/>
-                <Property key="FontName" value="SM_ItemTitle"/>
-                <Property key="TextAlign" value="Center"/>
-            </Widget>
-            <Widget type="Button" skin="PrimaryButton" position_real="0.0292969 0.69434 0.449219 0.241509" align="Left Top" name="LoseOnly">
-                <Property key="Caption" value="Lose Only Filter"/>
-                <Property key="FontName" value="SM_ItemTitle"/>
-                <Property key="TextAlign" value="Center"/>
-            </Widget>
-            <Widget type="Button" skin="PrimaryButton" position_real="0.519531 0.69434 0.449219 0.241509" align="Right Top" name="StaticOnly">
-                <Property key="Caption" value="Static Only Filter"/>
-                <Property key="TextAlign" value="Center"/>
-                <Property key="FontName" value="SM_ItemTitle"/>
-                <Property key="TextShadow" value="false"/>
-            </Widget>
-        </Widget>
-        <Widget type="Widget" skin="BackgroundPopup" position_real="0 0.362319 1 0.640097" align="HStretch VStretch" name="ModesPage">
-            <Property key="Visible" value="false"/>
-            <Widget type="Button" skin="PrimaryButton" position_real="0.0292969 0.0566038 0.449219 0.241509" align="Left Top" name="PainterMode">
-                <Property key="Caption" value="Painter Mode"/>
-                <Property key="FontName" value="SM_ItemTitle"/>
-                <Property key="TextAlign" value="Center"/>
-            </Widget>
-             <Widget type="Button" skin="PrimaryButton" position_real="0.519531 0.0566038 0.449219 0.241509" align="Right Top" name="ColorPicker">
-                <Property key="Caption" value="Color Picker"/>
-                <Property key="FontName" value="SM_ItemTitle"/>
-                <Property key="TextAlign" value="Center"/>
-            </Widget>
-        </Widget>
-        <Widget type="Widget" skin="BackgroundPopup" position_real="0 0.362319 1 0.640097" align="HStretch VStretch" name="SecondaryOptionsPage">
-            <Property key="Visible" value="false"/>
-            <Widget type="Button" skin="PrimaryButton" position_real="0.0292969 0.0566038 0.449219 0.241509" align="Left Top" name="PushMode">
-                <Property key="Caption" value="Push Mode"/>
-                <Property key="FontName" value="SM_ItemTitle"/>
-                <Property key="TextAlign" value="Center"/>
-            </Widget>
-            <Widget type="Button" skin="PrimaryButton" position_real="0.519531 0.0566038 0.449219 0.241509" align="Right Top" name="ExplMode">
-                <Property key="Caption" value="Explosion Mode"/>
-                <Property key="FontName" value="SM_ItemTitle"/>
-                <Property key="TextAlign" value="Center"/>
-            </Widget>
-        </Widget>
-        <Widget type="Button" skin="InventoryTab" position_real="0.0195313 0.263285 0.195313 0.0990338" align="Left Top" name="FiltersTab">
-            <Property key="Caption" value="Filters"/>
-            <Property key="FontName" value="InventoryTabLabel"/>
-            <Property key="TextAlign" value="Center"/>
-            <Property key="TextShadow" value="true"/>
-            <Property key="StateSelected" value="true"/>
-        </Widget>
-        <Widget type="Button" skin="InventoryTab" position_real="0.234375 0.263285 0.195313 0.0990338" align="Left Top" name="ModesTab">
-            <Property key="Caption" value="Modes"/>
-            <Property key="FontName" value="InventoryTabLabel"/>
-            <Property key="TextAlign" value="Center"/>
-            <Property key="TextShadow" value="true"/>
-        </Widget>
-        <Widget type="Button" skin="InventoryTab" position_real="0.449219 0.263285 0.259766 0.0990338" align="Left Top" name="SFunctionsTab">
-            <Property key="Caption" value="Secondary Functions"/>
-            <Property key="FontName" value="InventoryTabLabel"/>
-            <Property key="TextAlign" value="Center"/>
-            <Property key="TextShadow" value="true"/>
-        </Widget>
-    </Widget>
+	<Widget type="Widget" skin="BackgroundInteractableWide" position_real="0 0 0.402083 0.622222" name="BackPanel">
+		<Widget type="TextBox" skin="TextBox" position_real="0 0.0595238 1 0.09375" align="HStretch Top" name="ToolTitle">
+			<Property key="Caption" value="#ffff00A D M I N   T O O L"/>
+			<Property key="FontName" value="SM_HeaderLarge_Medium"/>
+			<Property key="TextAlign" value="Center"/>
+			<Property key="TextShadow" value="true"/>
+		</Widget>
+		<Widget type="TextBox" skin="TextBox" position_real="0 0.376488 1 0.291667" align="HStretch Bottom" name="WaitingLabel">
+			<Property key="Caption" value="Waiting for data"/>
+			<Property key="FontName" value="SM_ItemTitle"/>
+			<Property key="TextAlign" value="Center"/>
+			<Property key="TextShadow" value="true"/>
+		</Widget>
+		<Widget type="Widget" skin="BackgroundPopup" position_real="0 0.290179 1.0013 0.709821" align="HStretch Bottom" name="OptionListBG">
+			<Property key="Visible" value="false"/>
+			<Widget type="Button" skin="PrimaryButton" position_real="0.0517464 0.0838574 0.413972 0.146751" align="Left Top" name="Func1">
+				<Property key="Caption" value="Func1"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextAlign" value="Center"/>
+				<Property key="Visible" value="false"/>
+			</Widget>
+			<Widget type="Button" skin="PrimaryButton" position_real="0.534282 0.0838574 0.413972 0.146751" align="Right Top" name="Func2">
+				<Property key="Caption" value="Func2"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextAlign" value="Center"/>
+				<Property key="Visible" value="false"/>
+			</Widget>
+			<Widget type="Button" skin="PrimaryButton" position_real="0.0517464 0.272537 0.413972 0.146751" align="Left Top" name="Func3">
+				<Property key="Caption" value="Func3"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextAlign" value="Center"/>
+				<Property key="Visible" value="false"/>
+			</Widget>
+			<Widget type="Button" skin="PrimaryButton" position_real="0.534282 0.272537 0.413972 0.146751" align="Right Top" name="Func4">
+				<Property key="Caption" value="Func4"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextAlign" value="Center"/>
+				<Property key="Visible" value="false"/>
+			</Widget>
+			<Widget type="Button" skin="PrimaryButton" position_real="0.0517464 0.461216 0.413972 0.146751" align="Left Top" name="Func5">
+				<Property key="Caption" value="Func5"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextAlign" value="Center"/>
+				<Property key="Visible" value="false"/>
+			</Widget>
+			<Widget type="Button" skin="PrimaryButton" position_real="0.534282 0.461216 0.413972 0.146751" align="Right Top" name="Func6">
+				<Property key="Caption" value="Func6"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextAlign" value="Center"/>
+				<Property key="Visible" value="false"/>
+			</Widget>
+			<Widget type="Button" skin="PrimaryButton" position_real="0.0517464 0.649895 0.413972 0.146751" align="Left Top" name="Func7">
+				<Property key="Caption" value="Func7"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextAlign" value="Center"/>
+				<Property key="Visible" value="false"/>
+			</Widget>
+			<Widget type="Button" skin="PrimaryButton" position_real="0.534282 0.649895 0.413972 0.146751" align="Right Top" name="Func8">
+				<Property key="Caption" value="Func8"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextAlign" value="Center"/>
+				<Property key="Visible" value="false"/>
+			</Widget>
+			<Widget type="TextBox" skin="TextBox" position_real="0.633894 0.813417 0.223803 0.146751" align="Right Bottom" name="CurFuncPage">
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="Caption" value="NO_PAGE"/>
+				<Property key="TextAlign" value="Center"/>
+				<Property key="TextShadow" value="true"/>
+				<Property key="Visible" value="false"/>
+			</Widget>
+			<Widget type="Button" skin="DressbotArrowRight" position_real="0.857697 0.813417 0.0905563 0.146751" align="Right Bottom" name="NextFuncPage">
+				<Property key="Visible" value="false"/>
+			</Widget>
+			<Widget type="Button" skin="DressbotArrowLeft" position_real="0.543338 0.813417 0.0905563 0.146751" align="Right Bottom" name="PrevFuncPage">
+				<Property key="Visible" value="false"/>
+			</Widget>
+		</Widget>
+		<Widget type="Button" skin="InventoryTab" position_real="0.0194301 0.224702 0.15544 0.0669643" align="Left Bottom" name="FiltersTab">
+			<Property key="Caption" value="Filters"/>
+			<Property key="FontName" value="InventoryTabLabel"/>
+			<Property key="TextShadow" value="true"/>
+			<Property key="TextAlign" value="Center"/>
+			<Property key="Visible" value="false"/>
+		</Widget>
+		<Widget type="Button" skin="InventoryTab" position_real="0.200777 0.224702 0.15544 0.0669643" align="Left Bottom" name="ModesTab">
+			<Property key="Caption" value="Modes"/>
+			<Property key="TextAlign" value="Center"/>
+			<Property key="FontName" value="InventoryTabLabel"/>
+			<Property key="TextShadow" value="true"/>
+			<Property key="Visible" value="false"/>
+		</Widget>
+		<Widget type="Button" skin="InventoryTab" position_real="0.382124 0.224702 0.284974 0.0669643" align="Left Bottom" name="SecondaryFuncTab">
+			<Property key="Caption" value="Secondary Functions"/>
+			<Property key="FontName" value="InventoryTabLabel"/>
+			<Property key="TextAlign" value="Center"/>
+			<Property key="TextShadow" value="true"/>
+			<Property key="Visible" value="false"/>
+		</Widget>
+		<Widget type="Button" skin="InventoryTab" position_real="0.693005 0.224702 0.259067 0.0669643" align="Left Bottom" name="CreationPropTab">
+			<Property key="Caption" value="Creation Properties"/>
+			<Property key="TextAlign" value="Center"/>
+			<Property key="FontName" value="InventoryTabLabel"/>
+			<Property key="TextShadow" value="true"/>
+			<Property key="Visible" value="false"/>
+		</Widget>
+	</Widget>
 </MyGUI>
