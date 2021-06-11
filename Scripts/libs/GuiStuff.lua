@@ -1,5 +1,5 @@
 --[[
-    Copyright (c) 2021 Questionable Mark
+	Copyright (c) 2021 Questionable Mark
 ]]
 
 if GUI_STUFF then return end

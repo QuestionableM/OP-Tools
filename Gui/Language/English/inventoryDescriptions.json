@@ -21,7 +21,7 @@
 	},
 	"07545436-fb40-459d-aaac-88ad5a9e4fc5": {
 		"title": "#ff0000Permission Manager",
-		"description": "#ffffffOnly server admin can use this tool.\n\nThis tool allows server admin to set permission to use certain tools for a player.",
+		"description": "#ffffffOnly server admin can use this tool.\n\nThis tool allows server admin to set permissions to use certain tools for a player.",
 		"keywords": ["OP Tools", "Tool", "Manage", "Permission", "Allow"]
 	}
 }

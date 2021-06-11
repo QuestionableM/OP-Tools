@@ -1,5 +1,5 @@
 --[[
-    Copyright (c) 2021 Questionable Mark
+	Copyright (c) 2021 Questionable Mark
 ]]
 
 if FREE_CAM_OPTIONS then return end

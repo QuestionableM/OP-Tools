@@ -1,5 +1,5 @@
 --[[
-    Copyright (c) 2021 Questionable Mark
+	Copyright (c) 2021 Questionable Mark
 ]]
 
 if OP then return end
@@ -44,7 +44,7 @@ function OP.getPermission(tool)
 end
 
 function OP.setPermission(tool, bool)
-	if constants.permissions[tool] ~= nil then constants.permission[tool] = bool end
+	if constants.permissions[tool] ~= nil then constants.permissions[tool] = bool end
 end
 
 function OP.directionToRadians(dir)
