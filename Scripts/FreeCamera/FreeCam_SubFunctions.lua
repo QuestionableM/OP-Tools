@@ -41,8 +41,7 @@ function FREE_CAM_SUB.SUB_charHijacker(self)
 			if not OP.isUnit(_ResChar) then
 				if not (_ResChar:isTumbling() or _ResChar:isDowned() or _ResChar:isDiving()) then
 					self.camera.activationTime = sm.game.getCurrentTick()
-					self.camera.move_target = _ResChar
-					self.camera.move_target_activation = sm.game.getCurrentTick()
+					self.camera.position = _ResChar.worldPosition
 					self.network:sendToServer("server_getStuff", {
 						type = "hijack",
 						player = _LocPl,

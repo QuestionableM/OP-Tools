@@ -130,26 +130,52 @@ function OP.exists(Item)
 	return false
 end
 
-function OP.deleteShapes(shape_table, show_effect)
-	for shape_id, shape in pairs(shape_table) do
-		if OP.exists(shape) then
-			shape:destroyShape(0)
-			if show_effect then
-				sm.effect.playEffect("DeleteAll", shape.worldPosition)
+local _opExists = OP.exists
+local _playEffect = sm.effect.playEffect
+function OP.deleteBodies(body_table, show_effect)
+	for k, body in pairs(body_table) do
+		if _opExists(body) then
+			local body_shapes = body:getShapes()
+
+			for k, shape in pairs(body_shapes) do
+				if _opExists(shape) then
+					if show_effect then
+						_playEffect("DeleteAll", shape.worldPosition)
+					end
+
+					shape:destroyShape(0)
+				end
 			end
 		end
+
+		body_table[k] = nil
+	end
+end
+
+function OP.deleteShapes(shape_table, show_effect)
+	for shape_id, shape in pairs(shape_table) do
+		if _opExists(shape) then
+			if show_effect then
+				_playEffect("DeleteAll", shape.worldPosition)
+			end
+
+			shape:destroyShape(0)
+		end
+		
 		shape_table[shape_id] = nil
 	end
 end
 
 function OP.deleteUnits(unit_table, show_effect)
 	for unit_id, unit in pairs(unit_table) do
-		if OP.exists(unit) and unit.character then
-			unit:destroy()
+		if _opExists(unit) and unit.character then
 			if show_effect then
-				sm.effect.playEffect("DeleteAll", unit.character.worldPosition)
+				_playEffect("DeleteAll", unit.character.worldPosition)
 			end
+
+			unit:destroy()
 		end
+
 		unit_table[unit_id] = nil
 	end
 end

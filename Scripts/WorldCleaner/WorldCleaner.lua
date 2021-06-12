@@ -10,7 +10,7 @@ WorldCleaner.connectionInput = sm.interactable.connectionType.none
 WorldCleaner.connectionOutput = sm.interactable.connectionType.none
 
 function WorldCleaner:server_reloadDataTable()
-	self.server_stuffToDelete = {units = {}, shapes = {}}
+	self.server_stuffToDelete = {units = {}, shapes = {}, bodies = {}}
 end
 
 function WorldCleaner:server_onCreate()
@@ -18,36 +18,39 @@ function WorldCleaner:server_onCreate()
 	self.server_admin = true
 end
 
-function WorldCleaner:server_getShapeList(creation, all_filter, item_filter, op_t_filter)
-	for k, body in pairs(creation) do
-		local body_shapes = body:getShapes()
-
-		for k, shape in pairs(body_shapes) do
-			local s_uuid = shape.uuid
-
-			if all_filter or (item_filter and s_uuid == item_filter) or (op_t_filter and OP.tool_uuids[tostring(s_uuid)]) then
-				table.insert(self.server_stuffToDelete.shapes, shape)
-			end
-		end
-	end
-end
-
+local _tabInsert = table.insert
 function WorldCleaner:server_countStuffToDelete(mode)
-	local is_everything = mode.case == "everything"
+	local cur_case = mode.case
+	local is_everything = cur_case == "everything"
 
-	local op_t_filter = mode.case == "op_t"
-	local blk_filter = is_everything or mode.case == "all_b"
-	local c_item_filter = mode.case == "c_item"
-	local lose_filter = mode.case == "lose_b"
-	local creation_filter = mode.case == "c_creation"
+	local body_filter = (cur_case == "all_b" or cur_case == "lose_b" or cur_case == "c_creation")
+	local shape_filter = (cur_case == "c_item" or cur_case == "op_t")
 
-	if op_t_filter or blk_filter or c_item_filter or lose_filter or creation_filter then
+	if is_everything or body_filter then
 		local all_bodies = sm.body.getAllBodies()
-		local all_creations = creation_filter and {sm.body.getCreationBodies(self.shape.body)} or sm.body.getCreationsFromBodies(all_bodies)
+		local cur_cr_filter = cur_case == "c_creation"
+
+		local all_creations = cur_cr_filter and {sm.body.getCreationBodies(self.shape.body)} or sm.body.getCreationsFromBodies(all_bodies)
+
+		local lose_filter = (cur_case == "lose_b")
 
 		for k, creation in pairs(all_creations) do
-			if not lose_filter or (lose_filter and OP.isCreationDynamic(creation)) then
-				self:server_getShapeList(creation, lose_filter or blk_filter or creation_filter, mode.uuid, op_t_filter)
+			if cur_cr_filter or not lose_filter or (lose_filter and OP.isCreationDynamic(creation)) then
+				for k, body in pairs(creation) do
+					_tabInsert(self.server_stuffToDelete.bodies, body)
+				end
+			end
+		end
+	elseif shape_filter then
+		local all_bodies = sm.body.getAllBodies()
+
+		for k, body in pairs(all_bodies) do
+			local body_shapes = body:getShapes()
+
+			for k, shape in pairs(body_shapes) do
+				if (mode.uuid and shape.uuid == mode.uuid) or OP.tool_uuids[tostring(shape.uuid)] then
+					_tabInsert(self.server_stuffToDelete.shapes, shape)
+				end
 			end
 		end
 	end
@@ -56,7 +59,7 @@ function WorldCleaner:server_countStuffToDelete(mode)
 		local all_units = sm.unit.getAllUnits()
 
 		for k, unit in pairs(all_units) do
-			table.insert(self.server_stuffToDelete.units, unit)
+			_tabInsert(self.server_stuffToDelete.units, unit)
 		end
 	end
 
@@ -79,11 +82,12 @@ function WorldCleaner:server_clean(data)
 
 		self.network:sendToClient(data.player, "client_displayMessage", {
 			id = data.case,
-			count = #stuff_del.shapes + #stuff_del.units
+			count = #stuff_del.shapes + #stuff_del.bodies + #stuff_del.units
 		})
 	else
 		local stuffToDelete = self.server_stuffToDelete
 
+		OP.deleteBodies(stuffToDelete.bodies, true)
 		OP.deleteShapes(stuffToDelete.shapes, true)
 		OP.deleteUnits(stuffToDelete.units, true)
 

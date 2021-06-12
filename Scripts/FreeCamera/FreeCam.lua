@@ -271,21 +271,27 @@ end
 
 function FreeCam:client_camInterpolation()
 	local _MovT = self.camera.move_target
-	local _DiffVec = self.camera.position - _MovT.worldPosition
-	local _IsOutOfTime = ((sm.game.getCurrentTick() - self.camera.move_target_activation) > 140)
 
-	if not _IsOutOfTime and _DiffVec:length() > 0.05 and OP.exists(_MovT) then
-		self.camera.speed = sm.vec3.zero()
-		self.camera.movement.x = {0, 0}
-		self.camera.movement.y = {0, 0}
-		self.camera.position = sm.vec3.lerp(self.camera.position, _MovT.worldPosition, 0.2)
-		sm.camera.setDirection(sm.vec3.lerp(sm.camera.getDirection(), _MovT.direction, 0.2))
-		sm.camera.setPosition(self.camera.position)
-	else
-		if _IsOutOfTime then
-			OP.display("error", false, "Couldn't get to the destination in the set amount of time.\nSkipping the animation...")
-			self.camera.position = _MovT.worldPosition
+	if OP.exists(_MovT) then
+		local _DiffVec = self.camera.position - _MovT.worldPosition
+		local _IsOutOfTime = ((sm.game.getCurrentTick() - self.camera.move_target_activation) > 140)
+
+		if not _IsOutOfTime and _DiffVec:length() > 0.05 then
+			self.camera.speed = sm.vec3.zero()
+			self.camera.movement.x = {0, 0}
+			self.camera.movement.y = {0, 0}
+			self.camera.position = sm.vec3.lerp(self.camera.position, _MovT.worldPosition, 0.2)
+			sm.camera.setDirection(sm.vec3.lerp(sm.camera.getDirection(), _MovT.direction, 0.2))
+			sm.camera.setPosition(self.camera.position)
+		else
+			if _IsOutOfTime then
+				OP.display("error", false, "Couldn't get to the destination in the set amount of time.\nSkipping the animation...")
+				self.camera.position = _MovT.worldPosition
+			end
+			self.camera.move_target = nil
+			self.camera.move_target_activation = nil
 		end
+	else
 		self.camera.move_target = nil
 		self.camera.move_target_activation = nil
 	end
