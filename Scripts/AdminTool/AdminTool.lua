@@ -160,30 +160,51 @@ function AdminTool:FirstFunction_Character(res, cOp)
 end
 
 function AdminTool:FirstFunction(res, obj_v, cOp)
-	if res.type == "body" and res:getBody() ~= self.shape.body then
-		if not cOp.creationProp then
-			if not cOp.thanosMode then
-				self:SingleObjectMode(res, obj_v, cOp)
+	local res_type = res.type
+
+	if res_type == "body" then
+		local res_body = res:getBody()
+
+		if res_body and res_body ~= self.shape.body then
+			if cOp.creationProp then
+				self:CreationProperties(res, cOp)
 			else
-				self:AllObjectMode(res, obj_v, cOp)
+				if not cOp.thanosMode then
+					self:SingleObjectMode(res, obj_v, cOp)
+				else
+					self:AllObjectMode(res, obj_v, cOp)
+				end
 			end
-		else
-			self:CreationProperties(res, cOp)
 		end
-	elseif res.type == "joint" and res:getJoint() then
-		local s_jnt = res:getJoint()
-		local _shape = s_jnt:getShapeA()
-		if not cOp.painterMode and OP.exists(_shape) then
-			self.RemoveShape(_shape, res.pointWorld)
+
+		return
+	end
+
+	if cOp.creationProp then return end
+
+	if res_type == "joint" then
+		local res_jnt = res:getJoint()
+
+		if res_jnt then
+			local _shape = res_jnt:getShapeA()
+
+			if not cOp.painterMode and OP.exists(_shape) then
+				self.RemoveShape(_shape, res.pointWorld)
+			end
 		end
-	elseif res.type == "harvestable" and res:getHarvestable() then
-		local _CurHvs = res:getHarvestable()
-		if not cOp.painterMode and OP.exists(_CurHvs) then
-			_CurHvs:destroy()
-			sm.effect.playEffect("Delete", _CurHvs.worldPosition)
+	elseif res_type == "harvestable" then
+		local res_hvs = res:getHarvestable()
+
+		if not cOp.painterMode and OP.exists(res_hvs) then
+			sm.effect.playEffect("Delete", res_hvs.worldPosition)
+			res_hvs:destroy()
 		end
-	elseif res.type == "character" and res:getCharacter() then
-		self:FirstFunction_Character(res, cOp)
+	elseif res_type == "character" then
+		local res_char = res:getCharacter()
+
+		if OP.exists(res_char) then
+			self:FirstFunction_Character(res, cOp)
+		end
 	end
 end
 
@@ -225,8 +246,8 @@ function AdminTool:server_onFixedUpdate(dt)
 			local _CurAlwd = self.allowedPlayers[player.id]
 
 			if player.character and _CurAlwd ~= nil and _CurAlwd.player == player then
-				local offset = player.character:isCrouching() and 0.269 or 0.565
 				local pl_char = player.character
+				local offset = pl_char:isCrouching() and 0.269 or 0.565
 
 				local ray_pos = pl_char.worldPosition + sm.vec3.new(0, 0, offset)
 				local ray_dir = pl_char.worldPosition + pl_char.direction * 2500
