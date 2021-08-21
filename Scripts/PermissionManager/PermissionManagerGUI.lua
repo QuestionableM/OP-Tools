@@ -65,11 +65,21 @@ function PermissionManagerGUI:client_onPermissionButtonCallback(btn_name)
 	end
 end
 
-function PermissionManagerGUI:server_GUI_SetPermission(data)
-	self.network:sendToClient(data.player, "client_GUI_SetPermission", {
-		tool = data.tool,
-		state = data.state
-	})
+function PermissionManagerGUI:server_GUI_SetPermission(data, caller)
+	if caller == OP.server_admin then
+		local l_Tool = data.tool
+		local l_State = data.state
+		local l_Player = data.player
+
+		OP.setPlayerPermission(l_Player, l_Tool, l_State)
+
+		self.network:sendToClient(l_Player, "client_GUI_SetLocalPermission", {
+			tool = l_Tool,
+			state = l_State
+		})
+	else
+		self.network:sendToClient(caller, "client_onErrorMessage", "p_udata")
+	end
 end
 
 local tool_name_conv = {
@@ -78,11 +88,11 @@ local tool_name_conv = {
 	WorldCleaner = "World Cleaner",
 	PlayerKicker = "Player Kicker"
 }
-function PermissionManagerGUI:client_GUI_SetPermission(data)
+function PermissionManagerGUI:client_GUI_SetLocalPermission(data)
 	local state = data.state
 	local tool = data.tool
 
-	OP.setPermission(tool, state)
+	OP.setClientPermission(tool, state)
 
 	local cur_text = (state and "now" or "no longer")
 	local cur_tool_name = tool_name_conv[tool]
@@ -121,10 +131,7 @@ function PermissionManagerGUI:client_updatePlayerInfo(btn_name)
 
 		_AudioPlay("GUI Item drag")
 
-		self.network:sendToServer("server_requestClientData", {
-			player = new_player,
-			caller = _GetLocalPlayer()
-		})
+		self.network:sendToServer("server_requestClientData", new_player)
 	else
 		OP.display("error", false, "No players to choose", 3)
 
@@ -135,35 +142,37 @@ function PermissionManagerGUI:client_updatePlayerInfo(btn_name)
 end
 
 
-function PermissionManagerGUI:server_requestClientData(data)
-	self.network:sendToClient(data.player, "client_requestClientData", data.caller)
-end
-
-function PermissionManagerGUI:client_requestClientData(caller)
-	self.network:sendToServer("server_receiveClientData", {
-		caller = caller,
-		player = _GetLocalPlayer(),
-		perm_data = {
-			AdminTool = OP.getPermission("AdminTool"),
-			FreeCamera = OP.getPermission("FreeCamera"),
-			WorldCleaner = OP.getPermission("WorldCleaner"),
-			PlayerKicker = OP.getPermission("PlayerKicker")
+function PermissionManagerGUI:server_requestClientData(player, caller)
+	local output_data = nil
+	if caller == OP.server_admin then
+		output_data = {
+			player = player,
+			perm = {
+				AdminTool = OP.getPlayerPermission(player, "AdminTool"),
+				FreeCamera = OP.getPlayerPermission(player, "FreeCamera"),
+				WorldCleaner = OP.getPlayerPermission(player, "WorldCleaner"),
+				PlayerKicker = OP.getPlayerPermission(player, "PlayerKicker")
+			}
 		}
-	})
-end
+	else
+		output_data = "nperm"
+		self.network:sendToClient(caller, "client_onErrorMessage", "p_getdata")
+	end
 
-function PermissionManagerGUI:server_receiveClientData(data)
-	self.network:sendToClient(data.caller, "client_receiveClientData", {
-		player = data.player,
-		perm_data = data.perm_data
-	})
+	self.network:sendToClient(caller, "client_receiveClientData", output_data)
 end
 
 function PermissionManagerGUI:client_receiveClientData(data)
+	if data == "nperm" then
+		self.gui.interface:setText("SelectPlayer", "#ffaa00NO PERMISSION#ffffff")
+		self:client_GUI_ResetInterface()
+		return
+	end
+
 	local cur_player = self.gui.current_player
 
 	if self.wait_for_data and (cur_player and cur_player == data.player) then
-		local perm_data = data.perm_data
+		local perm_data = data.perm
 
 		for btn, btn_data in pairs(self.gui.buttonData) do
 			local cur_data = perm_data[btn_data.id]

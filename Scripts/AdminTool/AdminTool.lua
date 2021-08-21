@@ -13,8 +13,23 @@ AdminTool.connectionOutput = sm.interactable.connectionType.none
 function AdminTool:server_onCreate()
 	OP.setMainAdminTool(self.shape)
 	self.allowedPlayers = {}
-	self.serverFunctions = ADMIN_F.load_serverFunctions()
 	self.server_admin = true
+end
+
+function AdminTool:server_getPlayerSettings(player)
+	local p_Id = player.id
+
+	if self.allowedPlayers[p_Id] == nil then
+		self.allowedPlayers[p_Id] = {
+			player = player,
+			settings = ADMIN_F.server_load_playerFunctions()
+		}
+	end
+
+	local pl_data = self.allowedPlayers[p_Id]
+	if pl_data.player == player then
+		return pl_data
+	end
 end
 
 function AdminTool:SecondaryFunction(res, cOp)
@@ -237,44 +252,67 @@ function AdminTool:MainFunction(player, pl_settings, res, obj_v)
 	end
 end
 
+local _OP_GetPlayerPermission = OP.getPlayerPermission
+local _sm_physRaycast = sm.physics.raycast
+local _OP_GetMainAdminTool = OP.getMainAdminTool
+local _sm_getAllPlayers = sm.player.getAllPlayers
 function AdminTool:server_onFixedUpdate(dt)
-	if OP.getMainAdminTool() == nil then OP.setMainAdminTool(self.shape) end
-	if OP.getMainAdminTool() == self.shape then
-		local b, obj_v = sm.physics.raycast(self.shape.worldPosition, self.shape.worldPosition + self.shape.up)
+	local l_Shape = self.shape
+	if _OP_GetMainAdminTool() == nil then
+		OP.setMainAdminTool(l_Shape)
+	end
 
-		for playerId, player in pairs(sm.player.getAllPlayers()) do
-			local _CurAlwd = self.allowedPlayers[player.id]
+	if _OP_GetMainAdminTool() ~= l_Shape then
+		return
+	end
 
-			if player.character and _CurAlwd ~= nil and _CurAlwd.player == player then
-				local pl_char = player.character
-				local offset = pl_char:isCrouching() and 0.269 or 0.565
+	local shape_pos = l_Shape.worldPosition
+	local b, obj_v = _sm_physRaycast(shape_pos, shape_pos + l_Shape.up)
 
-				local ray_pos = pl_char.worldPosition + sm.vec3.new(0, 0, offset)
-				local ray_dir = pl_char.worldPosition + pl_char.direction * 2500
+	local pl_list = _sm_getAllPlayers()
+	for playerId, player in pairs(pl_list) do
+		if _OP_GetPlayerPermission(player, "AdminTool") then
+			local pl_data = self:server_getPlayerSettings(player)
+			local pl_char = player.character
 
-				local bool, res = sm.physics.raycast(ray_pos, ray_dir)
-				if bool and player.character:isAiming() then
-					self:MainFunction(player, _CurAlwd, res, obj_v)
+			if pl_char ~= nil and pl_data ~= nil then
+				local offset = pl_char:isCrouching() and 0.275 or 0.575
+				local c_Position = pl_char.worldPosition
+
+				local ray_pos = c_Position + sm.vec3.new(0, 0, offset)
+				local ray_dir = c_Position + pl_char.direction * 2500
+
+				local bool, res = _sm_physRaycast(ray_pos, ray_dir)
+				if bool and pl_char:isAiming() then
+					self:MainFunction(player, pl_data, res, obj_v)
 				end
 			end
 		end
 	end
 end
 
+function AdminTool:client_onPaintSound()
+	sm.audio.play("Retrowildblip")
+end
+
 function AdminTool:server_onDestroy()
 	OP.deleteMainAdminTool(self.shape)
 end
 
-function AdminTool:server_networking(data)
-	local cur_func = self.serverFunctions[data.mode]
+function AdminTool:server_setColor(color, caller)
+	if not OP.getPlayerPermission(caller, "AdminTool") then
+		self.network:sendToClient(caller, "client_onErrorMessage", "p_color")
+		return
+	end
 
-	if type(cur_func) == "function" then
-		cur_func(self, data)
+	if type(color) == "Color" and color ~= self.shape.color then
+		self.network:sendToClient(caller, "client_onPaintSound")
+		self.shape:setColor(color)
 	end
 end
 
 function AdminTool:client_updatePermission()
-	return OP.getPermission("AdminTool") or self.server_admin
+	self.allowed = OP.getClientPermission("AdminTool") or self.server_admin
 end
 
 function AdminTool:isAllowed()
@@ -282,14 +320,14 @@ function AdminTool:isAllowed()
 end
 
 function AdminTool:client_onCreate()
-    self.allowed = self:client_updatePermission()
+	OP.getAdminPermission(self)
+	self:client_updatePermission()
 
-    if self:isAllowed() then
-        sm.gui.displayAlertText("Check the workshop page of #ffff00OP Tools#ffffff for instructions")
-        self.network:sendToServer("server_networking", {mode = "admin", player = sm.localPlayer.getPlayer()})
-    end
+	if self:isAllowed() then
+		sm.gui.displayAlertText("Check the workshop page of #ffff00OP Tools#ffffff for instructions")
+	end
 
-    self:create_AT_GUI()
+	self:create_AT_GUI()
 end
 
 function AdminTool:client_onDestroy()
@@ -319,6 +357,13 @@ function AdminTool:client_canInteract()
 	return true
 end
 
+function AdminTool:server_canErase()
+	local pl_list = OP.getShapeIntersections(self.shape)
+	local can_remove = OP.areAllPlayersAllowed(pl_list, "AdminTool")
+
+	return can_remove
+end
+
 function AdminTool:client_canErase()
 	if self:isAllowed() then return true end
 
@@ -326,18 +371,21 @@ function AdminTool:client_canErase()
 	return false
 end
 
+local p_String = "You do not have permission"
+local error_msg_table = {
+	p_getdata = p_String.." to get admin tool settings!",
+	p_savedata = p_String.." to save your settings!",
+	p_color = p_String.." to change the color of admin tool!"
+}
+
+function AdminTool:client_onErrorMessage(msg_id)
+	local cur_msg = error_msg_table[msg_id]
+	OP.display("error", false, cur_msg)
+end
+
 function AdminTool:client_onFixedUpdate()
 	self:client_updateWaitingDataLabel()
-	local permission = self:client_updatePermission()
-
-	if self.allowed ~= permission then
-		self.allowed = permission
-
-		local _mode = self:isAllowed() and "admin" or "r_admin"
-		local loc_pl = sm.localPlayer.getPlayer()
-
-		self.network:sendToServer("server_networking", {mode = _mode, player = loc_pl})
-	end
+	self:client_updatePermission()
 
 	if self:isAllowed() then return end
 

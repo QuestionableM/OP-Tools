@@ -74,16 +74,19 @@ function WorldCleaner:server_countStuffToDelete(mode)
 	end
 end
 
-function WorldCleaner:server_clean(data)
+function WorldCleaner:server_clean(data, caller)
+	if not OP.getPlayerPermission(caller, "WorldCleaner") then
+		self.network:sendToClient(caller, "client_errorMessage", "p_clean")
+		return
+	end
+
 	if not data.ready then
 		self:server_countStuffToDelete(data)
 
 		local stuff_del = self.server_stuffToDelete
+		local item_count = #stuff_del.shapes + #stuff_del.bodies + #stuff_del.units
 
-		self.network:sendToClient(data.player, "client_displayMessage", {
-			id = data.case,
-			count = #stuff_del.shapes + #stuff_del.bodies + #stuff_del.units
-		})
+		self.network:sendToClient(caller, "client_displayMessage", {id = data.case, count = item_count})
 	else
 		local stuffToDelete = self.server_stuffToDelete
 
@@ -95,20 +98,33 @@ function WorldCleaner:server_clean(data)
 	end
 end
 
+local error_msg_table = {
+	p_clean = "You do not have permission to use clean function!"
+}
+
+function WorldCleaner:client_errorMessage(msg_id)
+	local cur_msg = error_msg_table[msg_id]
+
+	OP.display("error", false, cur_msg, 3)
+end
+
 local message_table = {
-	everything = "Lifts / Units / Shapes",
-	all_b = "Shapes",
-	lose_b = "Lose Bodies",
-	op_t = "OP Tools",
-	lift = "Lifts",
-	unit = "Units",
-	c_item = "Certain Shapes",
-	c_creation = "Shapes"
+	everything = {text = "Lifts / Units / Shapes"},
+	all_b = {text = "Shapes"},
+	lose_b = {text = "Lose Bodies"},
+	op_t = {text = "OP Tools"},
+	lift = {text = "Lifts", snd = "ConnectTool - Released"},
+	unit = {text = "Units", snd = "ConnectTool - Released"},
+	c_item = {text = "Certain Shapes"},
+	c_creation = {text = "Shapes"}
 }
 
 function WorldCleaner:client_displayMessage(data)
-	local cur_word = message_table[data.id]
-	local cur_msg = ("%s were deleted"):format(cur_word)
+	local cur_data = message_table[data.id]
+	local cur_msg = ("%s were deleted"):format(cur_data.text)
+	local cur_snd = cur_data.snd
+
+	sm.audio.play(cur_snd or "Blueprint - Delete")
 
 	if data.id ~= "lift" then
 		cur_msg = ("#ffff00%s#ffffff %s"):format(data.count, cur_msg)
@@ -120,11 +136,8 @@ function WorldCleaner:client_displayMessage(data)
 end
 
 function WorldCleaner:client_onCreate()
-	self:client_updatePermission()
-end
-
-function WorldCleaner:client_updatePermission()
-	self.allowed = OP.getPermission("WorldCleaner") or self.server_admin
+	OP.getAdminPermission(self)
+	self:client_updateClientPermission()
 end
 
 function WorldCleaner:client_isShapePlaced()
@@ -151,11 +164,16 @@ function WorldCleaner:client_updateAnimation()
 	self.anim_duration = (self.anim_duration > 1 and self.anim_duration - 1) or nil
 end
 
+function WorldCleaner:client_updateClientPermission()
+	self.allowed = OP.getClientPermission("WorldCleaner") or self.server_admin
+end
+
 function WorldCleaner:client_onFixedUpdate()
+	self:client_updateClientPermission()
 	self:client_updateAnimation()
-	self:client_updatePermission()
 
 	if self:isAllowed() then return end
+
 	local new_gui = self.new_gui and self.new_gui.interface
 	if GUI_STUFF.isGuiActive(self.gui_dialog) or GUI_STUFF.isGuiActive(new_gui) or GUI_STUFF.isGuiActive(self.gui_item_dialog) then
 		self:client_closeAllGUIs()
@@ -173,16 +191,24 @@ function WorldCleaner:client_canErase()
 	return false
 end
 
+function WorldCleaner:server_canErase()
+	local pl_list = OP.getShapeIntersections(self.shape)
+	local can_remove = OP.areAllPlayersAllowed(pl_list, "WorldCleaner")
+
+	return can_remove
+end
+
+local _gui_setInterText = sm.gui.setInteractionText
 function WorldCleaner:client_canInteract()
 	if self:isAllowed() then
 		local _useKey = sm.gui.getKeyBinding("Use")
-		sm.gui.setInteractionText("Press", _useKey, "to open the GUI of World Cleaner")
-		sm.gui.setInteractionText("")
+		_gui_setInterText("Press", _useKey, "to open the GUI of World Cleaner")
+		_gui_setInterText("")
 		return true
 	end
 
-	sm.gui.setInteractionText("", "Only allowed players can use this tool")
-	sm.gui.setInteractionText("")
+	_gui_setInterText("", "Only allowed players can use this tool")
+	_gui_setInterText("")
 	return false
 end
 

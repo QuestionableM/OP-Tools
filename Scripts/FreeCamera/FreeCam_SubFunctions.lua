@@ -6,7 +6,6 @@ if FREE_CAM_SUB then return end
 FREE_CAM_SUB = class()
 
 function FREE_CAM_SUB.SUB_setTime(self, value)
-	OP.display("blip", false, ("#ffff00Time#ffffff set to #ffff00%s#ffffff for everyone"):format(value))
 	self.network:sendToServer("server_getStuff", {type = "time", value = value})
 end
 
@@ -19,7 +18,7 @@ function FREE_CAM_SUB.SUB_teleportCam(self, data)
 			OP.display("blip", false, ("Moving your camera to #ffff00%s#ffffff..."):format(player.name))
 		else
 			OP.display("error", false, ("#ffff00%s#ffffff doesn't have a character"):format(player.name))
-		end 
+		end
 	else
 		OP.display("error", false, "Pick a player")
 	end
@@ -34,37 +33,37 @@ end
 
 function FREE_CAM_SUB.SUB_charHijacker(self)
 	local bool, result = cameraRaycast(100)
-	if bool and result.type == "character" then
-		local _ResChar = result:getCharacter()
-		local _LocPl = sm.localPlayer.getPlayer()
-		if _LocPl:getCharacter() ~= _ResChar then
-			if not OP.isUnit(_ResChar) then
-				if not (_ResChar:isTumbling() or _ResChar:isDowned() or _ResChar:isDiving()) then
-					self.camera.activationTime = sm.game.getCurrentTick()
-					self.camera.position = _ResChar.worldPosition
-					self.network:sendToServer("server_getStuff", {
-						type = "hijack",
-						player = _LocPl,
-						character = _ResChar
-					})
-				else
-					OP.display("error", false, "You can't hijack downed / tumbled / diving characters")
-				end
-			else
-				OP.display("error", false, "You can't hijack a unit")
-			end
-		else
-			OP.display("error", false, "You can't hijack your own character")
-		end
-	else
+	if not (bool and result.type == "character") then
 		OP.display("error", false, "You have to aim on characters in order to use this option")
+		return
 	end
+
+	local _ResChar = result:getCharacter()
+	local _LocPl = sm.localPlayer.getPlayer()
+
+	if _LocPl:getCharacter() == _ResChar then
+		OP.display("error", false, "You can't hijack your own character")
+		return
+	end
+
+	if OP.isUnit(_ResChar) then
+		OP.display("error", false, "You can't hijack a unit")
+		return
+	end
+
+	if (_ResChar:isTumbling() or _ResChar:isDowned() or _ResChar:isDiving()) then
+		OP.display("error", false, "You can't hijack downed / tumbled / diving characters")
+		return
+	end
+
+	self.camera.activationTime = sm.game.getCurrentTick()
+	self.camera.position = _ResChar.worldPosition
+	self.network:sendToServer("server_getStuff", {type = "hijack", character = _ResChar})
 end
 
 function FREE_CAM_SUB.SUB_charSpeed(self, values)
 	local bool, result = cameraRaycast(100)
 	if bool and result.type == "character" then
-		OP.display("blip", false, ("Set the speed of #ffff00%s#ffffff for a character [id: #ffff00%s#ffffff]"):format(values.value, result:getCharacter().id))
 		self.network:sendToServer("server_getStuff", {
 			type = "charSpeed",
 			character = result:getCharacter(),
@@ -75,179 +74,186 @@ function FREE_CAM_SUB.SUB_charSpeed(self, values)
 	end
 end
 
+local function CharTeleporter_PickCharacter(self, result)
+	if result.type == "character" then
+		local c_Char = result:getCharacter()
+
+		if c_Char:isPlayer() then
+			self.camera.charToTeleport = c_Char
+			OP.display("open", false, ("#ffff00%s#ffffff is selected for teleporting"):format(c_Char:getPlayer().name))
+		else
+			OP.display("error", false, "This character isn't owned by anyone")
+		end
+	elseif result.type == "body" then
+		local shape = result:getShape()
+		local s_Inter = shape:getInteractable()
+
+		if s_Inter == nil then return end
+
+		if not (s_Inter:hasSteering() or s_Inter:hasSeat()) then return end
+
+		local character = s_Inter:getSeatCharacter()
+		if character ~= nil then
+			self.camera.charToTeleport = character
+			OP.display("open", false, ("#ffff00%s#ffffff is selected for teleporting"):format(character:getPlayer().name))
+		else
+			OP.display("error", false, "No characters on the seat")
+		end
+	else
+		OP.display("error", false, "You have to aim on seats / characters in order to use this option")
+	end
+end
+
+local function CharTeleporter_TeleportCharacter(self, result)
+	local c_CharToTeleport = self.camera.charToTeleport
+	if type(c_CharToTeleport) ~= "Character" then
+		OP.display("error", false, "#ff0000ERROR#ffffff: The chosen object is not a character!")
+		return
+	end
+
+	if not OP.exists(c_CharToTeleport) then
+		OP.display("error", false, "#ff0000ERROR#ffffff: This character doesn't exist anymore!")
+		return
+	end
+
+	if sm.localPlayer.getPlayer():getCharacter() == c_CharToTeleport then
+		self.camera.activationTime = sm.game.getCurrentTick()
+	end
+
+	self.network:sendToServer("server_getStuff", {
+		type = "charTp",
+		character = c_CharToTeleport,
+		position = result.pointWorld + sm.vec3.new(0, 0, 0.72),
+		rotation = OP.directionToRadians(sm.camera.getDirection())
+	})
+
+	self.camera.charToTeleport = nil
+end
+
 function FREE_CAM_SUB.SUB_charTeleporter(self)
 	local bool, result = cameraRaycast(100)
 	if bool then
 		if not self.camera.charToTeleport then
-			if result.type == "character" then
-				if result:getCharacter():isPlayer() then
-					self.camera.charToTeleport = result:getCharacter()
-					OP.display("open", false, ("#ffff00%s#ffffff is selected for teleporting"):format(result:getCharacter():getPlayer().name))
-				else
-					OP.display("error", false, "This character isn't owned by anyone")
-				end
-			elseif result.type == "body" and (result:getShape():getInteractable() ~= nil and (result:getShape():getInteractable():getType() == "steering" or result:getShape():getInteractable():getType() == "seat")) then
-				local character = result:getShape():getInteractable():getSeatCharacter()
-				if character ~= nil then
-					self.camera.charToTeleport = character
-					OP.display("open", false, ("#ffff00%s#ffffff is selected for teleporting"):format(character:getPlayer().name))
-				else
-					OP.display("error", false, "No characters on the seat")
-				end
-			else
-				OP.display("error", false, "You have to aim on seats / characters in order to use this option")
-			end
+			CharTeleporter_PickCharacter(self, result)
 		else
-			if type(self.camera.charToTeleport) == "Character" then
-				if OP.exists(self.camera.charToTeleport) then
-					if sm.localPlayer.getPlayer():getCharacter() == self.camera.charToTeleport then
-						self.camera.activationTime = sm.game.getCurrentTick()
-					end
-					OP.display("blip", false, ("#ffff00%s#ffffff has been teleported"):format(self.camera.charToTeleport:getPlayer().name))
-					self.network:sendToServer("server_getStuff", {
-						type = "charTp",
-						character = self.camera.charToTeleport,
-						position = result.pointWorld + sm.vec3.new(0, 0, 0.72),
-						rotation = OP.directionToRadians(sm.camera.getDirection())
-					})
-				else
-					OP.display("error", false, "#ff0000ERROR#ffffff: This character doesn't exist anymore!")
-				end
-			else
-				OP.display("error", false, "#ff0000ERROR#ffffff: The chosen object is not a character!")
-			end
-			self.camera.charToTeleport = nil
+			CharTeleporter_TeleportCharacter(self, result)
 		end
 	end
 end
 
 function FREE_CAM_SUB.SUB_CharFunctions(self, option, self_executable)
 	local bool, result = cameraRaycast(100)
-	if bool and result.type == "character" then
-		if self_executable or sm.localPlayer.getPlayer():getCharacter() ~= result:getCharacter() then
-			local sel_char = result:getCharacter()
-			local setting_bool = false
-			if option.id == "tumble" then
-				setting_bool = sel_char:isTumbling()
-			elseif option.id == "downChar" then
-				setting_bool = sel_char:isDowned()
-			elseif option.id == "charSwim" then
-				setting_bool = sel_char:isSwimming()
-			elseif option.id == "charDive" then
-				setting_bool = sel_char:isDiving()
-			end
-			OP.display("blip", false, ("#ffff00%s#ffffff is %s for character [id: #ffff00%s#ffffff]"):format(option.name, OP.bools[not setting_bool].string, sel_char.id))
-			self.network:sendToServer("server_getStuff", {
-				type = option.id,
-				character = sel_char
-			})
-		else
-			OP.display("error", false, "You can't use that function on your own character")
-		end
-	else
+	if not (bool and result.type == "character") then
 		OP.display("error", false, "You have to aim on characters in order to use this function")
+		return
+	end
+
+	local r_Character = result:getCharacter()
+	if self_executable or sm.localPlayer.getPlayer():getCharacter() ~= r_Character then
+		self.network:sendToServer("server_getStuff", {type = "charProp", id = option.id, char = r_Character})
+	else
+		OP.display("error", false, "You can't use that function on your own character")
 	end
 end
 
 function FREE_CAM_SUB.SUB_destroyUnit(self)
 	local bool, result = cameraRaycast(100)
-	if bool and result.type == "character" then
-		local _UnitChar = result:getCharacter()
-		if OP.isUnit(_UnitChar) then
-			self.network:sendToServer("server_getStuff", {
-				type = "unitDel",
-				unit = _UnitChar:getUnit()
-			})
-		else
-			OP.display("error", false, "This is not a unit")
-		end
-	else
+	if not (bool and result.type == "character") then
 		OP.display("error", false, "You have to aim on units in order to use this function")
+		return
+	end
+
+	local _UnitChar = result:getCharacter()
+	if OP.isUnit(_UnitChar) then
+		self.network:sendToServer("server_getStuff", {
+			type = "unitDel",
+			unit = _UnitChar:getUnit()
+		})
+	else
+		OP.display("error", false, "This is not a unit")
 	end
 end
 
 function FREE_CAM_SUB.SUB_playerRecover(self)
-	self.network:sendToServer("server_getStuff", {type = "recover", sender = sm.localPlayer.getPlayer()})
+	self.network:sendToServer("server_getStuff", {type = "recover"})
 end
 
 function FREE_CAM_SUB.SUB_playerLocker(self)
 	local bool, result = cameraRaycast(100)
-	if bool and result.type == "character" then
-		local _CurChar = result:getCharacter()
-		if _CurChar:isPlayer() then
-			if sm.localPlayer.getPlayer():getCharacter() ~= _CurChar then
-				self.network:sendToServer("server_getStuff", {
-					type = "lockControls",
-					player = _CurChar:getPlayer()
-				})
-			else
-				OP.display("error", false, "You can't lock your own character")
-			end
-		else
-			OP.display("error", false, "This character doesn't belong to any player")
-		end
-	else
+	if not (bool and result.type == "character") then
 		OP.display("error", false, "You have to aim on characters in order to use this option")
+		return
+	end
+
+	local _CurChar = result:getCharacter()
+	if not _CurChar:isPlayer() then
+		OP.display("error", false, "This character doesn't belong to any player")
+		return
+	end
+
+	if sm.localPlayer.getPlayer():getCharacter() ~= _CurChar then
+		self.network:sendToServer("server_getStuff", {type = "lockControls", player = _CurChar:getPlayer()})
+	else
+		OP.display("error", false, "You can't lock your own character")
 	end
 end
 
 function FREE_CAM_SUB.SUB_recoverOffWorldPlayers(self, value)
-	self.network:sendToServer("server_getStuff", {type = "recoverOff", safeZone = value, sender = sm.localPlayer.getPlayer()})
+	self.network:sendToServer("server_getStuff", {type = "recoverOff", safeZone = value})
 end
 
 function FREE_CAM_SUB.SUB_creatureSpawner(self, data)
 	local subOp = data.subOptions
-	if subOp[1].values.value > 0 then
-		local bool, result = cameraRaycast(100)
-		if bool then
-			self.network:sendToServer("server_getStuff", {
-				type = "spawnCreature",
-				id = data.numberNames.creatures[subOp[1].values.value].id,
-				player = sm.localPlayer.getPlayer(),
-				position = result.pointWorld,
-				rotation = OP.directionToRadians(sm.camera.getDirection()),
-				amount = subOp[2].values.value,
-				no_spread = subOp[3].values
-			})
-		else
-			OP.display("error", false, "The raycast couldn't hit anything")
-		end
-	else
+	if subOp[1].values.value <= 0 then
 		OP.display("error", false, "Choose a unit to spawn")
+		return
 	end
+
+	local bool, result = cameraRaycast(100)
+	if not bool then
+		OP.display("error", false, "The raycast couldn't hit anything")
+		return
+	end
+
+	self.network:sendToServer("server_getStuff", {
+		type = "spawnCreature",
+		id = data.numberNames.creatures[subOp[1].values.value].id,
+		position = result.pointWorld,
+		rotation = OP.directionToRadians(sm.camera.getDirection()),
+		amount = subOp[2].values.value,
+		no_spread = subOp[3].values
+	})
 end
 
 function FREE_CAM_SUB.SUB_createHarvestable(self, data)
 	local CurSub = data.subOptions
-	if CurSub[1].values.value > 0 then
-		local bool, result = cameraRaycast(100)
-		if bool then
-			self.network:sendToServer("server_getStuff", {
-				type = "spawnHarvestable",
-				id = data.numberNames.harvestableNames[CurSub[1].values.value].id,
-				position = result.pointWorld,
-				player = sm.localPlayer.getPlayer(),
-				rotation = OP.directionToRadians(sm.camera.getDirection())
-			})
-		end
-	else
+	if CurSub[1].values.value <= 0 then
 		OP.display("error", false, "Choose a harvestable to spawn")
+		return
+	end
+
+	local bool, result = cameraRaycast(100)
+	if bool then
+		self.network:sendToServer("server_getStuff", {
+			type = "spawnHarvestable",
+			id = data.numberNames.harvestableNames[CurSub[1].values.value].id,
+			position = result.pointWorld,
+			rotation = OP.directionToRadians(sm.camera.getDirection())
+		})
 	end
 end
 
 function FREE_CAM_SUB.SUB_removeHarvestable(self, data)
 	local bool, result = cameraRaycast(100)
-	if bool then
-		if result.type == "harvestable" then
-			self.network:sendToServer("server_getStuff", {
-				type = "removeHarvestable",
-				player = sm.localPlayer.getPlayer(),
-				hvs = result:getHarvestable()
-			})
-		else
-			OP.display("error", false, "In order to use this function you have to aim on harvestables")
-		end
-	else
+	if not bool then
 		OP.display("error", false, "The raycast couldn't hit anything")
+		return
 	end
+
+	if result.type ~= "harvestable" then
+		OP.display("error", false, "In order to use this function you have to aim on harvestables")
+		return
+	end
+
+	self.network:sendToServer("server_getStuff", {type = "removeHarvestable", hvs = result:getHarvestable()})
 end

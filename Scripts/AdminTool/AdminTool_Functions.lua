@@ -52,33 +52,3 @@ function ADMIN_F.checkFunctions(object_mode, paint_mode, material_mode, lose_onl
 	(lose == nil or lose), 
 	(static == nil or static)
 end
-
-function ADMIN_F.load_serverFunctions()
-	local server_functions = {
-		admin = function(self, data)
-			self.allowedPlayers[data.player.id] = {
-				player = data.player,
-				settings = ADMIN_F.server_load_playerFunctions()
-			}
-		end;
-		r_admin = function(self, data)
-			if self.allowedPlayers[data.player.id] ~= nil and self.allowedPlayers[data.player.id].player == data.player then
-				self.allowedPlayers[data.player.id] = nil
-			end
-		end;
-		getTabData = function(self, data)
-			if self.allowedPlayers[data.player.id] ~= nil and self.allowedPlayers[data.player.id].settings ~= nil then
-				if data.pFunction and (data.bool == true and self.allowedPlayers[data.player.id].settings[data.pFunction] == true) then
-					self.allowedPlayers[data.player.id].settings[data.pFunction] = false
-				end
-				self.allowedPlayers[data.player.id].settings[data.id] = data.bool
-			end
-		end;
-		setColor = function(self, data)
-			if tostring(data.color) ~= tostring(self.shape.color) then
-				self.shape:setColor(data.color)
-			end
-		end
-	}
-	return server_functions
-end

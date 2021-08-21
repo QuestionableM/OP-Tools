@@ -19,6 +19,8 @@ end
 
 function FreeCam:client_onCreate()
 	self:updateCamera()
+	
+	OP.getAdminPermission(self)
 	self:client_updatePermission()
 
 	local tag_gui = sm.gui.createNameTagGui()
@@ -31,7 +33,7 @@ function FreeCam:client_onCreate()
 end
 
 function FreeCam:client_updatePermission()
-	self.allowed = OP.getPermission("FreeCamera") or self.server_admin
+	self.allowed = OP.getClientPermission("FreeCamera") or self.server_admin
 end
 
 function FreeCam:isAllowed()
@@ -69,11 +71,44 @@ function FreeCam:client_getStuff(data)
 	end
 end
 
-function FreeCam:server_getStuff(data)
+local p_String = "You do not have permission "
+local error_msg_table = {
+	p_noperm = p_String.."to call any server functions!"
+}
+
+function FreeCam:client_onErrorMessage(msg_id)
+	local cur_msg = error_msg_table[msg_id]
+
+	sm.gui.displayAlertText(cur_msg, 3)
+end
+
+function FreeCam:server_sendMessage(client, message, sound)
+	local out_data = {msg = message, snd = sound}
+
+	if client ~= nil then
+		self.network:sendToClient(client, "client_onMessage", out_data)
+	else
+		self.network:sendToClients("client_onMessage", out_data)
+	end
+end
+
+function FreeCam:client_onMessage(data)
+	local cur_msg = data.msg
+	local cur_snd = data.snd
+
+	OP.display(cur_snd, false, cur_msg)
+end
+
+function FreeCam:server_getStuff(data, caller)
+	if not OP.getPlayerPermission(caller, "FreeCamera") then
+		self.network:sendToClient(caller, "client_onErrorMessage", "p_noperm")
+		return
+	end
+
 	local cur_func = self.serverFunctions[data.type]
 
 	if type(cur_func) == "function" then
-		cur_func(self, data)
+		cur_func(self, data, caller)
 	end
 end
 
@@ -157,7 +192,6 @@ function FreeCam:client_SpawnCharacter()
 		self.camera.activationTime = sm.game.getCurrentTick()
 		self.network:sendToServer("server_getStuff", {
 			type = "spawnChar",
-			player = sm.localPlayer.getPlayer(),
 			position = self.camera.position,
 			dir = OP.directionToRadians(sm.camera.getDirection())
 		})
@@ -186,15 +220,16 @@ function FreeCam:client_callFunction()
 	end
 end
 
+local _sm_getKeyBind = sm.gui.getKeyBinding
 function FreeCam:client_changeSelectedOption()
 	self.camera.mode.page = (self.camera.mode.page + 1) % (#self.camera.mode.options)
 	local selectedOption = self.camera.mode.options[self.camera.mode.page + 1]
 
 	if type(selectedOption.subOptions) == "table" then
-		OP.display("drag", false, ("[#ffff00%s#ffffff/#ffff00%s#ffffff] Camera option set to #ffff00%s#ffffff\npress #ffff00%s#ffffff to change its parameters"):format(self.camera.mode.page + 1, #self.camera.mode.options, selectedOption.name, sm.gui.getKeyBinding("MenuItem1")))
+		OP.display("drag", false, ("[#ffff00%s#ffffff/#ffff00%s#ffffff] Camera option set to #ffff00%s#ffffff\npress #ffff00%s#ffffff to change its parameters"):format(self.camera.mode.page + 1, #self.camera.mode.options, selectedOption.name, _sm_getKeyBind("MenuItem1")))
 	else
 		if type(selectedOption.values) == "table" then
-			OP.display("drag", false, ("[#ffff00%s#ffffff/#ffff00%s#ffffff] Camera option set to #ffff00%s#ffffff\nit can be changed with #ffff00%s#ffffff/#ffff00%s#ffffff or #ffff00%s#ffffff/#ffff00%s#ffffff"):format(self.camera.mode.page + 1, #self.camera.mode.options, selectedOption.name, sm.gui.getKeyBinding("PreviousMenuItem"), sm.gui.getKeyBinding("NextMenuItem"), sm.gui.getKeyBinding("ZoomIn"), sm.gui.getKeyBinding("ZoomOut")))
+			OP.display("drag", false, ("[#ffff00%s#ffffff/#ffff00%s#ffffff] Camera option set to #ffff00%s#ffffff\nit can be changed with #ffff00%s#ffffff/#ffff00%s#ffffff or #ffff00%s#ffffff/#ffff00%s#ffffff"):format(self.camera.mode.page + 1, #self.camera.mode.options, selectedOption.name, _sm_getKeyBind("PreviousMenuItem"), _sm_getKeyBind("NextMenuItem"), _sm_getKeyBind("ZoomIn"), _sm_getKeyBind("ZoomOut")))
 		else
 			OP.display("drag", false, ("[#ffff00%s#ffffff/#ffff00%s#ffffff] Camera option set to #ffff00%s#ffffff"):format(self.camera.mode.page + 1, #self.camera.mode.options, selectedOption.name))
 		end
@@ -217,7 +252,7 @@ function FreeCam:client_changeSelectedParameter()
 		local _ValuesType = type(_CurrentOption.values)
 
 		if _ValuesType == "table" or _ValuesType == "boolean" then
-			OP.display("release", false, ("[#ffff00%s#ffffff/#ffff00%s#ffffff] #ffff00%s#ffffff can be changed with #ffff00%s#ffffff/#ffff00%s#ffffff or #ffff00%s#ffffff/#ffff00%s#ffffff now"):format(self.camera.mode.optionPage + 1, #selectedOption.subOptions, selectedOption.subOptions[self.camera.mode.optionPage + 1].name, sm.gui.getKeyBinding("PreviousMenuItem"), sm.gui.getKeyBinding("NextMenuItem"), sm.gui.getKeyBinding("ZoomIn"), sm.gui.getKeyBinding("ZoomOut")))
+			OP.display("release", false, ("[#ffff00%s#ffffff/#ffff00%s#ffffff] #ffff00%s#ffffff can be changed with #ffff00%s#ffffff/#ffff00%s#ffffff or #ffff00%s#ffffff/#ffff00%s#ffffff now"):format(self.camera.mode.optionPage + 1, #selectedOption.subOptions, selectedOption.subOptions[self.camera.mode.optionPage + 1].name, _sm_getKeyBind("PreviousMenuItem"), _sm_getKeyBind("NextMenuItem"), _sm_getKeyBind("ZoomIn"), _sm_getKeyBind("ZoomOut")))
 		else
 			OP.display("release", false, ("[#ffff00%s#ffffff/#ffff00%s#ffffff] #ffff00%s#ffffff is selected"):format(self.camera.mode.optionPage + 1, #selectedOption.subOptions, selectedOption.subOptions[self.camera.mode.optionPage + 1].name))
 		end
@@ -269,6 +304,9 @@ function FreeCam:client_onAction(movement, state)
 	return true
 end
 
+local _sm_setCamPos = sm.camera.setPosition
+local _sm_setCamDir = sm.camera.setDirection
+local _sm_lerpVec = sm.vec3.lerp
 function FreeCam:client_camInterpolation()
 	local _MovT = self.camera.move_target
 
@@ -280,9 +318,9 @@ function FreeCam:client_camInterpolation()
 			self.camera.speed = sm.vec3.zero()
 			self.camera.movement.x = {0, 0}
 			self.camera.movement.y = {0, 0}
-			self.camera.position = sm.vec3.lerp(self.camera.position, _MovT.worldPosition, 0.2)
-			sm.camera.setDirection(sm.vec3.lerp(sm.camera.getDirection(), _MovT.direction, 0.2))
-			sm.camera.setPosition(self.camera.position)
+			self.camera.position = _sm_lerpVec(self.camera.position, _MovT.worldPosition, 0.2)
+			_sm_setCamDir(_sm_lerpVec(sm.camera.getDirection(), _MovT.direction, 0.2))
+			_sm_setCamPos(self.camera.position)
 		else
 			if _IsOutOfTime then
 				OP.display("error", false, "Couldn't get to the destination in the set amount of time.\nSkipping the animation...")
@@ -298,8 +336,9 @@ function FreeCam:client_camInterpolation()
 end
 
 function FreeCam:client_updateCamPos(character, dt)
-	local speedVal = self.camera.mode.options[1].subOptions[1].values.value
-	local friction = self.camera.mode.options[1].subOptions[2].values.value
+	local c_Options = self.camera.mode.options[1]
+	local speedVal = c_Options.subOptions[1].values.value
+	local friction = c_Options.subOptions[2].values.value
 	local speed_forward = (sm.camera.getDirection() / 5) * speedVal
 	local speed_sideways = (sm.camera.getRight() / 5) * speedVal
 	local cam_mov = self.camera.movement
@@ -312,8 +351,8 @@ function FreeCam:client_updateCamPos(character, dt)
 	self.camera.position = self.camera.position + self.camera.speed
 	self.camera.speed = self.camera.speed * (1 - (friction * 0.5))
 
-	sm.camera.setPosition(self.camera.position)
-	sm.camera.setDirection(character.direction)
+	_sm_setCamPos(self.camera.position)
+	_sm_setCamDir(character.direction)
 end
 
 function FreeCam:client_updateCamState(character)
@@ -382,17 +421,17 @@ function FreeCam:client_onInteract(character, state)
 	character:setLockingInteractable(self.interactable)
 
 	sm.camera.setCameraState(sm.camera.state.cutsceneTP)
-	sm.camera.setPosition(self.camera.position)
+	_sm_setCamPos(self.camera.position)
 
 	self.camera.state = true
 	OP.print("Free Camera Mode enabled")
 	OP.display("blip", false, ("Free Camera Mode enabled, press #ffff00%s#ffffff to change the function and #ffff00%s#ffffff to change its parameters\nUse #ffff00%s#ffffff/#ffff00%s#ffffff or #ffff00%s#ffffff/#ffff00%s#ffffff to change the value of the parameter"):format(
-		sm.gui.getKeyBinding("MenuItem0"),
-		sm.gui.getKeyBinding("MenuItem1"),
-		sm.gui.getKeyBinding("PreviousMenuItem"),
-		sm.gui.getKeyBinding("NextMenuItem"),
-		sm.gui.getKeyBinding("ZoomIn"),
-		sm.gui.getKeyBinding("ZoomOut")
+		_sm_getKeyBind("MenuItem0"),
+		_sm_getKeyBind("MenuItem1"),
+		_sm_getKeyBind("PreviousMenuItem"),
+		_sm_getKeyBind("NextMenuItem"),
+		_sm_getKeyBind("ZoomIn"),
+		_sm_getKeyBind("ZoomOut")
 	), 5)
 
 	FREE_CAM_OPTIONS.display_guide()
@@ -419,6 +458,13 @@ function FreeCam:client_onDestroy()
 	end
 end
 
+function FreeCam:server_canErase()
+	local pl_list = OP.getShapeIntersections(self.shape)
+	local can_remove = OP.areAllPlayersAllowed(pl_list, "FreeCamera")
+
+	return can_remove
+end
+
 function FreeCam:client_canErase()
 	if self:isAllowed() then return true end
 
@@ -426,20 +472,21 @@ function FreeCam:client_canErase()
 	return false
 end
 
+local _sm_guiSetInterText = sm.gui.setInteractionText
 function FreeCam:client_canInteract()
 	if self:isAllowed() then
 		if self.camera.state then
-			sm.gui.setInteractionText("")
-			sm.gui.setInteractionText("")
+			_sm_guiSetInterText("")
+			_sm_guiSetInterText("")
 		else
-			local use_key = sm.gui.getKeyBinding("Use")
-			sm.gui.setInteractionText("Press", use_key, "to enable Free Camera Mode")
-			sm.gui.setInteractionText("")
+			local use_key = _sm_getKeyBind("Use")
+			_sm_guiSetInterText("Press", use_key, "to enable Free Camera Mode")
+			_sm_guiSetInterText("")
 		end
 		return true
 	end
 
-	sm.gui.setInteractionText("", "Only allowed players can use this tool")
-	sm.gui.setInteractionText("")
+	_sm_guiSetInterText("", "Only allowed players can use this tool")
+	_sm_guiSetInterText("")
 	return false
 end

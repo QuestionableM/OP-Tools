@@ -16,7 +16,18 @@ end
 function PermissionManager:client_onCreate()
 	if not self.isAdmin then return end
 
+	OP.server_admin = sm.localPlayer.getPlayer()
 	self:client_loadPMGUI()
+end
+
+local error_msg_table = {
+	p_getdata = "You do not have permission to get the permission data of other players!",
+	p_udata = "You do not have permission to update the permission data of other players!"
+}
+
+function PermissionManager:client_onErrorMessage(msg_id)
+	local cur_text = error_msg_table[msg_id]
+	sm.gui.displayAlertText(cur_text, 3)
 end
 
 function PermissionManager:client_onFixedUpdate()
@@ -49,6 +60,13 @@ function PermissionManager:client_canErase()
 	if self.isAdmin then return true end
 	_DisplayAlertText("Only server admin can break this tool", 1)
 	return false
+end
+
+function PermissionManager:server_canErase()
+	local pl_list = OP.getShapeIntersections(self.shape)
+	local can_delete = (#pl_list == 1 and pl_list[1] == OP.server_admin)
+	
+	return can_delete
 end
 
 function PermissionManager:client_onDestroy()

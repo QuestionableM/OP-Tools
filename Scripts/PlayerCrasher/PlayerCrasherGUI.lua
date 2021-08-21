@@ -6,11 +6,7 @@ if PlayerCrasherGUI then return end
 PlayerCrasherGUI = class()
 
 function PlayerCrasherGUI:client_sToServer(modeId, player)
-	self.network:sendToServer("server_getCrashInfo", {
-		mode = modeId,
-		player = player,
-		sender = sm.localPlayer.getPlayer()
-	})
+	self.network:sendToServer("server_getCrashInfo", {mode = modeId, player = player})
 end
 
 function PlayerCrasherGUI:client_updateCurrentPlayer(btn_name)
@@ -73,14 +69,12 @@ function PlayerCrasherGUI:client_constructDialog(description, player, output)
 	GUI_STUFF.open_dialog(
 		self, description,
 		function(self)
-			OP.display("Retrowildblip", true, output:format(type(player) == "Player" and player.name or player))
-			self.animation.state = true
 			self:client_sToServer(self.gui.crashModes[self.gui.mode + 1].id, player)
 			self.gui.p_instance = nil
 			self:client_generateGUI()
 		end,
 		function(self) self:client_generateGUI() end,
-		"Blueprint - Delete", "Blueprint - Close"
+		nil, "Blueprint - Close"
 	)
 end
 
@@ -129,9 +123,9 @@ function PlayerCrasherGUI:client_kickSelected()
 		else
 			self.gui.p_instance = nil
 			self.gui.interface:setText("SelectedPlayer", "Select a Player")
-			OP.display("Blueprint - Close", true, "#ff0000Selected player doesn't exist anymore!#ffffff", 2)
+			OP.display("Blueprint - Close", false, "#ff0000Selected player doesn't exist anymore!#ffffff", 2)
 		end
 	else
-		OP.display("WeldTool - Error", true, "#ffff00Select a player#ffffff", 3)
+		OP.display("WeldTool - Error", false, "#ffff00Select a player#ffffff", 3)
 	end
 end

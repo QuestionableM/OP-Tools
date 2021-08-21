@@ -66,20 +66,33 @@ function AdminToolGUI:client_toggleWaitDataMode(state)
 	gui:setVisible("WaitingLabel", not state)
 end
 
-function AdminToolGUI:server_getPlayerData(player)
-	local allowed_pl = self.allowedPlayers[player.id]
+function AdminToolGUI:server_getPlayerData(data, player)
+	local output_data = nil
 
-	if allowed_pl and allowed_pl.player == player and OP.exists(player) then
-		self.network:sendToClient(player, "client_receivePlayerData", allowed_pl.settings)
+	if OP.getPlayerPermission(player, "AdminTool") then
+		local allowed_pl = self:server_getPlayerSettings(player)
+
+		if allowed_pl and allowed_pl.player == player and OP.exists(player) then
+			output_data = allowed_pl.settings
+		end
+	else
+		output_data = "nperm"
+		self.network:sendToClient(player, "client_onErrorMessage", "p_getdata")
 	end
+
+	self.network:sendToClient(player, "client_receivePlayerData", output_data)
 end
 
-function AdminToolGUI:server_setPlayerData(data)
-	local s_player = data.player
-	local allowed_pl = self.allowedPlayers[s_player.id]
+function AdminToolGUI:server_setPlayerData(data, player)
+	if not OP.getPlayerPermission(player, "AdminTool") then
+		self.network:sendToClient(player, "client_onErrorMessage", "p_savedata")
+		return
+	end
 
-	if allowed_pl and allowed_pl.player == s_player then
-		local d_settings = data.settings
+	local allowed_pl = self.allowedPlayers[player.id]
+
+	if allowed_pl and allowed_pl.player == player then
+		local d_settings = data
 		local save_set = allowed_pl.settings
 
 		for s_name, value in pairs(d_settings) do
@@ -91,7 +104,19 @@ function AdminToolGUI:server_setPlayerData(data)
 end
 
 function AdminToolGUI:client_receivePlayerData(data)
-	if not self.wait_for_data then return end
+	if not self.gui.wait_for_data then return end
+
+	local got_no_data = (data == nil)
+	local g_Interface = self.gui.interface
+
+	if data == "nperm" or got_no_data then
+		self:client_resetDotAnimation()
+
+		local cur_err_text = (got_no_data and "SOMETHING WENT WRONG" or "NO PERMISSION")
+		g_Interface:setText("WaitingLabel", cur_err_text)
+
+		return
+	end
 
 	for s_name, value in pairs(data) do
 		if self.gui.func_data[s_name] ~= nil then
@@ -99,7 +124,7 @@ function AdminToolGUI:client_receivePlayerData(data)
 		end
 	end
 
-	self.gui.interface:setVisible("CreationPropTab", data.creationProp)
+	g_Interface:setVisible("CreationPropTab", data.creationProp)
 
 	self:client_resetDotAnimation()
 	self:client_toggleWaitDataMode(true)
@@ -108,17 +133,17 @@ end
 
 function AdminToolGUI:client_requestButtonData()
 	self:client_toggleWaitDataMode(false)
-	self.network:sendToServer("server_getPlayerData", sm.localPlayer.getPlayer())
-	self.wait_for_data = true
+	self.network:sendToServer("server_getPlayerData")
+	self.gui.wait_for_data = true
 end
 
 local dot_anim_steps = {[1] = "", [2] = ".", [3] = "..", [4] = "..."}
 function AdminToolGUI:client_updateWaitingDataLabel()
-	if not self.wait_for_data then return end
+	if not self.gui.wait_for_data then return end
 
 	local curTick = sm.game.getCurrentTick()
 	if curTick % 16 == 15 then
-		self.wait_cur_page = (self.wait_cur_page and self.wait_cur_page + 1 or 0) % 4
+		self.wait_cur_page = (self.gui.wait_cur_page and self.gui.wait_cur_page + 1 or 0) % 4
 
 		local cur_anim_step = dot_anim_steps[self.wait_cur_page + 1]
 		self.gui.interface:setText("WaitingLabel", "Waiting for data"..cur_anim_step)
@@ -198,10 +223,7 @@ end
 function AdminToolGUI:client_onAdminToolGuiCloseCallback()
 	self:client_resetDotAnimation()
 
-	self.network:sendToServer("server_setPlayerData", {
-		player = sm.localPlayer.getPlayer(),
-		settings = self.gui.func_data
-	})
+	self.network:sendToServer("server_setPlayerData", self.gui.func_data)
 end
 
 function AdminToolGUI:create_AT_GUI()
@@ -328,10 +350,9 @@ function AdminToolGUI:client_onApplyButtonPress()
 	local _Color = sm.color.new(_HexStr)
 
 	if _Color ~= self.shape.color then
-		self.network:sendToServer("server_networking", {mode = "setColor", color = _Color})
-		sm.audio.play("Retrowildblip")
+		self.network:sendToServer("server_setColor", _Color)
 	else
-		OP.display("error", true, "The selected color is already applied to the admin tool!", 2)
+		OP.display("error", false, "The selected color is already applied to the admin tool!", 2)
 	end
 end
 
