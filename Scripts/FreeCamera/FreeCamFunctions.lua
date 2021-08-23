@@ -312,9 +312,9 @@ end
 
 function local_server_table.spawnChar(self, data, caller)
 	if data.position then
-		local char = sm.character.createCharacter(data.player, sm.world.getCurrentWorld(), data.position, data.dir.yaw, data.dir.pitch)
-		data.player:setCharacter(char)
-		OP.print(("\"%s\" has been teleported, new position = %s"):format(data.player.name, char.worldPosition))
+		local char = sm.character.createCharacter(caller, sm.world.getCurrentWorld(), data.position, data.dir.yaw, data.dir.pitch)
+		caller:setCharacter(char)
+		OP.print(("\"%s\" has been teleported, new position = %s"):format(caller.name, char.worldPosition))
 	end
 end
 
