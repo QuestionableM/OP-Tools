@@ -337,19 +337,20 @@ end
 
 function FreeCam:client_updateCamPos(character, dt)
 	local c_Options = self.camera.mode.options[1]
-	local speedVal = c_Options.subOptions[1].values.value
-	local friction = c_Options.subOptions[2].values.value
-	local speed_forward = (sm.camera.getDirection() / 5) * speedVal
-	local speed_sideways = (sm.camera.getRight() / 5) * speedVal
+	local speedVal = c_Options.subOptions[1].values.value * 250 * dt
+	local friction = c_Options.subOptions[2].values.value * 15  * dt
+
+	local speed_forward  = sm.camera.getDirection() * speedVal
+	local speed_sideways = sm.camera.getRight()     * speedVal
 	local cam_mov = self.camera.movement
 
-	if cam_mov.x[1] == 1 then self.camera.speed = self.camera.speed + speed_forward end
-	if cam_mov.x[2] == 1 then self.camera.speed = self.camera.speed - speed_forward end
+	if cam_mov.x[1] == 1 then self.camera.speed = self.camera.speed + speed_forward  end
+	if cam_mov.x[2] == 1 then self.camera.speed = self.camera.speed - speed_forward  end
 	if cam_mov.y[1] == 1 then self.camera.speed = self.camera.speed - speed_sideways end
 	if cam_mov.y[2] == 1 then self.camera.speed = self.camera.speed + speed_sideways end
 
-	self.camera.position = self.camera.position + self.camera.speed
-	self.camera.speed = self.camera.speed * (1 - (friction * 0.5))
+	self.camera.speed = self.camera.speed * (1 - friction)
+	self.camera.position = self.camera.position + self.camera.speed * dt
 
 	_sm_setCamPos(self.camera.position)
 	_sm_setCamDir(character.direction)
