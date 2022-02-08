@@ -66,7 +66,7 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 			end,
 			subOptions = {
 				[1] = {name = "Camera Speed",	values = {value = 1,changer = 0.01,minValue = 0,maxValue = 20}},
-				[2] = {name = "Camera Friction",values = {value = 0.5, changer = 0.01, minValue = 0, maxValue = 1}},
+				[2] = {name = "Camera Friction",values = {value = 1,changer = 0.01, minValue = 0, maxValue = 1}},
 				[3] = {name = "Time",			values = {value = sm.render.getOutdoorLighting(), changer = 0.01, minValue = 0, maxValue = 1},disableText = true},
 				[4] = {name = "Move to Player",	values = {value = 0, changer = 1, minValue = 1, maxValue = #sm.player.getAllPlayers()},disableText = true}
 			}
