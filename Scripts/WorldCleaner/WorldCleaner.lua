@@ -1,10 +1,12 @@
 --[[
-	Copyright (c) 2021 Questionable Mark
+	Copyright (c) 2022 Questionable Mark
 ]]
 
 if WorldCleaner then return end
+
 dofile("../libs/ScriptLoader.lua")
 dofile("WorldCleanerGUI.lua")
+
 WorldCleaner = class(WorldCleanerGUI)
 WorldCleaner.connectionInput = sm.interactable.connectionType.none
 WorldCleaner.connectionOutput = sm.interactable.connectionType.none
@@ -98,7 +100,8 @@ function WorldCleaner:server_clean(data, caller)
 	end
 end
 
-local error_msg_table = {
+local error_msg_table =
+{
 	p_clean = "You do not have permission to use clean function!"
 }
 

@@ -1,18 +1,20 @@
 --[[
-	Copyright (c) 2021 Questionable Mark
+	Copyright (c) 2022 Questionable Mark
 ]]
 
 if WorldCleanerGUI then return end
+
 WorldCleanerGUI = class()
 
-local button_names = {
-	DeleteEverything = {id = "everything", name = "Everything"},
-	AllBodies = {id = "all_b", name = "All Bodies"},
-	LoseOnly = {id = "lose_b", name = "All Lose Bodies"},
-	OpTools = {id = "op_t", name = "All OP Tools"},
-	Lifts = {id = "lift"},
-	Units = {id = "unit"},
-	CurCreation = {id = "c_creation", name = "Connected Creation"}
+local button_names =
+{
+	DeleteEverything = {id = "everything", name = "Everything"        },
+	AllBodies        = {id = "all_b",      name = "All Bodies"        },
+	LoseOnly         = {id = "lose_b",     name = "All Lose Bodies"   },
+	OpTools          = {id = "op_t",       name = "All OP Tools"      },
+	Lifts            = {id = "lift"                                   },
+	Units            = {id = "unit"                                   },
+	CurCreation      = {id = "c_creation", name = "Connected Creation"}
 }
 
 function WorldCleanerGUI:client_GUI_onButtonCallback(btn_name)
@@ -63,7 +65,7 @@ function WorldCleanerGUI:client_onWCGuiDestroy()
 end
 
 function WorldCleanerGUI:client_sendToServer(case, uuid)
-	self.network:sendToServer("server_clean", {ready = false, case = case, uuid = uuid})
+	self.network:sendToServer("server_clean", { ready = false, case = case, uuid = uuid })
 end
 
 function WorldCleanerGUI:client_constructDialog(description, id)
