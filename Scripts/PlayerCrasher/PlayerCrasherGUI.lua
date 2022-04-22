@@ -1,8 +1,9 @@
 --[[
-	Copyright (c) 2021 Questionable Mark
+	Copyright (c) 2022 Questionable Mark
 ]]
 
 if PlayerCrasherGUI then return end
+
 PlayerCrasherGUI = class()
 
 function PlayerCrasherGUI:client_sToServer(modeId, player)
@@ -44,11 +45,11 @@ function PlayerCrasherGUI:client_generateGUI()
 	end
 
 	self.gui.interface = GUI_STUFF.CONSTRUCT_GUI(self, GUI_STUFF.guis.PlayerKickerGui, {
-		[1] = {button = "NextPlayer", callback = "client_updateCurrentPlayer"},
-		[2] = {button = "PrevPlayer", callback = "client_updateCurrentPlayer"},
-		[3] = {button = "ChangeMode", callback = "client_changeMode"},
-		[4] = {button = "KickEveryone", callback = "client_kickEveryone"},
-		[5] = {button = "KickCurrent", callback = "client_kickSelected"}
+		[1] = {button = "NextPlayer",   callback = "client_updateCurrentPlayer"},
+		[2] = {button = "PrevPlayer",   callback = "client_updateCurrentPlayer"},
+		[3] = {button = "ChangeMode",   callback = "client_changeMode"         },
+		[4] = {button = "KickEveryone", callback = "client_kickEveryone"       },
+		[5] = {button = "KickCurrent",  callback = "client_kickSelected"       }
 	}, "client_onNewGuiCloseCallback", true)
 
 	self:client_updateGuiText()
