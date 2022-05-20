@@ -6,6 +6,7 @@ if AdminTool then return end
 dofile("../libs/ScriptLoader.lua")
 dofile("AdminTool_Functions.lua")
 dofile("AdminToolGUI.lua")
+
 AdminTool = class(AdminToolGUI)
 AdminTool.connectionInput = sm.interactable.connectionType.none
 AdminTool.connectionOutput = sm.interactable.connectionType.none
@@ -345,8 +346,8 @@ local _getKeyBinding = sm.gui.getKeyBinding
 
 function AdminTool:client_canInteract()
 	if self:isAllowed() then
-		local _useKey = _getKeyBinding("Use")
-		local _tinkerKey = _getKeyBinding("Tinker")
+		local _useKey = _getKeyBinding("Use", true)
+		local _tinkerKey = _getKeyBinding("Tinker", true)
 
 		_setInteractionText("Press", _useKey, "to open Admin Tool GUI")
 		_setInteractionText("Press", _tinkerKey, "to open color picker GUI")

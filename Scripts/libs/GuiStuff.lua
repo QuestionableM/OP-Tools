@@ -5,34 +5,6 @@
 if GUI_STUFF then return end
 GUI_STUFF = class()
 
-GUI_STUFF.guis = {
-	AdminToolGui = "AdminToolGUI.layout",
-	WorldCleanerGui = "WorldCleaner_GUI.layout",
-	PlayerKickerGui = "PlayerKicker_GUI.layout",
-	PermissionManagerGui = "PermissionManagerGUI.layout",
-	ConfirmDialogGui = "ConfirmationDialog_GUI.layout",
-	ItemDialogGui = "ItemDialogGUI.layout",
-	ColorPicker = "ColorPickerGUI.layout"
-}
-
-local GUI_SUPPORTED = (sm.gui and type(sm.gui.createGuiFromLayout) == "function")
-
-if GUI_SUPPORTED then
-	print("[OPTools] GUI libraries are supported by the current game version!")
-else
-	print("[OPTools] GUI libraries are not supported by the current game version!")
-	sm.gui.displayAlertText("#ffff00OP TOOLS DOESN'T WORK WITH OLD VERSIONS OF SCRAP MECHANIC", 20)
-end
-
-function GUI_STUFF.createGuiLayout(gui_name)
-	local gui_path = "$CONTENT_d14c9984-f872-411b-8e0e-993e829e9bbb/Gui/Layouts/"..gui_name
-	return sm.gui.createGuiFromLayout(gui_path)
-end
-
-function GUI_STUFF.setItemsVisible(gui, item_table, state)
-	for id, item in pairs(item_table) do gui:setVisible(item, state) end
-end
-
 function GUI_STUFF.open_dialog(self, description, yes_callback, no_callback, on_yes_sound, on_no_sound)
 	self.gui_dialog = GUI_STUFF.createGuiLayout(GUI_STUFF.guis.ConfirmDialogGui)
 	self.client_onDialogYesCallback = function(self)
@@ -85,7 +57,7 @@ end
 
 function GUI_STUFF.close_and_destroy_dialogs(d_table)
 	for id, gui in pairs(d_table) do
-		if gui ~= nil and OP.exists(gui) then
+		if OP.exists(gui) then
 			gui:close()
 			gui:destroy()
 		end
@@ -93,7 +65,7 @@ function GUI_STUFF.close_and_destroy_dialogs(d_table)
 end
 
 function GUI_STUFF.isGuiActive(gui)
-	if gui == nil then return end
+	if gui == nil then return false end
 	if sm.exists(gui) then return gui:isActive() end
 	return false
 end

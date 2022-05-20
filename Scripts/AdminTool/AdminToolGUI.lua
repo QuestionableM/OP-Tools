@@ -227,7 +227,7 @@ function AdminToolGUI:client_onAdminToolGuiCloseCallback()
 end
 
 function AdminToolGUI:create_AT_GUI()
-	local gui = GUI_STUFF.createGuiLayout(GUI_STUFF.guis.AdminToolGui)
+	local gui = sm.gui.createGuiFromLayout("$CONTENT_DATA/Gui/Layouts/AdminToolGUI.layout", false, { backgroundAlpha = 0.5, hidesHotbar = true })
 
 	for i = 1, 8 do
 		gui:setButtonCallback("Func"..i, "client_onATButtonCallback")
@@ -298,50 +298,45 @@ function AdminToolGUI:create_AT_GUI()
 	self.gui.interface = gui
 end
 
+function AdminToolGUI:client_CP_updateColorPreview()
+	local cp_rgb = self.color_picker_gui.rgb
+	local cp_int = self.color_picker_gui.interface
+
+	local hex_col = ("#%02x%02x%02x"):format(cp_rgb.R, cp_rgb.G, cp_rgb.B)
+	cp_int:setText("ColorPreview", hex_col.."COLOR PREVIEW\n"..hex_col.."#"..hex_col)
+end
+
 function AdminToolGUI:client_CP_updateValues()
 	local cp_int = self.color_picker_gui.interface
 	local cp_rgb = self.color_picker_gui.rgb
 
-	cp_int:setText("R_value", ("#ff0000R#ffffff: #ffff00%s#ffffff"):format(cp_rgb.R))
-	cp_int:setText("G_value", ("#00ff00G#ffffff: #ffff00%s#ffffff"):format(cp_rgb.G))
-	cp_int:setText("B_value", ("#0000ffB#ffffff: #ffff00%s#ffffff"):format(cp_rgb.B))
-
-	local _rgb = self.color_picker_gui.rgb
-	local _Hex = ("#%02x%02x%02x"):format(_rgb.R, _rgb.G, _rgb.B)
-	local _RGBString = ("#ffffffRGB: [#%02x0000%s#ffffff; #00%02x00%s#ffffff; #0000%02x%s#ffffff]"):format(
-		_rgb.R, _rgb.R, _rgb.G, _rgb.G, _rgb.B, _rgb.B
-	)
-
-	local _H, _S, _V = AdminToolGUI.RGB_TO_HSV(_rgb.R, _rgb.G, _rgb.B, 0)
-	local _HSVString = ("HSV: [#ffff00%00d#ffffff; #ffff00%00d#ffffff; #ffff00%00d#ffffff]"):format(_H*360, _S*100, _V*100)
-
-	cp_int:setText("ColorPreview", _Hex.."COLOR PREVIEW\n".._Hex.."#".._Hex.."\n\n".._RGBString.."\n".._HSVString)
+	cp_int:setText("R_Value", ("#ff0000R#ffffff: #ffff00%s#ffffff"):format(cp_rgb.R))
+	cp_int:setText("G_Value", ("#00ff00G#ffffff: #ffff00%s#ffffff"):format(cp_rgb.G))
+	cp_int:setText("B_Value", ("#0000ffB#ffffff: #ffff00%s#ffffff"):format(cp_rgb.B))
 end
 
-function AdminToolGUI:client_CP_onRGBValueChange(btn_name)
-	local btn_col = btn_name:sub(0, 1)
-	local btn_id = btn_name:sub(3, 4)
+function AdminToolGUI:client_CP_updateColorInputText()
+	local cp_rgb = self.color_picker_gui.rgb
+	local cp_int = self.color_picker_gui.interface
 
-	local idx = (btn_id == "RB" and 1 or -1)
+	cp_int:setText("ColorInput", ("%02x%02x%02x"):format(cp_rgb.R, cp_rgb.G, cp_rgb.B))
+end
 
-	local cp_g = self.color_picker_gui
-	local cur_mul = cp_g.mul[cp_g.mul_page + 1]
+function AdminToolGUI:client_CP_updateSliders()
+	local cp_rgb = self.color_picker_gui.rgb
+	local cp_gui = self.color_picker_gui.interface
 
-	local val = cur_mul * idx
-	cp_g.rgb[btn_col] = sm.util.clamp(cp_g.rgb[btn_col] + val, 0, 255)
+	cp_gui:setSliderPosition("R_Slider", cp_rgb.R)
+	cp_gui:setSliderPosition("G_Slider", cp_rgb.G)
+	cp_gui:setSliderPosition("B_Slider", cp_rgb.B)
+end
+
+function AdminToolGUI:client_CP_onRGBValueChange(btn_name, new_value)
+	self.color_picker_gui.rgb[btn_name] = sm.util.clamp(new_value, 0, 255)
 	
-	sm.audio.play("GUI Item released")
+	self:client_CP_updateColorInputText()
+	self:client_CP_updateColorPreview()
 	self:client_CP_updateValues()
-end
-
-function AdminToolGUI:client_CP_onMultiplierValChange()
-	local cp_g = self.color_picker_gui
-	cp_g.mul_page = (cp_g.mul_page + 1) % #cp_g.mul
-
-	local _CurMul = cp_g.mul[cp_g.mul_page + 1]
-
-	sm.audio.play("GUI Item drag")
-	cp_g.interface:setText("ValMultiplier", "Multiplier: ".._CurMul)
 end
 
 function AdminToolGUI:client_onApplyButtonPress()
@@ -356,65 +351,81 @@ function AdminToolGUI:client_onApplyButtonPress()
 	end
 end
 
+function AdminToolGUI:client_onRedSliderCallback(value)
+	self:client_CP_onRGBValueChange("R", value)
+end
+
+function AdminToolGUI:client_onGreenSliderCallback(value)
+	self:client_CP_onRGBValueChange("G", value)
+end
+
+function AdminToolGUI:client_onBlueSliderCallback(value)
+	self:client_CP_onRGBValueChange("B", value)
+end
+
+local null_color_string = "000000"
+local function AdminTool_GetRgbFromText(text)
+	local text_size = text:len()
+	local color_text = text..null_color_string:sub(text_size + 1)
+
+	local rgb_output =
+	{
+		R = tonumber("0x"..color_text:sub(1, 2)),
+		G = tonumber("0x"..color_text:sub(3, 4)),
+		B = tonumber("0x"..color_text:sub(5, 6))
+	}
+
+	if rgb_output.R == nil or rgb_output.G == nil or rgb_output.B == nil then
+		return nil
+	end
+
+	return rgb_output
+end
+
+function AdminToolGUI:client_onTextColorInputCallback(widget, text)
+	local rgb_color = AdminTool_GetRgbFromText(text)
+	if rgb_color ~= nil then
+		self.color_picker_gui.rgb = rgb_color
+
+		self:client_CP_updateColorPreview()
+	else
+		self.color_picker_gui.rgb = { R = 0, G = 0, B = 0 }
+
+		self.color_picker_gui.interface:setText("ColorPreview", "#ff0000Invalid\nHex String!#ffffff")
+	end
+
+	self:client_CP_updateValues()
+	self:client_CP_updateSliders()
+end
+
+function AdminToolGUI:client_CP_onDestroy()
+	sm.audio.play("Blueprint - Close")
+
+	self.color_picker_gui.interface:destroy()
+	self.color_picker_gui = nil
+end
+
 function AdminToolGUI:create_ColorPicker_GUI()
 	self.color_picker_gui = {}
 
-	self.client_onColorPickerDestroyCallback = function(self)
-		sm.audio.play("Blueprint - Close")
-		self.color_picker_gui.interface:destroy()
-		self.color_picker_gui = nil
-		self.client_onColorPickerDestroyCallback = nil
-	end
+	local cp_gui = sm.gui.createGuiFromLayout("$CONTENT_DATA/Gui/Layouts/ColorPickerGUI_test.layout", false, { backgroundAlpha = 0.5, hidesHotbar = true })
 
-	local cp_gui = GUI_STUFF.createGuiLayout(GUI_STUFF.guis.ColorPicker)
+	cp_gui:createHorizontalSlider("R_Slider", 256, 0, false, "client_onRedSliderCallback")
+	cp_gui:createHorizontalSlider("G_Slider", 256, 0, false, "client_onGreenSliderCallback")
+	cp_gui:createHorizontalSlider("B_Slider", 256, 0, false, "client_onBlueSliderCallback")
+
+	cp_gui:setTextChangedCallback("ColorInput", "client_onTextColorInputCallback")
 
 	cp_gui:setButtonCallback("ApplyButton", "client_onApplyButtonPress")
-	cp_gui:setButtonCallback("ValMultiplier", "client_CP_onMultiplierValChange")
-	cp_gui:setOnCloseCallback("client_onColorPickerDestroyCallback")
+	cp_gui:setOnCloseCallback("client_CP_onDestroy")
 
-	self.color_picker_gui.mul_page = 0
-	self.color_picker_gui.mul = {1, 10, 100}
-
-	local _hexColor = tostring(self.shape.color)
-	self.color_picker_gui.rgb = {
-		R = tonumber("0x".._hexColor:sub(1, 2)),
-		G = tonumber("0x".._hexColor:sub(3, 4)),
-		B = tonumber("0x".._hexColor:sub(5, 6))
-	}
-
-	for btn, k in pairs(self.color_picker_gui.rgb) do
-		cp_gui:setButtonCallback(btn.."_LB", "client_CP_onRGBValueChange")
-		cp_gui:setButtonCallback(btn.."_RB", "client_CP_onRGBValueChange")
-	end
-
+	self.color_picker_gui.rgb = AdminTool_GetRgbFromText(tostring(self.shape.color))
 	self.color_picker_gui.interface = cp_gui
 
 	self:client_CP_updateValues()
+	self:client_CP_updateColorPreview()
+	self:client_CP_updateSliders()
+	self:client_CP_updateColorInputText()
 
 	self.color_picker_gui.interface:open()
-end
-
---https://github.com/EmmanuelOga/columns/blob/master/utils/color.lua
-function AdminToolGUI.RGB_TO_HSV(r, g, b, a)
-	r, g, b, a = r / 255, g / 255, b / 255, a / 255
-	local max, min = math.max(r, g, b), math.min(r, g, b)
-	local h, s, v
-	v = max
-
-	local d = max - min
-	if max == 0 then s = 0 else s = d / max end
-
-	if max == min then
-		h = 0
-	else
-		if max == r then
-			h = (g - b) / d
-			if g < b then h = h + 6 end
-			elseif max == g then h = (b - r) / d + 2
-			elseif max == b then h = (r - g) / d + 4
-		end
-		h = h / 6
-	end
-
-	return h, s, v, a
 end

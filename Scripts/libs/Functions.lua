@@ -175,9 +175,12 @@ function OP.display(sound, globalSound, text, duration)
 	end
 end
 
-function OP.exists(Item)
-	local success, error = pcall(_sm_exists, Item)
-	if success and type(error) == "boolean" and error then return true end
+function OP.exists(cur_item)
+	local success, result = pcall(_sm_exists, cur_item)
+	if success and result == true then
+		return true
+	end
+
 	return false
 end
 
