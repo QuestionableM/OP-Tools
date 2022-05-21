@@ -134,7 +134,7 @@ end
 function WorldCleanerGUI:client_initializeGui()
 	if not self:isAllowed() then return end
 
-	local gui = sm.gui.createGuiFromLayout("$CONTENT_DATA/Gui/Layouts/WorldCleanerGUI_test.layout", false, { backgroundAlpha = 0.5, hidesHotbar = true })
+	local gui = sm.gui.createGuiFromLayout("$CONTENT_DATA/Gui/Layouts/WorldCleanerGUI.layout", false, { backgroundAlpha = 0.5, hidesHotbar = true })
 
 	gui:setButtonCallback("CObject", "client_GUI_deleteCObject")
 	for btn, v in pairs(button_names) do

@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout" version="3.2.0">
+	<Widget type="Widget" skin="PanelEmpty" position_real="0 0 1 1" name="BackPanel">
+		<Widget type="Widget" skin="BackgroundInteractableWide" position_real="0.30052083333333335 0.30092592592592593 0.3984375 0.3972222222222222" align="Center" name="MainGuiBG">
+			<Widget type="TextBox" skin="TextBox" position_real="0 0.076923076923076927 1 0.12587412587412589" align="HStretch Top" name="Cleaner_Title">
+				<Property key="Caption" value="W O R L D   C L E A N E R"/>
+				<Property key="TextAlign" value="Center"/>
+				<Property key="FontName" value="SM_HeaderLarge_Medium"/>
+				<Property key="TextColour" value="1 0.949219 0"/>
+				<Property key="TextShadow" value="true"/>
+			</Widget>
+			<Widget type="Button" skin="PrimaryButton" position_real="0.052287581699346407 0.66200466200466201 0.42483660130718953 0.12587412587412589" align="Left Bottom" name="DeleteEverything">
+				<Property key="Caption" value="Everything"/>
+				<Property key="TextAlign" value="Center"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+			</Widget>
+			<Widget type="Button" skin="PrimaryButton" position_real="0.52287581699346408 0.66200466200466201 0.42483660130718953 0.12587412587412589" align="Right Bottom" name="AllBodies">
+				<Property key="Caption" value="All bodies"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextAlign" value="Center"/>
+			</Widget>
+			<Widget type="Button" skin="PrimaryButton" position_real="0.052287581699346407 0.51048951048951052 0.42483660130718953 0.12587412587412589" align="Left Bottom" name="LoseOnly">
+				<Property key="Caption" value="All lose bodies"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextAlign" value="Center"/>
+			</Widget>
+			<Widget type="Button" skin="PrimaryButton" position_real="0.52287581699346408 0.51048951048951052 0.42483660130718953 0.12587412587412589" align="Right Bottom" name="OpTools">
+				<Property key="Caption" value="All Op Tools"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextAlign" value="Center"/>
+			</Widget>
+			<Widget type="Button" skin="PrimaryButton" position_real="0.052287581699346407 0.35897435897435898 0.42483660130718953 0.12587412587412589" align="Left Bottom" name="Lifts">
+				<Property key="Caption" value="All lifts"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextAlign" value="Center"/>
+			</Widget>
+			<Widget type="Button" skin="PrimaryButton" position_real="0.52287581699346408 0.35897435897435898 0.42483660130718953 0.12587412587412589" align="Right Bottom" name="Units">
+				<Property key="Caption" value="All units"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextAlign" value="Center"/>
+			</Widget>
+			<Widget type="TextBox" skin="TextBox" position_real="0 0.26573426573426573 1 0.090909090909090912" align="HStretch Bottom" name="Cleaner_Desc">
+				<Property key="Caption" value="Choose the stuff that you would like to delete:"/>
+				<Property key="TextAlign" value="Center"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextShadow" value="true"/>
+			</Widget>
+			<Widget type="Button" skin="PrimaryButton" position_real="0.052287581699346407 0.81351981351981351 0.42483660130718953 0.12587412587412589" align="Left Bottom" name="CObject">
+				<Property key="Caption" value="Certain object"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextAlign" value="Center"/>
+			</Widget>
+			<Widget type="Button" skin="PrimaryButton" position_real="0.52287581699346408 0.81351981351981351 0.42483660130718953 0.12587412587412589" align="Right Bottom" name="CurCreation">
+				<Property key="Caption" value="Connected Creation"/>
+				<Property key="TextAlign" value="Center"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+			</Widget>
+		</Widget>
+		<Widget type="Widget" skin="BackgroundInteractableWide" position_real="0.375 0.32592592592592595 0.25 0.34814814814814815" align="Center" name="ConfirmDialogBG">
+			<Property key="Visible" value="false"/>
+			<Widget type="TextBox" skin="TextBox" position_real="0 0.10904255319148937 1 0.15425531914893617" align="HStretch Top" name="Confirm_Title">
+				<Property key="Caption" value="#ffff00W A R N I N G#ffffff"/>
+				<Property key="FontName" value="SM_HeaderLarge_Medium"/>
+				<Property key="TextAlign" value="Center"/>
+				<Property key="TextShadow" value="true"/>
+			</Widget>
+			<Widget type="EditBox" skin="EditBoxEmpty" position_real="0.035416666666666666 0.27393617021276595 0.9291666666666667 0.46808510638297873" align="HCenter VStretch" name="Confirm_Desc">
+				<Property key="FontName" value="SM_Text"/>
+				<Property key="Caption" value="DESCRIPTION"/>
+				<Property key="TextAlign" value="Top"/>
+				<Property key="MultiLine" value="true"/>
+				<Property key="WordWrap" value="true"/>
+				<Property key="ReadOnly" value="true"/>
+				<Property key="Static" value="true"/>
+				<Property key="TextShadow" value="false"/>
+				<UserString key="FontName" value="SM_Text"/>
+			</Widget>
+			<Widget type="Button" skin="SecondaryButton" position_real="0.077083333333333337 0.76595744680851063 0.35833333333333334 0.14361702127659576" align="Right Bottom" name="Confirm_Yes">
+				<Property key="Caption" value="Yes"/>
+				<Property key="TextAlign" value="Center"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+			</Widget>
+			<Widget type="Button" skin="SecondaryButton" position_real="0.5625 0.76595744680851063 0.35416666666666669 0.14095744680851063" align="Left Bottom" name="Confirm_No">
+				<Property key="Caption" value="No"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextAlign" value="Center"/>
+			</Widget>
+		</Widget>
+		<Widget type="Widget" skin="BackgroundInteractableWide" position_real="0.31927083333333334 0.20000000000000001 0.36093750000000002 0.59999999999999998" align="Center" name="ItemDialogBG">
+			<Property key="Visible" value="false"/>
+			<Widget type="TextBox" skin="TextBox" position_real="0 0.07407407407407407 1 0.10493827160493827" align="HStretch Top" name="ItemDiag_Title">
+				<Property key="Caption" value="#ffff00W A R N I N G#ffffff"/>
+				<Property key="FontName" value="SM_HeaderLarge_Medium"/>
+				<Property key="TextShadow" value="true"/>
+				<Property key="TextAlign" value="Center"/>
+			</Widget>
+			<Widget type="EditBox" skin="EditBoxEmpty" position_real="0.025974025974025976 0.17901234567901234 0.94227994227994227 0.12345679012345678" align="HStretch Top" name="ItemDiag_Desc">
+				<Property key="Caption" value="Are you sure that you want to delete this item from the whole world?"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextShadow" value="true"/>
+				<Property key="TextAlign" value="Center"/>
+				<Property key="MultiLine" value="true"/>
+				<Property key="ReadOnly" value="true"/>
+				<Property key="WordWrap" value="true"/>
+				<Property key="NeedMouse" value="false"/>
+				<Property key="NeedKey" value="false"/>
+			</Widget>
+			<Widget type="TextBox" skin="TextBox" position_real="0.025974025974025976 0.30401234567901236 0.94227994227994227 0.058641975308641972" align="HStretch Top" name="ItemDiag_PartName">
+				<Property key="Caption" value="PART_NAME"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextAlign" value="Center"/>
+				<Property key="TextShadow" value="true"/>
+			</Widget>
+			<Widget type="TextBox" skin="TextBox" position_real="0.025974025974025976 0.36265432098765432 0.94227994227994227 0.058641975308641972" align="HStretch Top" name="ItemDiag_PartUuid">
+				<Property key="Caption" value="PART_UUID"/>
+				<Property key="TextShadow" value="true"/>
+				<Property key="TextAlign" value="Center"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+			</Widget>
+			<Widget type="Canvas" skin="ImageBox" position_real="0.3088023088023088 0.43827160493827161 0.3823953823953824 0.37191358024691357" align="HCenter VStretch" name="ItemDiag_PartImage"/>
+			<Widget type="Button" skin="PrimaryButton" position_real="0.066378066378066383 0.83487654320987659 0.36940836940836941 0.10802469135802469" align="Left Bottom" name="ItemDiag_Yes">
+				<Property key="Caption" value="Yes"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextAlign" value="Center"/>
+			</Widget>
+			<Widget type="Button" skin="PrimaryButton" position_real="0.56132756132756134 0.83487654320987659 0.36940836940836941 0.10802469135802469" align="Right Bottom" name="ItemDiag_No">
+				<Property key="Caption" value="No"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextAlign" value="Center"/>
+			</Widget>
+		</Widget>
+	</Widget>
+	<CodeGeneratorSettings/>
+</MyGUI>
