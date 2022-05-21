@@ -2,8 +2,7 @@
 	Copyright (c) 2022 Questionable Mark
 ]]
 
-if PlayerCrasherGUI then return end
-
+--if PlayerCrasherGUI then return end
 PlayerCrasherGUI = class()
 
 function PlayerCrasherGUI:client_sToServer(modeId, player)
@@ -44,24 +43,29 @@ function PlayerCrasherGUI:client_generateGUI()
 		self.client_onNewGuiCloseCallback = nil
 	end
 
-	self.gui.interface = GUI_STUFF.CONSTRUCT_GUI(self, GUI_STUFF.guis.PlayerKickerGui, {
-		[1] = {button = "NextPlayer",   callback = "client_updateCurrentPlayer"},
-		[2] = {button = "PrevPlayer",   callback = "client_updateCurrentPlayer"},
-		[3] = {button = "ChangeMode",   callback = "client_changeMode"         },
-		[4] = {button = "KickEveryone", callback = "client_kickEveryone"       },
-		[5] = {button = "KickCurrent",  callback = "client_kickSelected"       }
-	}, "client_onNewGuiCloseCallback", true)
+	local gui_int = sm.gui.createGuiFromLayout("$CONTENT_DATA/Gui/Layouts/PlayerKicker_GUI.layout", false, { backgroundAlpha = 0.5, hidesHotbar = true })
 
+	gui_int:setButtonCallback("NextPlayer", "client_updateCurrentPlayer")
+	gui_int:setButtonCallback("PrevPlayer", "client_updateCurrentPlayer")
+	gui_int:setButtonCallback("ChangeMode", "client_changeMode")
+	gui_int:setButtonCallback("KickEveryone", "client_kickEveryone")
+	gui_int:setButtonCallback("KickCurrent", "client_kickSelected")
+
+	gui_int:setOnCloseCallback("client_onNewGuiCloseCallback")
+
+	self.gui.interface = gui_int
 	self:client_updateGuiText()
 
 	if self.gui.p_instance ~= nil then
 		if OP.exists(self.gui.p_instance) then
 			local player_table = OP.getAllPlayers_exc()
-			self.gui.interface:setText("SelectedPlayer", ("(#ffff00%s#ffffff/#ffff00%s#ffffff) Selected Player: #ffff00%s#ffffff"):format(self.gui.p_id + 1, #player_table, self.gui.p_instance.name))
+			gui_int:setText("SelectedPlayer", ("(#ffff00%s#ffffff/#ffff00%s#ffffff) Selected Player: #ffff00%s#ffffff"):format(self.gui.p_id + 1, #player_table, self.gui.p_instance.name))
 		else
 			self.gui.p_instance = nil
 		end
 	end
+
+	gui_int:open()
 end
 
 function PlayerCrasherGUI:client_constructDialog(description, player, output)

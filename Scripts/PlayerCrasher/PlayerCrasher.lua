@@ -2,7 +2,7 @@
 	Copyright (c) 2022 Questionable Mark
 ]]
 
-if PlayerCrasher then return end
+--if PlayerCrasher then return end
 
 dofile("../libs/ScriptLoader.lua")
 dofile("PlayerCrasherGUI.lua")

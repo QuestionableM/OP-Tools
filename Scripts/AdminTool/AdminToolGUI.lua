@@ -408,7 +408,7 @@ end
 function AdminToolGUI:create_ColorPicker_GUI()
 	self.color_picker_gui = {}
 
-	local cp_gui = sm.gui.createGuiFromLayout("$CONTENT_DATA/Gui/Layouts/ColorPickerGUI_test.layout", false, { backgroundAlpha = 0.5, hidesHotbar = true })
+	local cp_gui = sm.gui.createGuiFromLayout("$CONTENT_DATA/Gui/Layouts/ColorPickerGUI.layout", false, { backgroundAlpha = 0.5, hidesHotbar = true })
 
 	cp_gui:createHorizontalSlider("R_Slider", 256, 0, false, "client_onRedSliderCallback")
 	cp_gui:createHorizontalSlider("G_Slider", 256, 0, false, "client_onGreenSliderCallback")

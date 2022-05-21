@@ -3,8 +3,10 @@
 ]]
 
 if PermissionManager then return end
+
 dofile("../libs/ScriptLoader.lua")
 dofile("PermissionManagerGUI.lua")
+
 PermissionManager = class(PermissionManagerGUI)
 PermissionManager.connectionInput = sm.interactable.connectionType.none
 PermissionManager.connectionOutput = sm.interactable.connectionType.none

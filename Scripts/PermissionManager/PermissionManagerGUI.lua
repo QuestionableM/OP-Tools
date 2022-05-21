@@ -8,12 +8,12 @@ PermissionManagerGUI = class()
 function PermissionManagerGUI:client_loadPMGUI()
 	if not self.isAdmin then return end
 
-	local gui = GUI_STUFF.createGuiLayout(GUI_STUFF.guis.PermissionManagerGui)
+	local gui = sm.gui.createGuiFromLayout("$CONTENT_DATA/Gui/Layouts/PermissionManagerGUI.layout", false, { backgroundAlpha = 0.5, hidesHotbar = true })
 
 	self.gui = {}
 	self.gui.buttonData = {
-		AdminToolPerm = {name = "Admin Tool", id = "AdminTool", state = false},
-		FreeCamPerm = {name = "Free Camera", id = "FreeCamera", state = false},
+		AdminToolPerm    = {name = "Admin Tool"   , id = "AdminTool"   , state = false},
+		FreeCamPerm      = {name = "Free Camera"  , id = "FreeCamera"  , state = false},
 		WorldCleanerPerm = {name = "World Cleaner", id = "WorldCleaner", state = false},
 		PlayerKickerPerm = {name = "Player Kicker", id = "PlayerKicker", state = false}
 	}
