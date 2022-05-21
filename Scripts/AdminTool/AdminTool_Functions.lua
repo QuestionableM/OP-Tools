@@ -1,32 +1,34 @@
 --[[
-	Copyright (c) 2021 Questionable Mark
+	Copyright (c) 2022 Questionable Mark
 ]]
 
 if ADMIN_F then return end
 ADMIN_F = class()
 
 function ADMIN_F.server_load_playerFunctions()
-	local player_functions = {
-		thanosMode = false,
-		paintMode = false,
-		objectMode = false,
-		painterMode = false,
-		materialMode = false,
-		loseOnly = false,
-		staticOnly = false,
-		creationProp = false,
-		pushMode = false,
-		explosionMode = false,
-		destructable = false,
-		buildable = false,
-		paintable = false,
-		connectable = false,
-		liftable = false,
-		usable = false,
-		erasable = false,
+	local player_functions =
+	{
+		thanosMode      = false,
+		paintMode       = false,
+		objectMode      = false,
+		painterMode     = false,
+		materialMode    = false,
+		loseOnly        = false,
+		staticOnly      = false,
+		creationProp    = false,
+		pushMode        = false,
+		explosionMode   = false,
+		destructable    = false,
+		buildable       = false,
+		paintable       = false,
+		connectable     = false,
+		liftable        = false,
+		usable          = false,
+		erasable        = false,
 		colorPickerMode = false,
-		convToDynamic = false
+		convToDynamic   = false
 	}
+
 	return player_functions
 end
 

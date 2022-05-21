@@ -1,5 +1,5 @@
 --[[
-	Copyright (c) 2021 Questionable Mark
+	Copyright (c) 2022 Questionable Mark
 ]]
 
 if AdminToolGUI then return end
@@ -66,6 +66,52 @@ function AdminToolGUI:client_toggleWaitDataMode(state)
 	gui:setVisible("WaitingLabel", not state)
 end
 
+local setting_name_to_id =
+{
+	thanosMode      = 1,
+	paintMode       = 2,
+	objectMode      = 3,
+	painterMode     = 4,
+	materialMode    = 5,
+	loseOnly        = 6,
+	staticOnly      = 7,
+	creationProp    = 8,
+	pushMode        = 9,
+	explosionMode   = 10,
+	destructable    = 11,
+	buildable       = 12,
+	paintable       = 13,
+	connectable     = 14,
+	liftable        = 15,
+	usable          = 16,
+	erasable        = 17,
+	colorPickerMode = 18,
+	convToDynamic   = 19
+}
+
+local setting_id_to_name =
+{
+	[1]  = "thanosMode",
+	[2]  = "paintMode",
+	[3]  = "objectMode",
+	[4]  = "painterMode",
+	[5]  = "materialMode",
+	[6]  = "loseOnly",
+	[7]  = "staticOnly",
+	[8]  = "creationProp",
+	[9]  = "pushMode",
+	[10] = "explosionMode",
+	[11] = "destructable",
+	[12] = "buildable",
+	[13] = "paintable",
+	[14] = "connectable",
+	[15] = "liftable",
+	[16] = "usable",
+	[17] = "erasable",
+	[18] = "colorPickerMode",
+	[19] = "convToDynamic"
+}
+
 function AdminToolGUI:server_getPlayerData(data, player)
 	local output_data = nil
 
@@ -73,11 +119,16 @@ function AdminToolGUI:server_getPlayerData(data, player)
 		local allowed_pl = self:server_getPlayerSettings(player)
 
 		if allowed_pl and allowed_pl.player == player and OP.exists(player) then
-			output_data = allowed_pl.settings
+			output_data = {}
+
+			for k, v in pairs(allowed_pl.settings) do
+				local set_id = setting_name_to_id[k]
+
+				output_data[set_id] = v
+			end
 		end
 	else
-		output_data = "nperm"
-		self.network:sendToClient(player, "client_onErrorMessage", "p_getdata")
+		self.network:sendToClient(player, "client_onErrorMessage", 1)
 	end
 
 	self.network:sendToClient(player, "client_receivePlayerData", output_data)
@@ -85,19 +136,20 @@ end
 
 function AdminToolGUI:server_setPlayerData(data, player)
 	if not OP.getPlayerPermission(player, "AdminTool") then
-		self.network:sendToClient(player, "client_onErrorMessage", "p_savedata")
+		self.network:sendToClient(player, "client_onErrorMessage", 2)
 		return
 	end
 
 	local allowed_pl = self.allowedPlayers[player.id]
 
 	if allowed_pl and allowed_pl.player == player then
-		local d_settings = data
 		local save_set = allowed_pl.settings
 
-		for s_name, value in pairs(d_settings) do
-			if save_set[s_name] ~= nil then
-				save_set[s_name] = value
+		for set_id, set_val in pairs(data) do
+			local set_name = setting_id_to_name[set_id]
+
+			if save_set[set_name] ~= nil then
+				save_set[set_name] = set_val
 			end
 		end
 	end
@@ -106,25 +158,25 @@ end
 function AdminToolGUI:client_receivePlayerData(data)
 	if not self.gui.wait_for_data then return end
 
-	local got_no_data = (data == nil)
 	local g_Interface = self.gui.interface
 
-	if data == "nperm" or got_no_data then
+	if data == nil then
 		self:client_resetDotAnimation()
-
-		local cur_err_text = (got_no_data and "SOMETHING WENT WRONG" or "NO PERMISSION")
-		g_Interface:setText("WaitingLabel", cur_err_text)
+		g_Interface:setText("WaitingLabel", "NO PERMISSION")
 
 		return
 	end
 
-	for s_name, value in pairs(data) do
+	for s_id, value in pairs(data) do
+		local s_name = setting_id_to_name[s_id]
+
 		if self.gui.func_data[s_name] ~= nil then
 			self.gui.func_data[s_name] = value
 		end
 	end
 
-	g_Interface:setVisible("CreationPropTab", data.creationProp)
+	local creation_prop_val = data[setting_name_to_id["creationProp"]]
+	g_Interface:setVisible("CreationPropTab", creation_prop_val)
 
 	self:client_resetDotAnimation()
 	self:client_toggleWaitDataMode(true)
@@ -223,7 +275,14 @@ end
 function AdminToolGUI:client_onAdminToolGuiCloseCallback()
 	self:client_resetDotAnimation()
 
-	self.network:sendToServer("server_setPlayerData", self.gui.func_data)
+	local output_data = {}
+	for set_name, set_val in pairs(self.gui.func_data) do
+		local set_id = setting_name_to_id[set_name]
+
+		output_data[set_id] = set_val
+	end
+
+	self.network:sendToServer("server_setPlayerData", output_data)
 end
 
 function AdminToolGUI:create_AT_GUI()
@@ -239,32 +298,37 @@ function AdminToolGUI:create_AT_GUI()
 
 	self.gui = {}
 	self.gui.cur_page = 0
-	self.gui.btn_data = {
-		FiltersTab = {
-			[1] = {id = "thanosMode", name = "Filter All"},
-			[2] = {id = "paintMode", name = "Color Filter"},
-			[3] = {id = "objectMode", name = "Object Filter"},
+	self.gui.btn_data =
+	{
+		FiltersTab =
+		{
+			[1] = {id = "thanosMode"  , name = "Filter All"     },
+			[2] = {id = "paintMode"   , name = "Color Filter"   },
+			[3] = {id = "objectMode"  , name = "Object Filter"  },
 			[4] = {id = "materialMode", name = "Material Filter"},
-			[5] = {id = "loseOnly", name = "Lose Only Filter", link = {6}},
-			[6] = {id = "staticOnly", name = "Static Only Filter", link = {5}}
+			[5] = {id = "loseOnly"    , name = "Lose Only Filter"  , link = {6}},
+			[6] = {id = "staticOnly"  , name = "Static Only Filter", link = {5}}
 		},
-		ModesTab = {
-			[1] = {id = "painterMode", name = "Painter Mode", link = {2, 3}},
-			[2] = {id = "colorPickerMode", name = "Color Picker Mode", link = {1, 3}},
-			[3] = {id = "creationProp", name = "Creation Properties", link = {1, 2}, tab = "CreationPropTab"}
+		ModesTab =
+		{
+			[1] = {id = "painterMode"    , name = "Painter Mode"       , link = {2, 3}},
+			[2] = {id = "colorPickerMode", name = "Color Picker Mode"  , link = {1, 3}},
+			[3] = {id = "creationProp"   , name = "Creation Properties", link = {1, 2}, tab = "CreationPropTab"}
 		},
-		SecondaryFuncTab = {
+		SecondaryFuncTab =
+		{
 			[1] = {id = "explosionMode", name = "Explosion Mode", link = {2}},
-			[2] = {id = "pushMode", name = "Push Mode", link = {1}}
+			[2] = {id = "pushMode"     , name = "Push Mode"     , link = {1}}
 		},
-		CreationPropTab = {
-			[1] = {id = "destructable", name = "Destructable"},
-			[2] = {id = "buildable", name = "Buildable"},
-			[3] = {id = "paintable", name = "Paintable"},
-			[4] = {id = "connectable", name = "Connectable"},
-			[5] = {id = "liftable", name = "Liftable"},
-			[6] = {id = "usable", name = "Usable"},
-			[7] = {id = "erasable", name = "Erasable"},
+		CreationPropTab =
+		{
+			[1] = {id = "destructable" , name = "Destructable"    },
+			[2] = {id = "buildable"    , name = "Buildable"       },
+			[3] = {id = "paintable"    , name = "Paintable"       },
+			[4] = {id = "connectable"  , name = "Connectable"     },
+			[5] = {id = "liftable"     , name = "Liftable"        },
+			[6] = {id = "usable"       , name = "Usable"          },
+			[7] = {id = "erasable"     , name = "Erasable"        },
 			[8] = {id = "convToDynamic", name = "Conv. To Dynamic"}
 		}
 	}
@@ -273,27 +337,7 @@ function AdminToolGUI:create_AT_GUI()
 		gui:setButtonCallback(tab, "client_switchFuncTab")
 	end
 
-	self.gui.func_data = {
-		thanosMode = false,
-		paintMode = false,
-		objectMode = false,
-		painterMode = false,
-		materialMode = false,
-		loseOnly = false,
-		staticOnly = false,
-		creationProp = false,
-		pushMode = false,
-		explosionMode = false,
-		destructable = false,
-		buildable = false,
-		paintable = false,
-		connectable = false,
-		liftable = false,
-		usable = false,
-		erasable = false,
-		colorPickerMode = false,
-		convToDynamic = false
-	}
+	self.gui.func_data = ADMIN_F.server_load_playerFunctions()
 
 	self.gui.interface = gui
 end

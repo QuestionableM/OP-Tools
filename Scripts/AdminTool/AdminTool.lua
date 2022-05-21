@@ -1,5 +1,5 @@
 --[[
-	Copyright (c) 2021 Questionable Mark
+	Copyright (c) 2022 Questionable Mark
 ]]
 
 if AdminTool then return end
@@ -56,13 +56,13 @@ function AdminTool:SecondaryFunction(res, cOp)
 end
 
 function AdminTool:CompareObjectProperties(body, cOp)
-	local destructible = (body:isDestructable() ~= not cOp.destructable)
-	local buildable = (body:isBuildable() ~= not cOp.buildable)
-	local paintable = (body:isPaintable() ~= not cOp.paintable)
-	local connectable = (body:isConnectable() ~= not cOp.connectable)
-	local liftable = (body:isLiftable() ~= not cOp.liftable)
-	local usable = (body:isUsable() ~= not cOp.usable)
-	local erasable = (body:isErasable() ~= not cOp.erasable)
+	local destructible  = (body:isDestructable()         ~= not cOp.destructable)
+	local buildable     = (body:isBuildable()            ~= not cOp.buildable)
+	local paintable     = (body:isPaintable()            ~= not cOp.paintable)
+	local connectable   = (body:isConnectable()          ~= not cOp.connectable)
+	local liftable      = (body:isLiftable()             ~= not cOp.liftable)
+	local usable        = (body:isUsable()               ~= not cOp.usable)
+	local erasable      = (body:isErasable()             ~= not cOp.erasable)
 	local convToDynamic = (body:isConvertibleToDynamic() ~= not cOp.convToDynamic)
 
 	return (destructible or buildable or paintable or connectable or liftable or usable or erasable or convToDynamic)
@@ -302,7 +302,7 @@ end
 
 function AdminTool:server_setColor(color, caller)
 	if not OP.getPlayerPermission(caller, "AdminTool") then
-		self.network:sendToClient(caller, "client_onErrorMessage", "p_color")
+		self.network:sendToClient(caller, "client_onErrorMessage", 3)
 		return
 	end
 
@@ -373,10 +373,11 @@ function AdminTool:client_canErase()
 end
 
 local p_String = "You do not have permission"
-local error_msg_table = {
-	p_getdata = p_String.." to get admin tool settings!",
-	p_savedata = p_String.." to save your settings!",
-	p_color = p_String.." to change the color of admin tool!"
+local error_msg_table =
+{
+	[1] = p_String.." to get admin tool settings!",
+	[2] = p_String.." to save your settings!",
+	[3] = p_String.." to change the color of admin tool!"
 }
 
 function AdminTool:client_onErrorMessage(msg_id)
@@ -388,14 +389,14 @@ function AdminTool:client_onFixedUpdate()
 	self:client_updateWaitingDataLabel()
 	self:client_updatePermission()
 
-	if self:isAllowed() then return end
+	if not self:isAllowed() then
+		if GUI_STUFF.isGuiActive(self.gui and self.gui.interface) then
+			self.gui.interface:close()
+		end
 
-	if GUI_STUFF.isGuiActive(self.gui and self.gui.interface) then
-		self.gui.interface:close()
-	end
-
-	if GUI_STUFF.isGuiActive(self.color_picker_gui and self.color_picker_gui.interface) then
-		self.color_picker_gui.interface:close()
+		if GUI_STUFF.isGuiActive(self.color_picker_gui and self.color_picker_gui.interface) then
+			self.color_picker_gui.interface:close()
+		end
 	end
 end
 
