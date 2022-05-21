@@ -6,7 +6,8 @@ if GUI_STUFF then return end
 GUI_STUFF = class()
 
 function GUI_STUFF.open_dialog(self, description, yes_callback, no_callback, on_yes_sound, on_no_sound)
-	self.gui_dialog = GUI_STUFF.createGuiLayout(GUI_STUFF.guis.ConfirmDialogGui)
+	local gui_diag = sm.gui.createGuiFromLayout("$CONTENT_DATA/Gui/Layouts/ConfirmationDialog_GUI.layout", false, { backgroundAlpha = 0.5, hidesHotbar = true })
+
 	self.client_onDialogYesCallback = function(self)
 		self.gui_dialog:close()
 		if yes_callback and type(yes_callback) == "function" then yes_callback(self) end
@@ -26,11 +27,14 @@ function GUI_STUFF.open_dialog(self, description, yes_callback, no_callback, on_
 		end
 		self.gui_dialog = nil
 	end
-	self.gui_dialog:setButtonCallback("Yes", "client_onDialogYesCallback")
-	self.gui_dialog:setButtonCallback("No", "client_onDialogNoCallback")
-	self.gui_dialog:setOnCloseCallback("client_onDialogCloseCallback")
-	self.gui_dialog:setText("GUIDesc", description)
-	self.gui_dialog:open()
+
+	gui_diag:setButtonCallback("Yes", "client_onDialogYesCallback")
+	gui_diag:setButtonCallback("No", "client_onDialogNoCallback")
+	gui_diag:setOnCloseCallback("client_onDialogCloseCallback")
+	gui_diag:setText("GUIDesc", description)
+	gui_diag:open()
+
+	self.gui_dialog = gui_diag
 end
 
 function GUI_STUFF.CONSTRUCT_GUI(self, gui_path, callbacks, on_close_callback, open_gui)

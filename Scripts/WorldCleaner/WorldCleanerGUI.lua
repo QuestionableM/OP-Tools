@@ -3,19 +3,111 @@
 ]]
 
 if WorldCleanerGUI then return end
-
 WorldCleanerGUI = class()
+
+local message_id_enum =
+{
+	everything    = 0x1,
+	all_bodies    = 0x2,
+	lose_bodies   = 0x4,
+	op_tools      = 0x8,
+	lifts         = 0x10,
+	units         = 0x20,
+	cert_creation = 0x40,
+	cur_creation  = 0x80
+}
 
 local button_names =
 {
-	DeleteEverything = {id = "everything", name = "Everything"        },
-	AllBodies        = {id = "all_b",      name = "All Bodies"        },
-	LoseOnly         = {id = "lose_b",     name = "All Lose Bodies"   },
-	OpTools          = {id = "op_t",       name = "All OP Tools"      },
-	Lifts            = {id = "lift"                                   },
-	Units            = {id = "unit"                                   },
-	CurCreation      = {id = "c_creation", name = "Connected Creation"}
+	DeleteEverything = {id = message_id_enum.everything   , name = "Everything"        },
+	AllBodies        = {id = message_id_enum.all_bodies   , name = "All Bodies"        },
+	LoseOnly         = {id = message_id_enum.lose_bodies  , name = "All Lose Bodies"   },
+	OpTools          = {id = message_id_enum.op_tools     , name = "All OP Tools"      },
+	Lifts            = {id = message_id_enum.lifts                                     },
+	Units            = {id = message_id_enum.units                                     },
+	CurCreation      = {id = message_id_enum.cur_creation , name = "Connected Creation"}
 }
+
+WorldCleanerGUI.clear_message_ids = message_id_enum
+
+local wc_gui_widget_enum =
+{
+	main_gui       = 1,
+	confirm_dialog = 2,
+	item_dialog    = 3
+}
+
+local wc_gui_widget_names =
+{
+	"MainGuiBG",
+	"ConfirmDialogBG",
+	"ItemDialogBG"
+}
+
+function WorldCleanerGUI:client_sendToServer(case, uuid)
+	if not self:isAllowed() then return end
+
+	self.network:sendToServer("server_clean", { false, case, uuid })
+end
+
+function WorldCleanerGUI:client_GUI_switchWidget(id)
+	local s_gui = self.gui
+
+	for i = 1, 3 do
+		s_gui:setVisible(wc_gui_widget_names[i], i == id)
+	end
+end
+
+function WorldCleanerGUI:client_ID_OnNoCallback()
+	self.gui_part_uuid = nil
+	self:client_GUI_switchWidget(wc_gui_widget_enum.main_gui)
+
+	sm.audio.play("Blueprint - Close")
+end
+
+function WorldCleanerGUI:client_ID_OnYesCallback()
+	self:client_sendToServer(message_id_enum.cert_creation, self.gui_part_uuid)
+	self.gui:close()
+end
+
+function WorldCleanerGUI:client_GUI_deleteCObject()
+	if not self:isAllowed() then return end
+
+	local uuid = self:client_isShapePlaced()
+	if uuid == nil then return end
+
+	self.gui_part_uuid = uuid
+
+	local s_gui = self.gui
+	s_gui:setMeshPreview("ItemDiag_PartImage", uuid)
+	s_gui:setText("ItemDiag_PartName", ("Part Name: #ffff00%s#ffffff"):format(sm.shape.getShapeTitle(uuid)))
+	s_gui:setText("ItemDiag_PartUuid", ("Part Uuid: #ffff00%s#ffffff"):format(tostring(uuid)))
+
+	self:client_GUI_switchWidget(wc_gui_widget_enum.item_dialog)
+
+	sm.audio.play("Blueprint - Open")
+end
+
+function WorldCleanerGUI:client_CD_OnYesCallback()
+	self:client_sendToServer(self.gui_confirm_id)
+	self.gui:close()
+end
+
+function WorldCleanerGUI:client_CD_OnNoCallback()
+	self:client_GUI_switchWidget(wc_gui_widget_enum.main_gui)
+
+	self.gui_confirm_id = nil
+	sm.audio.play("Blueprint - Close")
+end
+
+function WorldCleanerGUI:client_constructDialog(description, id)
+	self.gui_confirm_id = id
+	self.gui:setText("Confirm_Desc", ("Are you sure that you want to delete #ffff00%s#ffffff?"):format(description))
+
+	self:client_GUI_switchWidget(wc_gui_widget_enum.confirm_dialog)
+
+	sm.audio.play("Blueprint - Open")
+end
 
 function WorldCleanerGUI:client_GUI_onButtonCallback(btn_name)
 	if not self:isAllowed() then return end
@@ -29,84 +121,36 @@ function WorldCleanerGUI:client_GUI_onButtonCallback(btn_name)
 	self:client_sendToServer(btn_data.id)
 end
 
-function WorldCleanerGUI:client_GUI_deleteCObject()
-	if not self:isAllowed() then return end
+function WorldCleanerGUI:client_onWCGuiDestroy()
+	if OP.exists(self.gui) then
+		self.gui:destroy()
+	end
 
-	local uuid = self:client_isShapePlaced()
-	self.gui:close()
-	if uuid == nil then return end
-	self:client_constructItemDialog(uuid)
+	self.gui_part_uuid  = nil
+	self.gui_confirm_id = nil
+	self.gui = nil
 end
 
 function WorldCleanerGUI:client_initializeGui()
 	if not self:isAllowed() then return end
 
-	local gui = GUI_STUFF.createGuiLayout(GUI_STUFF.guis.WorldCleanerGui)
+	local gui = sm.gui.createGuiFromLayout("$CONTENT_DATA/Gui/Layouts/WorldCleanerGUI_test.layout", false, { backgroundAlpha = 0.5, hidesHotbar = true })
 
 	gui:setButtonCallback("CObject", "client_GUI_deleteCObject")
 	for btn, v in pairs(button_names) do
 		gui:setButtonCallback(btn, "client_GUI_onButtonCallback")
 	end
 
+	--initialize construct dialog callbacks
+	gui:setButtonCallback("Confirm_Yes", "client_CD_OnYesCallback")
+	gui:setButtonCallback("Confirm_No", "client_CD_OnNoCallback")
+
+	--initialize item dialog callbacks
+	gui:setButtonCallback("ItemDiag_Yes", "client_ID_OnYesCallback")
+	gui:setButtonCallback("ItemDiag_No", "client_ID_OnNoCallback")
+
 	gui:setOnCloseCallback("client_onWCGuiDestroy")
 	gui:open()
 
 	self.gui = gui
-end
-
-function WorldCleanerGUI:client_onWCGuiDestroy()
-	if OP.exists(self.gui) then
-		self.gui:destroy()
-	end
-
-	self.gui = nil
-	self.client_GUI_onButtonCallback = nil
-	self.client_GUI_deleteCObject = nil
-end
-
-function WorldCleanerGUI:client_sendToServer(case, uuid)
-	self.network:sendToServer("server_clean", { ready = false, case = case, uuid = uuid })
-end
-
-function WorldCleanerGUI:client_constructDialog(description, id)
-	sm.audio.play("Blueprint - Open")
-	self.gui:close()
-
-	GUI_STUFF.open_dialog(
-		self, ("Are you sure that you want to delete #ffff00%s#ffffff?"):format(description),
-		function(self) self:client_sendToServer(id) end,
-		function(self) self:client_initializeGui() end,
-		nil, "Blueprint - Close"
-	)
-end
-
-function WorldCleanerGUI:client_constructItemDialog(uuid)
-	self.gui_item_dialog = GUI_STUFF.createGuiLayout(GUI_STUFF.guis.ItemDialogGui)
-	self.client_onItemDialogCloseCallback = function(self)
-		self.client_onItemDialogCloseCallback = nil
-		self.client_onItemDialogNoCallback = nil
-		self.client_onItemDialogYesCallback = nil
-		self.gui_item_dialog:destroy()
-		self.gui_item_dialog = nil
-	end
-	self.client_onItemDialogButtonCallback = function(self, btn_name)
-		self.gui_item_dialog:close()
-
-		if btn_name == "Yes" then
-			self:client_sendToServer("c_item", uuid)
-			return
-		end
-
-		sm.audio.play("Blueprint - Close")
-
-		self:client_initializeGui()
-	end
-	self.gui_item_dialog:setButtonCallback("Yes", "client_onItemDialogButtonCallback")
-	self.gui_item_dialog:setButtonCallback("No", "client_onItemDialogButtonCallback")
-	self.gui_item_dialog:setOnCloseCallback("client_onItemDialogCloseCallback")
-	self.gui_item_dialog:setIconImage("PartImage", uuid)
-	self.gui_item_dialog:setText("PartName", ("Part name: #ffff00%s#ffffff"):format(sm.shape.getShapeTitle(uuid)))
-	self.gui_item_dialog:setText("PartUuid", ("Part uuid: #ffff00%s#ffffff"):format(tostring(uuid)))
-	sm.audio.play("Blueprint - Open")
-	self.gui_item_dialog:open()
 end

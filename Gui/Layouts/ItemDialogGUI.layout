@@ -30,7 +30,7 @@
 			<Property key="TextAlign" value="Center"/>
 			<Property key="FontName" value="SM_ItemTitle"/>
 		</Widget>
-		<Widget type="ImageBox" skin="ImageBox" position_real="0.308108 0.439771 0.383784 0.372849" align="HCenter VStretch" name="PartImage"/>
+		<Widget type="Canvas" skin="ImageBox" position_real="0.308108 0.439771 0.383784 0.372849" align="HCenter VStretch" name="PartImage"/>
 		<Widget type="Button" skin="PrimaryButton" position_real="0.0675676 0.835564 0.37027 0.108987" align="Left Bottom" name="Yes">
 			<Property key="Caption" value="Yes"/>
 			<Property key="FontName" value="SM_ItemTitle"/>
