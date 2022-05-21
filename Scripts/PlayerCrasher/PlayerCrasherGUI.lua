@@ -2,11 +2,14 @@
 	Copyright (c) 2022 Questionable Mark
 ]]
 
---if PlayerCrasherGUI then return end
+if PlayerCrasherGUI then return end
 PlayerCrasherGUI = class()
 
-function PlayerCrasherGUI:client_sToServer(modeId, player)
-	self.network:sendToServer("server_getCrashInfo", {mode = modeId, player = player})
+function PlayerCrasherGUI:client_GUI_switchWidget(is_main_gui)
+	local gui_int = self.gui.interface
+
+	gui_int:setVisible("MainGuiBG", is_main_gui)
+	gui_int:setVisible("ConfirmDialogBG", not is_main_gui)
 end
 
 function PlayerCrasherGUI:client_updateCurrentPlayer(btn_name)
@@ -32,26 +35,30 @@ function PlayerCrasherGUI:client_updateCurrentPlayer(btn_name)
 	end
 end
 
-function PlayerCrasherGUI:client_generateGUI()
+function PlayerCrasherGUI:client_GUI_onDestroy()
+	if self.gui and OP.exists(self.gui.interface) then
+		self.gui.interface:destroy()
+		self.gui.interface = nil
+	end
+end
+
+function PlayerCrasherGUI:client_GUI_openGui()
 	if not self:isAllowed() then return end
 
-	self.client_onNewGuiCloseCallback = function(self)
-		if self.gui and OP.exists(self.gui.interface) then
-			self.gui.interface:destroy()
-			self.gui.interface = nil
-		end
-		self.client_onNewGuiCloseCallback = nil
-	end
+	local gui_int = sm.gui.createGuiFromLayout("$CONTENT_DATA/Gui/Layouts/PlayerKickerGUI.layout", false, { backgroundAlpha = 0.5, hidesHotbar = true })
 
-	local gui_int = sm.gui.createGuiFromLayout("$CONTENT_DATA/Gui/Layouts/PlayerKicker_GUI.layout", false, { backgroundAlpha = 0.5, hidesHotbar = true })
-
+	--init main gui callbacks
 	gui_int:setButtonCallback("NextPlayer", "client_updateCurrentPlayer")
 	gui_int:setButtonCallback("PrevPlayer", "client_updateCurrentPlayer")
 	gui_int:setButtonCallback("ChangeMode", "client_changeMode")
 	gui_int:setButtonCallback("KickEveryone", "client_kickEveryone")
 	gui_int:setButtonCallback("KickCurrent", "client_kickSelected")
 
-	gui_int:setOnCloseCallback("client_onNewGuiCloseCallback")
+	--init confirm gui callbacks
+	gui_int:setButtonCallback("Confirm_Yes", "client_CD_OnYesCallback")
+	gui_int:setButtonCallback("Confirm_No", "client_CD_OnNoCallback")
+
+	gui_int:setOnCloseCallback("client_GUI_onDestroy")
 
 	self.gui.interface = gui_int
 	self:client_updateGuiText()
@@ -68,33 +75,43 @@ function PlayerCrasherGUI:client_generateGUI()
 	gui_int:open()
 end
 
-function PlayerCrasherGUI:client_constructDialog(description, player, output)
-	sm.audio.play("Blueprint - Open")
+function PlayerCrasherGUI:client_CD_OnYesCallback()
+	local s_gui = self.gui
+
+	self.network:sendToServer("server_getCrashInfo", { s_gui.crashModes[s_gui.mode + 1].id, s_gui.confirm_data })
+
+	self.gui.confirm_data = nil
 	self.gui.interface:close()
-	GUI_STUFF.open_dialog(
-		self, description,
-		function(self)
-			self:client_sToServer(self.gui.crashModes[self.gui.mode + 1].id, player)
-			self.gui.p_instance = nil
-			self:client_generateGUI()
-		end,
-		function(self) self:client_generateGUI() end,
-		nil, "Blueprint - Close"
-	)
+end
+
+function PlayerCrasherGUI:client_CD_OnNoCallback()
+	self:client_GUI_switchWidget(true)
+
+	self.gui.confirm_data = nil
+	sm.audio.play("Blueprint - Close")
+end
+
+function PlayerCrasherGUI:client_constructDialog(description, player, output)
+	self.gui.confirm_data = player
+	self.gui.interface:setText("Confirm_Desc", description)
+
+	self:client_GUI_switchWidget(false)
+
+	sm.audio.play("Blueprint - Open")
 end
 
 function PlayerCrasherGUI:client_updateGuiText()
-	local _gui = self.gui
-	local cur_mode = _gui.mode
+	local s_gui = self.gui
+	local cur_mode = s_gui.mode
 
-	local Kick_mode = _gui.crashModes[cur_mode + 1].name
-	local Text = _gui.texts[cur_mode + 1]
+	local Kick_mode = s_gui.crashModes[cur_mode + 1].name
+	local Text = s_gui.texts[cur_mode + 1]
 
-	local _ui = _gui.interface
+	local gui_int = s_gui.interface
 
-	_ui:setText("CurrentSetting", ("Current Mode: #ffff00%s#ffffff"):format(Kick_mode))
-	_ui:setText("KickCurrent", ("%s selected player"):format(Text))
-	_ui:setText("KickEveryone", ("%s everyone"):format(Text))
+	gui_int:setText("CurrentSetting", ("Current Mode: #ffff00%s#ffffff"):format(Kick_mode))
+	gui_int:setText("KickCurrent", ("%s selected player"):format(Text))
+	gui_int:setText("KickEveryone", ("%s everyone"):format(Text))
 end
 
 function PlayerCrasherGUI:client_changeMode()
@@ -104,18 +121,19 @@ function PlayerCrasherGUI:client_changeMode()
 end
 
 local function getCurrentModeAndTexts(self, id)
-	local CurrentMode = self.gui.crashModes[self.gui.mode + 1].id
-	local CText = self.gui.text[CurrentMode].tinker_confirm:format(id)
-	local CTextOutput = self.gui.text[CurrentMode].tinker_crashMsg
+	local cur_mode = self.gui.crashModes[self.gui.mode + 1].id
 
-	return CText, CTextOutput
+	local cur_text = self.gui.text[cur_mode].tinker_confirm:format(id)
+	local cur_output = self.gui.text[cur_mode].tinker_crashMsg
+
+	return cur_text, cur_output
 end
 
 function PlayerCrasherGUI:client_kickEveryone()
 	if not self:isAllowed() then return end
 
 	local CText, CTextOutput = getCurrentModeAndTexts(self, "everyone")
-	self:client_constructDialog(CText, "everyone", CTextOutput)
+	self:client_constructDialog(CText, nil, CTextOutput)
 end
 
 function PlayerCrasherGUI:client_kickSelected()

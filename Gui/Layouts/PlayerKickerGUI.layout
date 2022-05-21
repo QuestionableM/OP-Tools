@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout" version="3.2.0">
+	<Widget type="Widget" skin="PanelEmpty" position_real="0 0 1 1" name="BackPanel">
+		<Widget type="Widget" skin="BackgroundInteractableWide" position_real="0.30052083333333335 0.30092592592592593 0.3984375 0.39814814814814814" align="Center" name="MainGuiBG">
+			<Widget type="TextBox" skin="TextBox" position_real="0 0.079069767441860464 1 0.079069767441860464" align="HStretch Top" name="PK_Title">
+				<Property key="Caption" value="P L A Y E R   K I C K E R"/>
+				<Property key="TextAlign" value="Center"/>
+				<Property key="FontName" value="SM_HeaderLarge_Medium"/>
+				<Property key="TextColour" value="1 1 0"/>
+				<Property key="TextShadow" value="true"/>
+			</Widget>
+			<Widget type="TextBox" skin="TextBox" position_real="0 0.23720930232558141 1 0.079069767441860464" align="HStretch Top" name="SelectedPlayer">
+				<Property key="Caption" value="Select a Player"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextAlign" value="Center"/>
+				<Property key="TextShadow" value="true"/>
+			</Widget>
+			<Widget type="TextBox" skin="TextBox" position_real="0 0.32325581395348835 1 0.079069767441860464" align="HStretch Top" name="CurrentSetting">
+				<Property key="Caption" value="Current mode: #ffff00Player crasher#ffffff"/>
+				<Property key="TextAlign" value="Center"/>
+				<Property key="TextShadow" value="true"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+			</Widget>
+			<Widget type="Button" skin="PrimaryButton" position_real="0.050980392156862744 0.70232558139534884 0.44836601307189544 0.11395348837209303" align="Left Bottom" name="ChangeMode">
+				<Property key="Caption" value="Change mode"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextAlign" value="Center"/>
+			</Widget>
+			<Widget type="Button" skin="PrimaryButton" position_real="0.050980392156862744 0.82558139534883723 0.1542483660130719 0.11395348837209303" align="Left Bottom" name="PrevPlayer">
+				<Property key="Caption" value="&lt;&lt;"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextAlign" value="Center"/>
+			</Widget>
+			<Widget type="Button" skin="PrimaryButton" position_real="0.79346405228758166 0.82558139534883723 0.1542483660130719 0.11395348837209303" align="Right Bottom" name="NextPlayer">
+				<Property key="Caption" value="&gt;&gt;"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextAlign" value="Center"/>
+			</Widget>
+			<Widget type="Button" skin="PrimaryButton" position_real="0.20522875816993463 0.82558139534883723 0.58692810457516342 0.11395348837209303" align="HStretch Bottom" name="KickCurrent">
+				<Property key="Caption" value="Kick selected player"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextAlign" value="Center"/>
+			</Widget>
+			<Widget type="Button" skin="PrimaryButton" position_real="0.49934640522875817 0.70232558139534884 0.44836601307189544 0.11395348837209303" align="Right Bottom" name="KickEveryone">
+				<Property key="Caption" value="Kick everyone"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextAlign" value="Center"/>
+			</Widget>
+		</Widget>
+		<Widget type="Widget" skin="BackgroundInteractableWide" position_real="0.375 0.32592592592592595 0.25 0.34814814814814815" align="Center" name="ConfirmDialogBG">
+			<Property key="Visible" value="false"/>
+			<Widget type="TextBox" skin="TextBox" position_real="0 0.10904255319148937 1 0.15425531914893617" align="HStretch Top" name="Confirm_Title">
+				<Property key="Caption" value="#ffff00W A R N I N G#ffffff"/>
+				<Property key="FontName" value="SM_HeaderLarge_Medium"/>
+				<Property key="TextAlign" value="Center"/>
+				<Property key="TextShadow" value="true"/>
+			</Widget>
+			<Widget type="EditBox" skin="EditBoxEmpty" position_real="0.035416666666666666 0.27393617021276595 0.9291666666666667 0.46808510638297873" align="HCenter VStretch" name="Confirm_Desc">
+				<Property key="FontName" value="SM_Text"/>
+				<Property key="Caption" value="DESCRIPTION"/>
+				<Property key="TextAlign" value="Top"/>
+				<Property key="MultiLine" value="true"/>
+				<Property key="WordWrap" value="true"/>
+				<Property key="ReadOnly" value="true"/>
+				<Property key="Static" value="true"/>
+				<Property key="TextShadow" value="false"/>
+				<UserString key="FontName" value="SM_Text"/>
+			</Widget>
+			<Widget type="Button" skin="SecondaryButton" position_real="0.077083333333333337 0.76595744680851063 0.35833333333333334 0.14361702127659576" align="Right Bottom" name="Confirm_Yes">
+				<Property key="Caption" value="Yes"/>
+				<Property key="TextAlign" value="Center"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+			</Widget>
+			<Widget type="Button" skin="SecondaryButton" position_real="0.5625 0.76595744680851063 0.35416666666666669 0.14095744680851063" align="Left Bottom" name="Confirm_No">
+				<Property key="Caption" value="No"/>
+				<Property key="FontName" value="SM_ItemTitle"/>
+				<Property key="TextAlign" value="Center"/>
+			</Widget>
+		</Widget>
+	</Widget>
+	<CodeGeneratorSettings/>
+</MyGUI>

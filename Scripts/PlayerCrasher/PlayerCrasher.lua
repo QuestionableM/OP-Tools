@@ -2,7 +2,7 @@
 	Copyright (c) 2022 Questionable Mark
 ]]
 
---if PlayerCrasher then return end
+if PlayerCrasher then return end
 
 dofile("../libs/ScriptLoader.lua")
 dofile("PlayerCrasherGUI.lua")
@@ -17,8 +17,8 @@ function PlayerCrasher:server_onCreate()
 end
 
 function PlayerCrasher:client_onPlayerKicked(data)
-	local l_Mode = data.mode
-	local l_Player = data.player
+	local l_Mode   = data[1]
+	local l_Player = data[2]
 
 	local p_Name = (type(l_Player) == "Player" and l_Player.name or "everyone")
 	local c_Text = self.gui.text[l_Mode].tinker_crashMsg
@@ -39,8 +39,8 @@ local error_msg_enum =
 local error_msg_table =
 {
 	[error_msg_enum.no_permission] = "You do not have permission to kick players!",
-	[error_msg_enum.admin_kick   ] = "You can't kick server host!",
-	[error_msg_enum.self_kick    ] = "You can't kick yourself!",
+	[error_msg_enum.admin_kick   ] = "You can't use this tool against server host!",
+	[error_msg_enum.self_kick    ] = "You can't use this tool against yourself!",
 	[error_msg_enum.allowed_kick ] = "Only server host can kick players with Player Crasher permission!",
 	[error_msg_enum.everyone_kick] = "Only server host can kick / crash the scripts for everyone"
 }
@@ -51,8 +51,8 @@ function PlayerCrasher:server_getCrashInfo(data, caller)
 		return
 	end
 
-	local l_Player = data.player
-	local l_Mode = data.mode
+	local l_Mode   = data[1]
+	local l_Player = data[2]
 
 	if type(l_Player) == "Player" then
 		if l_Player == caller then
@@ -90,7 +90,7 @@ function PlayerCrasher:server_getCrashInfo(data, caller)
 		OP.print("Crashing: everyone, Mode: "..l_Mode)
 	end
 
-	self.network:sendToClient(caller, "client_onPlayerKicked", {player = l_Player, mode = l_Mode})
+	self.network:sendToClient(caller, "client_onPlayerKicked", { l_Mode, l_Player })
 end
 
 function PlayerCrasher:client_onErrorMessage(msg_id)
@@ -99,7 +99,6 @@ end
 
 function PlayerCrasher:client_onAllowedKickMessage(player)
 	local pl_name = OP.exists(player) and player.name or "Unkonwn"
-	print(pl_name)
 
 	local fmt_message = ("#ffff00%s#ffffff have tried to crash your scripts or kick you!"):format(pl_name)
 	OP.display("blip", false, fmt_message)
@@ -110,13 +109,14 @@ function PlayerCrasher:client_onCreate()
 
 	self.gui.crashModes =
 	{
-		[1] = {name = "Player crasher", id = "crasher"},
-		[2] = {name = "Script crasher", id = "ScrCrash"}
+		[1] = {name = "Player crasher", id = 1},
+		[2] = {name = "Script crasher", id = 2}
 	}
 
 	self.gui.text =
 	{
-		crasher =
+		--player crasher text
+		[1] =
 		{
 			tinker_error = "Choose a player to crash",
 			interact_player = "Kick",
@@ -125,7 +125,8 @@ function PlayerCrasher:client_onCreate()
 			interact_sign = "to crash a player"
 		},
 
-		ScrCrash =
+		--script crasher text
+		[2] =
 		{
 			tinker_error = "Choose a player to crash the scripts for",
 			interact_player = "Crash the scripts for",
@@ -171,35 +172,36 @@ function PlayerCrasher:client_onFixedUpdate()
 	self:client_updateAnimation()
 	self:client_updatePermission()
 
-	if self:isAllowed() then return end
-
-	if GUI_STUFF.isGuiActive(self.gui and self.gui.interface) or GUI_STUFF.isGuiActive(self.gui_dialog) then
-		self:client_destroyPC_GUI()
+	if not self:isAllowed() and GUI_STUFF.isGuiActive(self.gui and self.gui.interface) then
+		self:client_destroyAndCloseGuis()
 	end
 end
 
 function PlayerCrasher:client_onInteract(character, state)
 	if not self:isAllowed() or not state then return end
 
-	self:client_generateGUI()
+	self:client_GUI_openGui()
 end
 
 local _gui_setInterText = sm.gui.setInteractionText
 function PlayerCrasher:client_canInteract()
 	if self:isAllowed() then
-		local _useKey = sm.gui.getKeyBinding("Use")
+		local _useKey = sm.gui.getKeyBinding("Use", true)
+
 		_gui_setInterText("Press", _useKey, "to open a Player Kicker GUI")
 		_gui_setInterText("")
+		
 		return true
 	end
 
 	_gui_setInterText("", "Only allowed players can use this tool")
 	_gui_setInterText("")
+	
 	return false
 end
 
 function PlayerCrasher:server_canErase()
-	local pl_list = OP.getShapeIntersections(self.shape)
+	local pl_list    = OP.getShapeIntersections(self.shape)
 	local can_remove = OP.areAllPlayersAllowed(pl_list, "PlayerKicker")
 
 	return can_remove
@@ -212,21 +214,21 @@ function PlayerCrasher:client_canErase()
 	return false
 end
 
-function PlayerCrasher:client_destroyPC_GUI()
-	GUI_STUFF.close_and_destroy_dialogs({self.gui and self.gui.interface, self.gui_dialog})
+function PlayerCrasher:client_destroyAndCloseGuis()
+	GUI_STUFF.close_and_destroy_dialogs({ self.gui and self.gui.interface })
 end
 
 function PlayerCrasher:client_crash(crash_mode)
-	if crash_mode == "crasher" then
+	if crash_mode == 1 then
 		pcall(sm.json.writeJsonString, _G) --first method
 
 		while true do end --a fallback method
-	elseif crash_mode == "ScrCrash" then
+	elseif crash_mode == 2 then
 		for k, v in pairs(sm) do sm[k] = nil end
 		for k, v in pairs(_G) do _G[k] = nil end
 	end
 end
 
 function PlayerCrasher:client_onDestroy()
-	self:client_destroyPC_GUI()
+	self:client_destroyAndCloseGuis()
 end
