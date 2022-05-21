@@ -1,5 +1,5 @@
 --[[
-	Copyright (c) 2021 Questionable Mark
+	Copyright (c) 2022 Questionable Mark
 ]]
 
 if PermissionManager then return end
@@ -22,9 +22,10 @@ function PermissionManager:client_onCreate()
 	self:client_loadPMGUI()
 end
 
-local error_msg_table = {
-	p_getdata = "You do not have permission to get the permission data of other players!",
-	p_udata = "You do not have permission to update the permission data of other players!"
+local error_msg_table =
+{
+	[1] = "You do not have permission to get the permission data of other players!",
+	[2] = "You do not have permission to update the permission data of other players!"
 }
 
 function PermissionManager:client_onErrorMessage(msg_id)
@@ -40,14 +41,17 @@ local _GetKeyBinding = sm.gui.getKeyBinding
 local _SetInteractionText = sm.gui.setInteractionText
 function PermissionManager:client_canInteract()
 	if self.isAdmin then
-		local _useKey = _GetKeyBinding("Use")
+		local _useKey = _GetKeyBinding("Use", true)
+
 		_SetInteractionText("Press", _useKey, "to open the GUI of Permission Manager")
 		_SetInteractionText("")
+
 		return true
 	end
 
 	_SetInteractionText("", "Only server admin can use this tool")
 	_SetInteractionText("")
+
 	return false
 end
 

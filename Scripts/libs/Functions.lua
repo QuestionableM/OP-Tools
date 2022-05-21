@@ -1,5 +1,5 @@
 --[[
-	Copyright (c) 2021 Questionable Mark
+	Copyright (c) 2022 Questionable Mark
 ]]
 
 if OP then return end
@@ -104,12 +104,14 @@ function OP.getShapeIntersections(shape)
 	return out_list
 end
 
-OP.bools = {
-	[true] = {string = "#00c000true#ffffff", sound = "Lever on"},
+OP.bools =
+{
+	[true]  = {string = "#00c000true#ffffff" , sound = "Lever on" },
 	[false] = {string = "#c00000false#ffffff", sound = "Lever off"}
 }
 
-OP.tool_uuids = {
+OP.tool_uuids =
+{
 	["387edd9e-ed0f-4ea6-bf3c-2b40851225e7"] = true,
 	["c8e4139d-b93d-4df5-a292-382ad21215a9"] = true,
 	["26888ae6-d636-425d-87b9-1f75da083bfb"] = true,
@@ -149,17 +151,18 @@ function OP.deleteMainAdminTool(adminTool)
 	OP_MainAdminTool = nil
 end
 
-local OP_Sounds = {
-	error = "WeldTool - Error",
-	blip = "Retrowildblip",
+local OP_Sounds =
+{
+	error     = "WeldTool - Error",
+	blip      = "Retrowildblip",
 	highlight = "GUI Inventory highlight",
-	noAmmo = "PotatoRifle - NoAmmo",
-	drag = "GUI Item drag",
-	release = "GUI Item released",
-	open = "Blueprint - Open",
-	close = "Blueprint - Close",
-	delete = "Blueprint - Delete",
-	build = "Blueprint - Build"
+	noAmmo    = "PotatoRifle - NoAmmo",
+	drag      = "GUI Item drag",
+	release   = "GUI Item released",
+	open      = "Blueprint - Open",
+	close     = "Blueprint - Close",
+	delete    = "Blueprint - Delete",
+	build     = "Blueprint - Build"
 }
 
 function OP.display(sound, globalSound, text, duration)
