@@ -1,12 +1,15 @@
 --[[
-	Copyright (c) 2021 Questionable Mark
+	Copyright (c) 2022 Questionable Mark
 ]]
 
-if FreeCam then return end
+--if FreeCam then return end
+
 dofile("../libs/ScriptLoader.lua")
 dofile("FreeCamFunctions.lua")
 dofile("FreeCam_SubFunctions.lua")
-FreeCam = class()
+dofile("FreeCamGui.lua")
+
+FreeCam = class(FreeCamGui)
 FreeCam.connectionInput = sm.interactable.connectionType.none
 FreeCam.connectionOutput = sm.interactable.connectionType.none
 
@@ -29,6 +32,10 @@ function FreeCam:client_onCreate()
 	tag_gui:setFadeRange(2500)
 	tag_gui:setText("Text", "#ffff00Your Character")
 
+	self.camera_hud = sm.gui.createGuiFromLayout("$CONTENT_DATA/Gui/Layouts/FreeCameraHUD_test.layout", false, { isHud = true, hidesHotbar = true, isInteractive = false })
+
+	self:client_GUI_createFreeCamSettings()
+
 	self.nametag_gui = tag_gui
 end
 
@@ -47,6 +54,10 @@ end
 function FreeCam:updateCamera()
 	if OP.exists(self.nametag_gui) and self.nametag_gui:isActive() then
 		self.nametag_gui:close()
+	end
+
+	if OP.exists(self.camera_hud) and self.camera_hud:isActive() then
+		self.camera_hud:close()
 	end
 
 	self.camera = {
@@ -298,6 +309,8 @@ function FreeCam:client_onAction(movement, state)
 			self:client_changeSelectedOption()
 		elseif movement == int_actions.item1 then
 			self:client_changeSelectedParameter()
+		elseif movement == int_actions.item2 then
+			self.camera_set_gui:open()
 		end
 	end
 
@@ -407,6 +420,14 @@ function FreeCam:client_onUpdate(dt)
 			end
 		end
 
+		local cam_hud = self.camera_hud
+		local cam_pos = self.camera.position
+		local cam_dir = playerCharacter.direction
+
+		cam_hud:setText("FreeCamPos", ("Position: { %.2f, %.2f, %.2f }"):format(cam_pos.x, cam_pos.y, cam_pos.z))
+		cam_hud:setText("FreeCamDir", ("Direction: { %.2f, %.2f, %.2f }"):format(cam_dir.x, cam_dir.y, cam_dir.z))
+		cam_hud:setText("FreeCamVel", ("Velocity: %.2f"):format(self.camera.speed:length()))
+
 		self:client_updateCamState(playerCharacter)
 	end
 end
@@ -422,6 +443,7 @@ function FreeCam:client_onInteract(character, state)
 	self.camera.position = sm.camera.getPosition()
 
 	character:setLockingInteractable(self.interactable)
+	self.camera_hud:open()
 
 	sm.camera.setCameraState(sm.camera.state.cutsceneTP)
 	_sm_setCamPos(self.camera.position)

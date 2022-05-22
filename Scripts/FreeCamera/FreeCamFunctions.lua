@@ -2,8 +2,16 @@
 	Copyright (c) 2021 Questionable Mark
 ]]
 
-if FREE_CAM_OPTIONS then return end
+--if FREE_CAM_OPTIONS then return end
 FREE_CAM_OPTIONS = class()
+
+local option_type_enum =
+{
+	value   = 1,
+	list    = 2,
+	boolean = 3,
+	button  = 4
+}
 
 local _sm_getKeyBind = sm.gui.getKeyBinding
 function FREE_CAM_OPTIONS.display_guide()
@@ -35,7 +43,7 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 	local functionTable = {
 		[1] = {
 			name = "Camera Functions",
-			func = function(self, data, od)
+			func = function(self, data, od, gui_call)
 				if (od.option_page + 1) > 0 then
 					local current_option = data.subOptions[od.option_page + 1]
 					if current_option.name == "Time" then
@@ -43,7 +51,9 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 					elseif current_option.name == "Move to Player" then
 						FREE_CAM_SUB.SUB_teleportCam(self, current_option.values)
 					else
-						OP.display("error", false, "This parameter doesn't have a function")
+						if not gui_call then
+							OP.display("error", false, "This parameter doesn't have a function")
+						end
 					end
 				else
 					OP.display("error", false, "Choose an option")
@@ -65,10 +75,11 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 				end
 			end,
 			subOptions = {
-				[1] = {name = "Camera Speed",	values = {value = 1,changer = 0.01,minValue = 0,maxValue = 20}},
-				[2] = {name = "Camera Friction",values = {value = 1,changer = 0.01, minValue = 0, maxValue = 1}},
-				[3] = {name = "Time",			values = {value = sm.render.getOutdoorLighting(), changer = 0.01, minValue = 0, maxValue = 1},disableText = true},
-				[4] = {name = "Move to Player",	values = {value = 0, changer = 1, minValue = 1, maxValue = #sm.player.getAllPlayers()},disableText = true}
+				[1] = {name = "Camera Speed"      , type = option_type_enum.value  , values = {value = 1,changer = 0.01,minValue = 0,maxValue = 20}},
+				[2] = {name = "Camera Friction"   , type = option_type_enum.value  , values = {value = 1,changer = 0.01, minValue = 0, maxValue = 1}},
+				[3] = {name = "Time"              , type = option_type_enum.value  , values = {value = sm.render.getOutdoorLighting(), changer = 0.01, minValue = 0, maxValue = 1},disableText = true},
+				[4] = {name = "Move to Player"    , type = option_type_enum.list   , values = {value = 0, changer = 1, minValue = 1, maxValue = #sm.player.getAllPlayers()},disableText = true},
+				[5] = {name = "Enable Camera Data", type = option_type_enum.boolean, value  = true}
 			}
 		},
 		[2] = {
@@ -84,14 +95,14 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 						imp = settings[3].values.value,
 						impRad = settings[4].values.value
 					}
-					self.network:sendToServer("server_getStuff", {type = "explosion", expl = explosion, pos = result.pointWorld})
+					self.network:sendToServer("server_getStuff", { type = "explosion", expl = explosion, pos = result.pointWorld })
 				end
 			end,
 			subOptions = {
-				[1] = {name = "Explosion Level",			values = {value = 5, changer = 1, minValue = 1, maxValue = math.huge}},
-				[2] = {name = "Explosion Radius",			values = {value = 0.3, changer = 0.1, minValue = 0.3, maxValue = 50}},
-				[3] = {name = "Explosion Impulse Strength",	values = {value = 1000, changer = 500, minValue = 10, maxValue = math.huge}},
-				[4] = {name = "Explosion Impulse Sadius",	values = {value = 10, changer = 1, minValue = 1, maxValue = 500}}
+				[1] = {name = "Explosion Level",            type = option_type_enum.value, values = {value = 5, changer = 1, minValue = 1, maxValue = math.huge}},
+				[2] = {name = "Explosion Radius",           type = option_type_enum.value, values = {value = 0.3, changer = 0.1, minValue = 0.3, maxValue = 50}},
+				[3] = {name = "Explosion Impulse Strength", type = option_type_enum.value, values = {value = 1000, changer = 500, minValue = 10, maxValue = math.huge}},
+				[4] = {name = "Explosion Impulse Sadius",   type = option_type_enum.value, values = {value = 10, changer = 1, minValue = 1, maxValue = 500}}
 			}
 		},
 		[3] = {
@@ -114,10 +125,10 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 				end
 			end,
 			subOptions = {
-				[1] = {name = "Projectile", 			values = {value = 0, changer = 1, minValue = 1, maxValue = 20, displayNames = "projectiles"}},
-				[2] = {name = "Projectile Speed", 		values = {value = 100, changer = 1, minValue = 1, maxValue = math.huge}},
-				[3] = {name = "Spread", 				values = {value = 1, changer = 1, minValue = 0, maxValue = 180}},
-				[4] = {name = "Projectiles Per Shot",	values = {value = 1, changer = 1, minValue = 1, maxValue = 100}}
+				[1] = {name = "Projectile",           type = option_type_enum.list , values = {value = 0  , changer = 1, minValue = 1, maxValue = 20, displayNames = "projectiles"}},
+				[2] = {name = "Projectile Speed",     type = option_type_enum.value, values = {value = 100, changer = 1, minValue = 1, maxValue = math.huge}},
+				[3] = {name = "Spread",               type = option_type_enum.value, values = {value = 1  , changer = 1, minValue = 0, maxValue = 180      }},
+				[4] = {name = "Projectiles Per Shot", type = option_type_enum.value, values = {value = 1  , changer = 1, minValue = 1, maxValue = 100      }}
 			},
 			numberNames = {
 				projectiles = {
@@ -161,20 +172,20 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 				end
 			end,
 			subOptions = {
-				[1] = {name = "Spawn Unit", 			values = {value = 0, changer = 1, minValue = 1, maxValue = 7, displayNames = "creatures"}},
-				[2] = {name = "Amount of Units", 		values = {value = 1, changer = 1, minValue = 1, maxValue = 100}},
-				[3] = {name = "Spawn Without Spreading",values = false},
-				[4] = {name = "Remove Unit"}
+				[1] = {name = "Spawn Unit"             , type = option_type_enum.list   , values = {value = 0, changer = 1, minValue = 1, maxValue = 7, displayNames = "creatures"}},
+				[2] = {name = "Amount of Units"        , type = option_type_enum.value  , values = {value = 1, changer = 1, minValue = 1, maxValue = 100}},
+				[3] = {name = "Spawn Without Spreading", type = option_type_enum.boolean, values = false},
+				[4] = {name = "Remove Unit"            , type = option_type_enum.button}
 			},
 			numberNames = {
 				creatures = {
-					[1] = {name = "Tapebot", id = "tapebot"},
+					[1] = {name = "Tapebot"    , id = "tapebot" },
 					[2] = {name = "Red Tapebot", id = "tapebotR"},
-					[3] = {name = "Totebot", id = "totebotG"},
-					[4] = {name = "Haybot", id = "haybot"},
-					[5] = {name = "Farmbot", id = "farmbot"},
-					[6] = {name = "Worm", id = "worm"},
-					[7] = {name = "Woc", id = "woc"}
+					[3] = {name = "Totebot"    , id = "totebotG"},
+					[4] = {name = "Haybot"     , id = "haybot"  },
+					[5] = {name = "Farmbot"    , id = "farmbot" },
+					[6] = {name = "Worm"       , id = "worm"    },
+					[7] = {name = "Woc"        , id = "woc"     }
 				}
 			}
 		},
@@ -191,49 +202,49 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 				end
 			end,
 			subOptions = {
-				[1] = {name = "Spawn Harvestable", values = {value = 0, changer = 1, minValue = 1, maxValue = 37, displayNames = "harvestableNames"}},
-				[2] = {name = "Remove Harvestable"}
+				[1] = {name = "Spawn Harvestable" , type = option_type_enum.list  , values = {value = 0, changer = 1, minValue = 1, maxValue = 37, displayNames = "harvestableNames"}},
+				[2] = {name = "Remove Harvestable", type = option_type_enum.button}
 			},
 			numberNames = {
 				harvestableNames = {
-					[1] = {name = "Burnt Spike Tree 1", id = "hvs_burntforest_spiketree01"},
-					[2] = {name = "Burnt Spike Tree 2", id = "hvs_burntforest_spiketree02"},
-					[3] = {name = "Burnt Spruce Tree 1", id = "hvs_burntforest_spruce01"},
-					[4] = {name = "Burnt Spruce Tree 2", id = "hvs_burntforest_spruce02"},
-					[5] = {name = "Burnt Spruce Tree 3", id = "hvs_burntforest_spruce03"},
-					[6] = {name = "Burnt Spruce Tree 4", id = "hvs_burntforest_spruce04"},
-					[7] = {name = "Burnt Spruce Tree 5", id = "hvs_burntforest_spruce05"},
-					[8] = {name = "Burnt Birch Tree 1", id = "hvs_burntforest_birch01"},
-					[9] = {name = "Cotton Plant", id = "hvs_farmables_cottonplant"},
-					[10] = {name = "Corn Plant", id = "hvs_farmables_cornplant"},
-					[11] = {name = "Pigment Flower", id = "hvs_farmables_pigmentflower"},
-					[12] = {name = "Hay Pile 1", id = "hvs_fillers_haypile_01"},
-					[13] = {name = "Hay Pile 2", id = "hvs_fillers_haypile_02"},
-					[14] = {name = "Hay Pile 3", id = "hvs_fillers_haypile_03"},
-					[15] = {name = "Leaf Pile 1", id = "hvs_leafpile_01"},
-					[16] = {name = "Leaf Pile 2", id = "hvs_leafpile_02"},
-					[17] = {name = "Small Stone 1", id = "hvs_stone_small01"},
-					[18] = {name = "Small Stone 2", id = "hvs_stone_small02"},
-					[19] = {name = "Small Stone 3", id = "hvs_stone_small03"},
-					[20] = {name = "Medium Stone 1", id = "hvs_stone_medium01"},
-					[21] = {name = "Medium Stone 2", id = "hvs_stone_medium02"},
-					[22] = {name = "Medium Stone 3", id = "hvs_stone_medium03"},
-					[23] = {name = "Large Stone 1", id = "hvs_stone_large01"},
-					[24] = {name = "Large Stone 2", id = "hvs_stone_large02"},
-					[25] = {name = "Large Stone 3", id = "hvs_stone_large03"},
-					[26] = {name = "Birch Tree 1", id = "harvestable_tree_birch01"},
-					[27] = {name = "Birch Tree 2", id = "harvestable_tree_birch02"},
-					[28] = {name = "Birch Tree 3", id = "harvestable_tree_birch03"},
-					[29] = {name = "Leafy Tree 1", id = "harvestable_tree_leafy01"},
-					[30] = {name = "Leafy Tree 2", id = "harvestable_tree_leafy02"},
-					[31] = {name = "Leafy Tree 3", id = "harvestable_tree_leafy03"},
-					[32] = {name = "Pine Tree 1", id = "harvestable_tree_pine01"},
-					[33] = {name = "Pine Tree 2", id = "harvestable_tree_pine02"},
-					[34] = {name = "Pine Tree 3", id = "harvestable_tree_pine03"},
-					[35] = {name = "Spruce Tree 1", id = "harvestable_tree_spruce01"},
-					[36] = {name = "Spruce Tree 2", id = "harvestable_tree_spruce02"},
-					[37] = {name = "Spruce Tree 3", id = "harvestable_tree_spruce03"}
-				}
+					[1] = {name = "Burnt Spike Tree 1" , id = "hvs_burntforest_spiketree01"},
+					[2] = {name = "Burnt Spike Tree 2" , id = "hvs_burntforest_spiketree02"},
+					[3] = {name = "Burnt Spruce Tree 1", id = "hvs_burntforest_spruce01"   },
+					[4] = {name = "Burnt Spruce Tree 2", id = "hvs_burntforest_spruce02"   },
+					[5] = {name = "Burnt Spruce Tree 3", id = "hvs_burntforest_spruce03"   },
+					[6] = {name = "Burnt Spruce Tree 4", id = "hvs_burntforest_spruce04"   },
+					[7] = {name = "Burnt Spruce Tree 5", id = "hvs_burntforest_spruce05"   },
+					[8] = {name = "Burnt Birch Tree 1" , id = "hvs_burntforest_birch01"    },
+					[9] = {name = "Cotton Plant"       , id = "hvs_farmables_cottonplant"  },
+					[10] = {name = "Corn Plant"        , id = "hvs_farmables_cornplant"    },
+					[11] = {name = "Pigment Flower"    , id = "hvs_farmables_pigmentflower"},
+					[12] = {name = "Hay Pile 1"        , id = "hvs_fillers_haypile_01"     },
+					[13] = {name = "Hay Pile 2"        , id = "hvs_fillers_haypile_02"     },
+					[14] = {name = "Hay Pile 3"        , id = "hvs_fillers_haypile_03"     },
+					[15] = {name = "Leaf Pile 1"       , id = "hvs_leafpile_01"            },
+					[16] = {name = "Leaf Pile 2"       , id = "hvs_leafpile_02"            },
+					[17] = {name = "Small Stone 1"     , id = "hvs_stone_small01"          },
+					[18] = {name = "Small Stone 2"     , id = "hvs_stone_small02"          },
+					[19] = {name = "Small Stone 3"     , id = "hvs_stone_small03"          },
+					[20] = {name = "Medium Stone 1"    , id = "hvs_stone_medium01"         },
+					[21] = {name = "Medium Stone 2"    , id = "hvs_stone_medium02"         },
+					[22] = {name = "Medium Stone 3"    , id = "hvs_stone_medium03"         },
+					[23] = {name = "Large Stone 1"     , id = "hvs_stone_large01"          },
+					[24] = {name = "Large Stone 2"     , id = "hvs_stone_large02"          },
+					[25] = {name = "Large Stone 3"     , id = "hvs_stone_large03"          },
+					[26] = {name = "Birch Tree 1"      , id = "harvestable_tree_birch01"   },
+					[27] = {name = "Birch Tree 2"      , id = "harvestable_tree_birch02"   },
+					[28] = {name = "Birch Tree 3"      , id = "harvestable_tree_birch03"   },
+					[29] = {name = "Leafy Tree 1"      , id = "harvestable_tree_leafy01"   },
+					[30] = {name = "Leafy Tree 2"      , id = "harvestable_tree_leafy02"   },
+					[31] = {name = "Leafy Tree 3"      , id = "harvestable_tree_leafy03"   },
+					[32] = {name = "Pine Tree 1"       , id = "harvestable_tree_pine01"    },
+					[33] = {name = "Pine Tree 2"       , id = "harvestable_tree_pine02"    },
+					[34] = {name = "Pine Tree 3"       , id = "harvestable_tree_pine03"    },
+					[35] = {name = "Spruce Tree 1"     , id = "harvestable_tree_spruce01"  },
+					[36] = {name = "Spruce Tree 2"     , id = "harvestable_tree_spruce02"  },
+					[37] = {name = "Spruce Tree 3"     , id = "harvestable_tree_spruce03"  }
+				}    
 			}
 		},
 		[6] = {
@@ -256,13 +267,13 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 				end
 			end,
 			subOptions = {
-				[1] = {name = "Character Hijacker"},
-				[2] = {name = "Character Speed", values = {value = 0, changer = 1, minValue = -100, maxValue = 100}},
-				[3] = {name = "Character Teleporter"},
-				[4] = {name = "Set Tumble", id = "tumble"},
-				[5] = {name = "Set Downed", id = "downChar"},
-				[6] = {name = "Set Swimming", s_ex = true, id = "charSwim"},
-				[7] = {name = "Set Diving", id = "charDive"}
+				[1] = {name = "Character Hijacker"  , type = option_type_enum.button},
+				[2] = {name = "Character Speed"     , type = option_type_enum.value, values = {value = 0, changer = 1, minValue = -100, maxValue = 100}},
+				[3] = {name = "Character Teleporter", type = option_type_enum.button},
+				[4] = {name = "Set Tumble"          , type = option_type_enum.button, id = "tumble"  },
+				[5] = {name = "Set Downed"          , type = option_type_enum.button, id = "downChar"},
+				[6] = {name = "Set Swimming"        , type = option_type_enum.button, id = "charSwim", s_ex = true},
+				[7] = {name = "Set Diving"          , type = option_type_enum.button, id = "charDive"}
 			}
 		},
 		[7] = {
@@ -287,9 +298,9 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 				end
 			end,
 			subOptions = {
-				[1] = {name = "Recover Missing Player Characters"},
-				[2] = {name = "Player Locker"},
-				[3] = {name = "Recover Off-world Players", values = {value = 710, changer = 10, minValue = 0, maxValue = 1400}, disableText = true}
+				[1] = {name = "Recover Missing Player Characters", type = option_type_enum.button},
+				[2] = {name = "Player Locker"                    , type = option_type_enum.button},
+				[3] = {name = "Recover Off-world Players"        , type = option_type_enum.value, values = {value = 710, changer = 10, minValue = 0, maxValue = 1400}, disableText = true}
 			}
 		}
 	}
@@ -312,9 +323,14 @@ end
 
 function local_server_table.spawnChar(self, data, caller)
 	if data.position then
-		local char = sm.character.createCharacter(caller, sm.world.getCurrentWorld(), data.position, data.dir.yaw, data.dir.pitch)
-		caller:setCharacter(char)
-		OP.print(("\"%s\" has been teleported, new position = %s"):format(caller.name, char.worldPosition))
+		local caller_char = caller:getCharacter()
+		if caller_char ~= nil then
+			caller_char:setWorldPosition(data.position)
+			OP.print(("\"%s\" has been teleported, new position = %s"):format(caller.name, caller_char.worldPosition))
+		else
+			local char = sm.character.createCharacter(caller, sm.world.getCurrentWorld(), data.position, data.dir.yaw, data.dir.pitch)
+			caller:setCharacter(char)
+		end
 	end
 end
 

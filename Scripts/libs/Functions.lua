@@ -195,7 +195,7 @@ function OP.betterExplosion(position, ExplosionLevel, explosionRadius, explosion
 	for _,body in pairs(sm.body.getAllBodies()) do
 		if _opExists(body) then
 			local b_DistanceVec = position - body.worldPosition
-			local b_Distance = p_DistanceVec:length()
+			local b_Distance = b_DistanceVec:length()
 
 			if b_Distance < explosionMagnitude and body:isDynamic() then
 				local direction = b_DistanceVec:normalize()
