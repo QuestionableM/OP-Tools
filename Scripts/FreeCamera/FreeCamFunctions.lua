@@ -54,41 +54,42 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 		},
 		[2] = {
 			name = "Explosion Spawner",
-			func = function(self, data)
+			func = function(self, cur_category, category_id, option_id)
 				local cam_pos = sm.camera.getPosition()
 				local bool, result = sm.physics.raycast(cam_pos, cam_pos + sm.camera.getDirection() * 1000)
 				if bool then
-					local settings = data.subOptions
+					local settings = cur_category.subOptions
 					local explosion = {
-						lvl = settings[1].values.value,
-						rad = settings[2].values.value,
-						imp = settings[3].values.value,
-						impRad = settings[4].values.value
+						lvl = settings[1].value,
+						rad = settings[2].value,
+						imp = settings[3].value,
+						impRad = settings[4].value
 					}
 					self.network:sendToServer("server_getStuff", { type = "explosion", expl = explosion, pos = result.pointWorld })
 				end
 			end,
 			subOptions = {
-				[1] = {name = "Explosion Level",            type = option_type_enum.value, value = 5   , changer = 1  , minValue = 1  , maxValue = 99999999},
-				[2] = {name = "Explosion Radius",           type = option_type_enum.value, value = 0.3 , changer = 0.1, minValue = 0.3, maxValue = 50},
+				[1] = {name = "Explosion Level"           , type = option_type_enum.value, value = 5   , changer = 1  , minValue = 1  , maxValue = 99999999},
+				[2] = {name = "Explosion Radius"          , type = option_type_enum.value, value = 0.3 , changer = 0.1, minValue = 0.3, maxValue = 50},
 				[3] = {name = "Explosion Impulse Strength", type = option_type_enum.value, value = 1000, changer = 500, minValue = 10 , maxValue = 99999999},
-				[4] = {name = "Explosion Impulse Sadius",   type = option_type_enum.value, value = 10  , changer = 1  , minValue = 1  , maxValue = 500}
+				[4] = {name = "Explosion Impulse Sadius"  , type = option_type_enum.value, value = 10  , changer = 1  , minValue = 1  , maxValue = 500}
 			}
 		},
 		[3] = {
 			name = "Projectile Launcher",
-			func = function(self, data)
-				projSet = data.subOptions
+			func = function(self, cur_category, category_id, option_id)
+				local sub_opt = cur_category.subOptions
+				local proj_id = sub_opt[1].value
+				if proj_id > 0 then
+					local proj_list = cur_category.listStorage.projectiles
 
-				local curProj
-				if projSet[1].values.value > 0 then
 					self.network:sendToServer("server_getStuff", {
 						type = "shoot",
-						amount = projSet[4].values.value,
+						amount = sub_opt[4].value,
 						pos = sm.camera.getPosition(),
-						dir = sm.camera.getDirection() * projSet[2].values.value,
-						spread = projSet[3].values.value,
-						proj = data.numberNames.projectiles[projSet[1].values.value].id
+						dir = sm.camera.getDirection() * sub_opt[2].value,
+						spread = sub_opt[3].value,
+						proj = proj_list[proj_id].id
 					})
 				else
 					OP.display("error", false, "Choose the projectile")
@@ -128,20 +129,6 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 		[4] = {
 			name = "Unit Spawner",
 			individual_functions = true,
-			func = function(self, data, od)
-				local _selParam = (od.option_page + 1)
-				if (_selParam > 0) then
-					if _selParam == 1 then
-						FREE_CAM_SUB.SUB_creatureSpawner(self, data)
-					elseif _selParam == 4 then
-						FREE_CAM_SUB.SUB_destroyUnit(self)
-					else
-						OP.display("error", false, "This option doesn't have a function")
-					end
-				else
-					OP.display("error", false, "Choose an option")
-				end
-			end,
 			subOptions = {
 				[1] = {name = "Spawn Unit"             , type = option_type_enum.list   , func = FREE_CAM_SUB.SUB_creatureSpawner, value = 0, maxValue = 7, listName = "creatures"},
 				[2] = {name = "Amount of Units"        , type = option_type_enum.value  , value = 1, changer = 1, minValue = 1, maxValue = 100},
@@ -162,19 +149,10 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 		},
 		[5] = {
 			name = "Harvestable Functions",
-			func = function(self, data, od)
-				local _opPage = (od.option_page + 1)
-				if _opPage == 1 then
-					FREE_CAM_SUB.SUB_createHarvestable(self, data)
-				elseif _opPage == 2 then
-					FREE_CAM_SUB.SUB_removeHarvestable(self, data)
-				else
-					OP.display("error", false, "Choose an Option")
-				end
-			end,
+			individual_functions = true,
 			subOptions = {
-				[1] = {name = "Spawn Harvestable" , type = option_type_enum.list, value = 0, maxValue = 37, listName = "harvestableNames"},
-				[2] = {name = "Remove Harvestable", type = option_type_enum.button}
+				[1] = {name = "Spawn Harvestable" , type = option_type_enum.list  , func = FREE_CAM_SUB.SUB_createHarvestable, value = 0, maxValue = 37, listName = "harvestableNames"},
+				[2] = {name = "Remove Harvestable", type = option_type_enum.button, func = FREE_CAM_SUB.SUB_removeHarvestable}
 			},
 			listStorage = {
 				harvestableNames = {
@@ -220,58 +198,24 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 		},
 		[6] = {
 			name = "Character Functions",
-			func = function(self, data, od)
-				local _opPage = (od.option_page + 1)
-				if _opPage > 0 then
-					if _opPage == 1 then
-						FREE_CAM_SUB.SUB_charHijacker(self)
-					elseif _opPage == 2 then
-						FREE_CAM_SUB.SUB_charSpeed(self, data.subOptions[od.option_page + 1].values)
-					elseif _opPage == 3 then
-						FREE_CAM_SUB.SUB_charTeleporter(self)
-					else
-						local option = data.subOptions[od.option_page + 1]
-						FREE_CAM_SUB.SUB_CharFunctions(self, option, option.s_ex)
-					end
-				else
-					OP.display("error", false, "Choose an option first")
-				end
-			end,
+			individual_functions = true,
 			subOptions = {
-				[1] = {name = "Character Hijacker"  , type = option_type_enum.button},
-				[2] = {name = "Character Speed"     , type = option_type_enum.value, value = 0, changer = 1, minValue = -100, maxValue = 100},
-				[3] = {name = "Character Teleporter", type = option_type_enum.button},
-				[4] = {name = "Set Tumble"          , type = option_type_enum.button, id = "tumble"  },
-				[5] = {name = "Set Downed"          , type = option_type_enum.button, id = "downChar"},
-				[6] = {name = "Set Swimming"        , type = option_type_enum.button, id = "charSwim", s_ex = true},
-				[7] = {name = "Set Diving"          , type = option_type_enum.button, id = "charDive"}
+				[1] = {name = "Character Hijacker"  , type = option_type_enum.button, func = FREE_CAM_SUB.SUB_charHijacker},
+				[2] = {name = "Character Speed"     , type = option_type_enum.value , func = FREE_CAM_SUB.SUB_charSpeed, value = 0, changer = 1, minValue = -100, maxValue = 100},
+				[3] = {name = "Character Teleporter", type = option_type_enum.button, func = FREE_CAM_SUB.SUB_charTeleporter},
+				[4] = {name = "Set Tumble"          , type = option_type_enum.button, func = FREE_CAM_SUB.SUB_CharFunctions, id = "tumble"  },
+				[5] = {name = "Set Downed"          , type = option_type_enum.button, func = FREE_CAM_SUB.SUB_CharFunctions, id = "downChar"},
+				[6] = {name = "Set Swimming"        , type = option_type_enum.button, func = FREE_CAM_SUB.SUB_CharFunctions, id = "charSwim", self_ex = true},
+				[7] = {name = "Set Diving"          , type = option_type_enum.button, func = FREE_CAM_SUB.SUB_CharFunctions, id = "charDive"}
 			}
 		},
 		[7] = {
 			name = "Player Functions",
-			func = function(self, data, od)
-				local _opPage = (od.option_page + 1)
-				if _opPage > 0 then
-					if _opPage == 1 then
-						FREE_CAM_SUB.SUB_playerRecover(self)
-					elseif _opPage == 2 then
-						FREE_CAM_SUB.SUB_playerLocker(self)
-					elseif _opPage == 3 then
-						FREE_CAM_SUB.SUB_recoverOffWorldPlayers(self, data.subOptions[od.option_page + 1].values.value)
-					end
-				else
-					OP.display("error", false, "Choose an option first")
-				end
-			end,
-			update = function(self, data, option)
-				if option == "Recover Off-world Players" then
-					OP.display("highlight", true, ("Safe distance set to #ffff00%s#ffffff"):format(data.value))
-				end
-			end,
+			individual_functions = true,
 			subOptions = {
-				[1] = {name = "Recover Missing Player Characters", type = option_type_enum.button},
-				[2] = {name = "Player Locker"                    , type = option_type_enum.button},
-				[3] = {name = "Recover Off-world Players"        , type = option_type_enum.value, value = 710, changer = 10, minValue = 0, maxValue = 1400, disableText = true}
+				[1] = {name = "Recover Missing Player Characters", type = option_type_enum.button, func = FREE_CAM_SUB.SUB_playerRecover},
+				[2] = {name = "Player Locker"                    , type = option_type_enum.button, func = FREE_CAM_SUB.SUB_playerLocker},
+				[3] = {name = "Recover Off-world Players"        , type = option_type_enum.value , func = FREE_CAM_SUB.SUB_recoverOffWorldPlayers, update = FREE_CAM_SUB.SUB_recoverOffWorldPlayersUpdate, value = 710, changer = 10, minValue = 0, maxValue = 1400}
 			}
 		}
 	}
@@ -457,15 +401,15 @@ function local_server_table.charProp(self, data, caller)
 end
 
 function local_server_table.charTp(self, data, caller)
-	local d_Char = data.character
-	if OP.exists(d_Char) then
-		local player = d_Char:getPlayer()
-		local char = sm.character.createCharacter(player, sm.world.getCurrentWorld(), data.position, data.rotation.yaw, data.rotation.pitch, d_Char)
-		player:setCharacter(char)
+	local data_char = data.character
+	if OP.exists(data_char) then
+		data_char:setWorldPosition(data.position)
 
-		OP.print(("\"%s\" has been teleported, new position = %s"):format(player.name, data.position))
-		local frmt_text = ("#ffff00%s#ffffff has been teleported"):format(d_Char:getPlayer().name)
+		local player_name = data_char:getPlayer().name
 
+		OP.print(("\"%s\" has been teleported, new position = %s"):format(player_name, data.position))
+		
+		local frmt_text = ("#ffff00%s#ffffff has been teleported"):format(player_name)
 		self:server_sendMessage(caller, frmt_text, "blip")
 	else
 		OP.print("ERROR: tried to teleport a non-existant character")

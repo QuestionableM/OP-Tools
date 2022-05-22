@@ -52,8 +52,6 @@ function FreeCamOldGui.client_changeSelectedOption(self)
 end
 
 local _sm_util_clamp = sm.util.clamp
-
---TODO: make function 1 and 2 work with "disableText" property
 local value_change_functions =
 {
 	[1] = function(self, curCategory, subOpt, movement)
@@ -74,7 +72,12 @@ local value_change_functions =
 		local cur_list = curCategory.listStorage[subOpt.listName]
 		local cur_list_obj = cur_list[subOpt.value]
 
-		OP.display("highlight", false, ("[#ffff00%s#ffffff/#ffff00%s#ffffff] #ffff00%s#ffffff set to #ffff00%s#ffffff"):format(subOpt.value, subOpt.maxValue, subOpt.name, cur_list_obj.name))
+		local sub_opt_update = subOpt.update
+		if sub_opt_update ~= nil then
+			sub_opt_update(self, curCategory, subOpt)
+		else
+			OP.display("highlight", false, ("[#ffff00%s#ffffff/#ffff00%s#ffffff] #ffff00%s#ffffff set to #ffff00%s#ffffff"):format(subOpt.value, subOpt.maxValue, subOpt.name, cur_list_obj.name))
+		end
 	end,
 	[3] = function(self, curCategory, subOpt, movement)
 		subOpt.value = not subOpt.value

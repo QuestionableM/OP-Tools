@@ -310,8 +310,9 @@ function OP.isCreationDynamic(creation)
 end
 
 function OP.isUnit(character)
-	local _Unit = character:getUnit()
-	return (_Unit and _Unit.id > 0)
+	if not OP.exists(character) then return false end
+
+	return OP.exists(character:getUnit())
 end
 
 print("[OPTools] Function library has been loaded")
