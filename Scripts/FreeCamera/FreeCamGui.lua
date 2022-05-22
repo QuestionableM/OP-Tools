@@ -12,6 +12,21 @@ function FreeCamGui:client_GUI_toggleCallback(btn_name)
 	print("client_GUI_toggleCallback", btn_name)
 end
 
+function FreeCamGui:client_GUI_callUpdateFunction(widget_id)
+	local gui_page = self.gui_setting_page
+
+	local cam_mode = self.camera.mode
+	local cur_option = cam_mode.options[gui_page]
+	if type(cur_option.update) == "function" then
+		local cur_page_offset = (gui_page - 1) * 4
+		local cur_option_idx = cur_page_offset + widget_id
+
+		local cur_sub_option = cur_option.subOptions[cur_option_idx]
+
+		cur_option.update(self, cur_sub_option.values.value, cur_sub_option.name)
+	end
+end
+
 function FreeCamGui:client_GUI_onTextChangedCallback(widget, text)
 	local cam_gui = self.camera_set_gui
 	local widget_idx = tonumber(widget:sub(-1))
@@ -19,7 +34,21 @@ function FreeCamGui:client_GUI_onTextChangedCallback(widget, text)
 	local status_widget = "ValStatus"..widget_idx
 
 	local number_value = tonumber(text)
-	if number_value == nil then
+	if number_value ~= nil then
+		local page_offset = (self.gui_setting_page - 1) * 4
+		local cur_option = self.camera.option_list[self.gui_current_tab]
+
+		local cur_sub_opt = cur_option.subOptions[page_offset + widget_idx]
+		local cur_sub_vals = cur_sub_opt.values
+
+		if cur_sub_vals.value ~= number_value then
+			cur_sub_vals.value = sm.util.clamp(number_value, cur_sub_vals.minValue, cur_sub_vals.maxValue)
+			
+			if type(cur_option.update) == "function" then
+				cur_option.update(self, { value = cur_sub_vals.value }, cur_sub_opt.name, true)
+			end
+		end
+	else
 		cam_gui:setText(status_widget, "#ff0000Invalid Value#ffffff")
 	end
 
@@ -28,7 +57,7 @@ end
 
 function FreeCamGui:client_GUI_getCurrentSubOptionIndex(widget_id)
 	local page_offset = (self.gui_setting_page - 1) * 4
-	local cur_options = self.camera.mode.options[self.gui_current_tab]
+	local cur_options = self.camera.option_list[self.gui_current_tab]
 
 	return cur_options.subOptions[page_offset + widget_id]
 end
@@ -59,7 +88,6 @@ function FreeCamGui:client_GUI_onTextAcceptedCallback(widget, text)
 			sub_opt_vals.value = sm.util.clamp(number_value, sub_opt_vals.minValue, sub_opt_vals.maxValue)
 
 			cam_gui:setText(widget, tostring(sub_opt_vals.value))
-
 			self:client_GUI_callFunction(widget_idx)
 
 			sm.audio.play("Retrowildblip", self.camera.position)
@@ -89,7 +117,7 @@ end
 
 function FreeCamGui:client_GUI_updateTabName()
 	local cur_tab = self.gui_current_tab
-	local cam_options = self.camera.mode.options[cur_tab]
+	local cam_options = self.camera.option_list[cur_tab]
 
 	self.camera_set_gui:setText("CurTabName", cam_options.name)
 end
@@ -136,7 +164,7 @@ end
 
 function FreeCamGui:client_GUI_updateTabs()
 	local cam_gui = self.camera_set_gui
-	local cam_options = self.camera.mode.options
+	local cam_options = self.camera.option_list
 	local cur_tab = self.gui_current_tab
 	local tab_shift = self.gui_tab_shift
 
@@ -160,6 +188,23 @@ local value_editor_names =
 	"ButtonBG_"    --id4
 }
 
+local value_setter_functions =
+{
+	[1] = function(self, slot, options_data, gui) --init value input data
+		gui:setText("ValInput"..slot, tostring(options_data.value))
+		gui:setVisible("ValStatus"..slot, false)
+	end,
+	[2] = function(self, slot, options_data, gui) --init list box data
+
+	end,
+	[3] = function(self, slot, options_data, gui) --init boolean data
+	
+	end,
+	[4] = function(self, slot, options_data, gui) --init button data
+
+	end
+}
+
 function FreeCamGui:client_GUI_prepareSettingData(slot, options_data)
 	local cam_gui = self.camera_set_gui
 
@@ -170,22 +215,9 @@ function FreeCamGui:client_GUI_prepareSettingData(slot, options_data)
 		cam_gui:setVisible(cur_name, i == type_id)
 	end
 
-	if type_id ~= 0 then
-		if type_id == 1 then --init value input data
-			local val_data = options_data.values
-
-			cam_gui:setText("ValInput"..slot, tostring(val_data.value))
-			cam_gui:setVisible("ValStatus"..slot, false)
-
-		elseif type_id == 2 then --init list box data
-
-
-
-		elseif type_id == 3 then --init boolean data
-
-		elseif type_id == 4 then --init button data
-
-		end
+	local setter_func = value_setter_functions[type_id]
+	if setter_func ~= nil then
+		setter_func(self, slot, options_data, cam_gui)
 	end
 end
 
@@ -194,7 +226,7 @@ function FreeCamGui:client_GUI_updateSettingsTab()
 	local cur_tab = self.gui_current_tab
 	local cur_idx_offset = (self.gui_setting_page - 1) * 4
 
-	local cur_options = self.camera.mode.options[cur_tab]
+	local cur_options = self.camera.option_list[cur_tab]
 	local sub_options = cur_options.subOptions
 
 	for i = 1, 4 do
@@ -244,7 +276,7 @@ function FreeCamGui:client_GUI_createFreeCamSettings()
 	self.gui_current_tab  = 1
 
 	self.gui_tab_shift    = 0
-	self.gui_tab_shift_max = #self.camera.mode.options - 3
+	self.gui_tab_shift_max = #self.camera.option_list - 3
 	
 	self.gui_setting_page = 1
 	self.gui_setting_page_count = 0

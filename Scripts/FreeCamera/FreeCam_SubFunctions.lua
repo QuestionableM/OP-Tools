@@ -2,26 +2,49 @@
 	Copyright (c) 2021 Questionable Mark
 ]]
 
-if FREE_CAM_SUB then return end
+--if FREE_CAM_SUB then return end
 FREE_CAM_SUB = class()
 
-function FREE_CAM_SUB.SUB_setTime(self, value)
-	self.network:sendToServer("server_getStuff", {type = "time", value = value})
+function FREE_CAM_SUB.SUB_setTime(self, curCategory, curOpt)
+	self.network:sendToServer("server_getStuff", { type = "time", value = curOpt.value })
 end
 
-function FREE_CAM_SUB.SUB_teleportCam(self, data)
-	if data.value > 0 then
-		local player = sm.player.getAllPlayers()[data.value]
-		if player.character then
-			self.camera.move_target = player.character
+function FREE_CAM_SUB.SUB_timeUpdate(self, curCategory, curOpt)
+	local l_value = curOpt.value
+	sm.render.setOutdoorLighting(l_value)
+
+	local l_time = l_value * 24
+	local t_hours = math.floor(l_time) % 24
+	local t_minutes = math.floor(l_time * 60) % 60
+	local t_seconds = math.floor(l_time * 3600) % 60
+
+	OP.display("highlight", false, ("#ffff00Time#ffffff set to #ffff00%.2f#ffffff or #ffff00%02d#ffffff:#ffff00%02d#ffffff:#ffff00%02d#ffffff"):format(l_value, t_hours, t_minutes, t_seconds))
+end
+
+function FREE_CAM_SUB.SUB_teleportCam(self, curCategory, curOpt)
+	if curOpt.value > 0 then
+		local cur_player = sm.player.getAllPlayers()[curOpt.value]
+		if cur_player and cur_player.character then
+			self.camera.move_target = cur_player.character
 			self.camera.move_target_activation = sm.game.getCurrentTick()
-			OP.display("blip", false, ("Moving your camera to #ffff00%s#ffffff..."):format(player.name))
+
+			OP.display("blip", false, ("Moving your camera to #ffff00%s#ffffff"):format(cur_player.name))
 		else
-			OP.display("error", false, ("#ffff00%s#ffffff doesn't have a character"):format(player.name))
+			OP.display("error", false, ("#ffff00%s#ffffff doesn't have a character"):format(cur_player.name))
 		end
 	else
 		OP.display("error", false, "Pick a player")
 	end
+end
+
+function FREE_CAM_SUB.SUB_teleportCamUpdate(self, curCategory, curOpt)
+	local player_list = sm.player.getAllPlayers()
+	curOpt.maxValue = #player_list
+	
+	local pl_idx = math.min(curOpt.value, curOpt.maxValue)
+	local cur_player = player_list[pl_idx]
+
+	sm.gui.displayAlertText(("Move to #ffff00%s#ffffff"):format(cur_player.name))
 end
 
 local function cameraRaycast(distance)

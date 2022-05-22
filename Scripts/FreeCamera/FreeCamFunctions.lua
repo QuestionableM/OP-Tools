@@ -43,42 +43,12 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 	local functionTable = {
 		[1] = {
 			name = "Camera Functions",
-			func = function(self, data, od, gui_call)
-				if (od.option_page + 1) > 0 then
-					local current_option = data.subOptions[od.option_page + 1]
-					if current_option.name == "Time" then
-						FREE_CAM_SUB.SUB_setTime(self, current_option.values.value)
-					elseif current_option.name == "Move to Player" then
-						FREE_CAM_SUB.SUB_teleportCam(self, current_option.values)
-					else
-						if not gui_call then
-							OP.display("error", false, "This parameter doesn't have a function")
-						end
-					end
-				else
-					OP.display("error", false, "Choose an option")
-				end
-			end,
-			update = function(self, data, option)
-				if option == "Time" then
-					sm.render.setOutdoorLighting(data.value)
-					local time = data.value * 24
-					local hours = math.floor(time) % 24
-					local minutes = math.floor(time * 60) % 60
-					local seconds = math.floor(time * 3600) % 60
-					OP.display("highlight", false, ("#ffff00Time#ffffff set to #ffff00%.2f#ffffff or #ffff00%02d#ffffff:#ffff00%02d#ffffff:#ffff00%02d#ffffff"):format(data.value, hours, minutes, seconds))
-				elseif option == "Move to Player" then
-					data.subTab.values.maxValue = #sm.player.getAllPlayers()
-					local index = math.min(data.value, #sm.player.getAllPlayers())
-					local playerToTeleport = sm.player.getAllPlayers()[index]
-					sm.gui.displayAlertText(("Move to #ffff00%s#ffffff"):format(playerToTeleport.name))
-				end
-			end,
+			individual_functions = true,
 			subOptions = {
-				[1] = {name = "Camera Speed"      , type = option_type_enum.value  , values = {value = 1,changer = 0.01,minValue = 0,maxValue = 20}},
-				[2] = {name = "Camera Friction"   , type = option_type_enum.value  , values = {value = 1,changer = 0.01, minValue = 0, maxValue = 1}},
-				[3] = {name = "Time"              , type = option_type_enum.value  , values = {value = sm.render.getOutdoorLighting(), changer = 0.01, minValue = 0, maxValue = 1},disableText = true},
-				[4] = {name = "Move to Player"    , type = option_type_enum.list   , values = {value = 0, changer = 1, minValue = 1, maxValue = #sm.player.getAllPlayers()},disableText = true},
+				[1] = {name = "Camera Speed"      , type = option_type_enum.value  , value = 1, changer = 0.01, minValue = 0, maxValue = 20},
+				[2] = {name = "Camera Friction"   , type = option_type_enum.value  , value = 1, changer = 0.01, minValue = 0, maxValue = 1 },
+				[3] = {name = "Time"              , type = option_type_enum.value  , func = FREE_CAM_SUB.SUB_setTime    , update = FREE_CAM_SUB.SUB_timeUpdate       , value = sm.render.getOutdoorLighting(), changer = 0.01, minValue = 0, maxValue = 1},
+				[4] = {name = "Move to Player"    , type = option_type_enum.value  , func = FREE_CAM_SUB.SUB_teleportCam, update = FREE_CAM_SUB.SUB_teleportCamUpdate, value = 0, changer = 1, minValue = 1, maxValue = #sm.player.getAllPlayers()},
 				[5] = {name = "Enable Camera Data", type = option_type_enum.boolean, value  = true}
 			}
 		},
@@ -99,10 +69,10 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 				end
 			end,
 			subOptions = {
-				[1] = {name = "Explosion Level",            type = option_type_enum.value, values = {value = 5, changer = 1, minValue = 1, maxValue = math.huge}},
-				[2] = {name = "Explosion Radius",           type = option_type_enum.value, values = {value = 0.3, changer = 0.1, minValue = 0.3, maxValue = 50}},
-				[3] = {name = "Explosion Impulse Strength", type = option_type_enum.value, values = {value = 1000, changer = 500, minValue = 10, maxValue = math.huge}},
-				[4] = {name = "Explosion Impulse Sadius",   type = option_type_enum.value, values = {value = 10, changer = 1, minValue = 1, maxValue = 500}}
+				[1] = {name = "Explosion Level",            type = option_type_enum.value, value = 5   , changer = 1  , minValue = 1  , maxValue = 99999999},
+				[2] = {name = "Explosion Radius",           type = option_type_enum.value, value = 0.3 , changer = 0.1, minValue = 0.3, maxValue = 50},
+				[3] = {name = "Explosion Impulse Strength", type = option_type_enum.value, value = 1000, changer = 500, minValue = 10 , maxValue = 99999999},
+				[4] = {name = "Explosion Impulse Sadius",   type = option_type_enum.value, value = 10  , changer = 1  , minValue = 1  , maxValue = 500}
 			}
 		},
 		[3] = {
@@ -125,38 +95,39 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 				end
 			end,
 			subOptions = {
-				[1] = {name = "Projectile",           type = option_type_enum.list , values = {value = 0  , changer = 1, minValue = 1, maxValue = 20, displayNames = "projectiles"}},
-				[2] = {name = "Projectile Speed",     type = option_type_enum.value, values = {value = 100, changer = 1, minValue = 1, maxValue = math.huge}},
-				[3] = {name = "Spread",               type = option_type_enum.value, values = {value = 1  , changer = 1, minValue = 0, maxValue = 180      }},
-				[4] = {name = "Projectiles Per Shot", type = option_type_enum.value, values = {value = 1  , changer = 1, minValue = 1, maxValue = 100      }}
+				[1] = {name = "Projectile",           type = option_type_enum.list , value = 0  , maxValue = 20, listName = "projectiles"},
+				[2] = {name = "Projectile Speed",     type = option_type_enum.value, value = 100, changer = 1, minValue = 1, maxValue = 99999999 },
+				[3] = {name = "Spread",               type = option_type_enum.value, value = 1  , changer = 1, minValue = 0, maxValue = 180      },
+				[4] = {name = "Projectiles Per Shot", type = option_type_enum.value, value = 1  , changer = 1, minValue = 1, maxValue = 100      }
 			},
-			numberNames = {
+			listStorage = {
 				projectiles = {
-					[1] = {name = "Potato",			id = "potato"},
-					[2] = {name = "Small potato",	id = "smallpotato"},
-					[3] = {name = "Fries",			id = "fries"},
-					[4] = {name = "Tomato",			id = "tomato"},
-					[5] = {name = "Carrot",			id = "carrot"},
-					[6] = {name = "Redbeet",		id = "redbeet"},
-					[7] = {name = "Broccoli",		id = "broccoli"},
-					[8] = {name = "Pineapple",		id = "pineapple"},
-					[9] = {name = "Orange",			id = "orange"},
-					[10] = {name = "Blueberry",		id = "blueberry"},
-					[11] = {name = "Banana",		id = "banana"},
-					[12] = {name = "Tape",			id = "tape"},
-					[13] = {name = "Explosive Tape",id = "explosivetape"},
-					[14] = {name = "Water",			id = "water"},
-					[15] = {name = "Fertilizer",	id = "fertilizer"},
-					[16] = {name = "Chemical",		id = "chemical"},
-					[17] = {name = "Pesticide",		id = "pesticide"},
-					[18] = {name = "Seed",			id = "seed"},
-					[19] = {name = "Glowstick",		id = "glowstick"},
-					[20] = {name = "Epic Loot",		id = "epicloot"}
+					[1]  = {name = "Potato",         id = "potato"       },
+					[2]  = {name = "Small potato",   id = "smallpotato"  },
+					[3]  = {name = "Fries",          id = "fries"        },
+					[4]  = {name = "Tomato",         id = "tomato"       },
+					[5]  = {name = "Carrot",         id = "carrot"       },
+					[6]  = {name = "Redbeet",        id = "redbeet"      },
+					[7]  = {name = "Broccoli",       id = "broccoli"     },
+					[8]  = {name = "Pineapple",      id = "pineapple"    },
+					[9]  = {name = "Orange",         id = "orange"       },
+					[10] = {name = "Blueberry",      id = "blueberry"    },
+					[11] = {name = "Banana",         id = "banana"       },
+					[12] = {name = "Tape",           id = "tape"         },
+					[13] = {name = "Explosive Tape", id = "explosivetape"},
+					[14] = {name = "Water",          id = "water"        },
+					[15] = {name = "Fertilizer",     id = "fertilizer"   },
+					[16] = {name = "Chemical",       id = "chemical"     },
+					[17] = {name = "Pesticide",      id = "pesticide"    },
+					[18] = {name = "Seed",           id = "seed"         },
+					[19] = {name = "Glowstick",      id = "glowstick"    },
+					[20] = {name = "Epic Loot",      id = "epicloot"     }
 				}
 			}
 		},
 		[4] = {
 			name = "Unit Spawner",
+			individual_functions = true,
 			func = function(self, data, od)
 				local _selParam = (od.option_page + 1)
 				if (_selParam > 0) then
@@ -172,12 +143,12 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 				end
 			end,
 			subOptions = {
-				[1] = {name = "Spawn Unit"             , type = option_type_enum.list   , values = {value = 0, changer = 1, minValue = 1, maxValue = 7, displayNames = "creatures"}},
-				[2] = {name = "Amount of Units"        , type = option_type_enum.value  , values = {value = 1, changer = 1, minValue = 1, maxValue = 100}},
-				[3] = {name = "Spawn Without Spreading", type = option_type_enum.boolean, values = false},
-				[4] = {name = "Remove Unit"            , type = option_type_enum.button}
+				[1] = {name = "Spawn Unit"             , type = option_type_enum.list   , func = FREE_CAM_SUB.SUB_creatureSpawner, value = 0, maxValue = 7, listName = "creatures"},
+				[2] = {name = "Amount of Units"        , type = option_type_enum.value  , value = 1, changer = 1, minValue = 1, maxValue = 100},
+				[3] = {name = "Spawn Without Spreading", type = option_type_enum.boolean, value = false},
+				[4] = {name = "Remove Unit"            , type = option_type_enum.button , func = FREE_CAM_SUB.SUB_destroyUnit}
 			},
-			numberNames = {
+			listStorage = {
 				creatures = {
 					[1] = {name = "Tapebot"    , id = "tapebot" },
 					[2] = {name = "Red Tapebot", id = "tapebotR"},
@@ -202,10 +173,10 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 				end
 			end,
 			subOptions = {
-				[1] = {name = "Spawn Harvestable" , type = option_type_enum.list  , values = {value = 0, changer = 1, minValue = 1, maxValue = 37, displayNames = "harvestableNames"}},
+				[1] = {name = "Spawn Harvestable" , type = option_type_enum.list, value = 0, maxValue = 37, listName = "harvestableNames"},
 				[2] = {name = "Remove Harvestable", type = option_type_enum.button}
 			},
-			numberNames = {
+			listStorage = {
 				harvestableNames = {
 					[1] = {name = "Burnt Spike Tree 1" , id = "hvs_burntforest_spiketree01"},
 					[2] = {name = "Burnt Spike Tree 2" , id = "hvs_burntforest_spiketree02"},
@@ -268,7 +239,7 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 			end,
 			subOptions = {
 				[1] = {name = "Character Hijacker"  , type = option_type_enum.button},
-				[2] = {name = "Character Speed"     , type = option_type_enum.value, values = {value = 0, changer = 1, minValue = -100, maxValue = 100}},
+				[2] = {name = "Character Speed"     , type = option_type_enum.value, value = 0, changer = 1, minValue = -100, maxValue = 100},
 				[3] = {name = "Character Teleporter", type = option_type_enum.button},
 				[4] = {name = "Set Tumble"          , type = option_type_enum.button, id = "tumble"  },
 				[5] = {name = "Set Downed"          , type = option_type_enum.button, id = "downChar"},
@@ -300,7 +271,7 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 			subOptions = {
 				[1] = {name = "Recover Missing Player Characters", type = option_type_enum.button},
 				[2] = {name = "Player Locker"                    , type = option_type_enum.button},
-				[3] = {name = "Recover Off-world Players"        , type = option_type_enum.value, values = {value = 710, changer = 10, minValue = 0, maxValue = 1400}, disableText = true}
+				[3] = {name = "Recover Off-world Players"        , type = option_type_enum.value, value = 710, changer = 10, minValue = 0, maxValue = 1400, disableText = true}
 			}
 		}
 	}
@@ -552,13 +523,13 @@ end
 local _sm_newUuid = sm.uuid.new
 function FREE_CAM_OPTIONS.loadUnitInfo()
 	local units = {
-		woc = {uuid = _sm_newUuid("264a563a-e304-430f-a462-9963c77624e9"), spacing = 2},
-		tapebot = {uuid = _sm_newUuid("04761b4a-a83e-4736-b565-120bc776edb2"), spacing = 1},
-		tapebotR = {uuid = _sm_newUuid("c3d31c47-0c9b-4b07-9bd4-8f022dc4333e"), spacing = 1},
-		totebotG = {uuid = _sm_newUuid("8984bdbf-521e-4eed-b3c4-2b5e287eb879"), spacing = 1},
-		haybot = {uuid = _sm_newUuid("c8bfb8f3-7efc-49ac-875a-eb85ac0614db"), spacing = 1.5},
-		farmbot = {uuid = _sm_newUuid("9f4fde94-312f-4417-b13b-84029c5d6b52"), spacing = 4.5},
-		worm = {uuid = _sm_newUuid("48c03f69-3ec8-454c-8d1a-fa09083363b1"), spacing = 0.5}
+		woc      = {uuid = _sm_newUuid("264a563a-e304-430f-a462-9963c77624e9"), spacing = 2  },
+		tapebot  = {uuid = _sm_newUuid("04761b4a-a83e-4736-b565-120bc776edb2"), spacing = 1  },
+		tapebotR = {uuid = _sm_newUuid("c3d31c47-0c9b-4b07-9bd4-8f022dc4333e"), spacing = 1  },
+		totebotG = {uuid = _sm_newUuid("8984bdbf-521e-4eed-b3c4-2b5e287eb879"), spacing = 1  },
+		haybot   = {uuid = _sm_newUuid("c8bfb8f3-7efc-49ac-875a-eb85ac0614db"), spacing = 1.5},
+		farmbot  = {uuid = _sm_newUuid("9f4fde94-312f-4417-b13b-84029c5d6b52"), spacing = 4.5},
+		worm     = {uuid = _sm_newUuid("48c03f69-3ec8-454c-8d1a-fa09083363b1"), spacing = 0.5}
 	}
 	return units
 end

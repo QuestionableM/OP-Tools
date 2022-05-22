@@ -25,6 +25,18 @@
             <Property key="TextAlign" value="Left VCenter"/>
             <Property key="TextShadow" value="true"/>
         </Widget>
+        <Widget type="TextBox" skin="TextBox" position="15 400 400 25" align="Left Top" name="FreeCamCategory">
+            <Property key="TextAlign" value="Left VCenter"/>
+            <Property key="TextShadow" value="true"/>
+            <Property key="FontName" value="SM_Button"/>
+            <Property key="Caption" value="CURRENT_CATEGORY"/>
+        </Widget>
+        <Widget type="TextBox" skin="TextBox" position="15 425 400 25" align="Left Top" name="FreeCamOption">
+            <Property key="Caption" value="CURRENT_OPTION"/>
+            <Property key="TextAlign" value="Left VCenter"/>
+            <Property key="TextShadow" value="true"/>
+            <Property key="FontName" value="SM_Button"/>
+        </Widget>
     </Widget>
     <CodeGeneratorSettings/>
 </MyGUI>
