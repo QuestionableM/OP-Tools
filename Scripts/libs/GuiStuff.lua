@@ -1,5 +1,5 @@
 --[[
-	Copyright (c) 2021 Questionable Mark
+	Copyright (c) 2022 Questionable Mark
 ]]
 
 if GUI_STUFF then return end
@@ -8,7 +8,10 @@ GUI_STUFF = class()
 function GUI_STUFF.close_and_destroy_dialogs(d_table)
 	for id, gui in pairs(d_table) do
 		if OP.exists(gui) then
-			gui:close()
+			if gui:isActive() then
+				gui:close()
+			end
+
 			gui:destroy()
 		end
 	end

@@ -56,6 +56,10 @@ function FreeCam:updateCamera()
 		self.camera_hud:close()
 	end
 
+	if OP.exists(self.camera_set_gui) and self.camera_set_gui:isActive() then
+		self.camera_set_gui:close()
+	end
+
 	self.camera =
 	{
 		speed       = sm.vec3.zero(),
@@ -237,23 +241,30 @@ function FreeCam:client_camInterpolation()
 	end
 end
 
+local _sm_camera_setFov = sm.camera.setFov
+local _sm_camera_getDirection = sm.camera.getDirection
+local _sm_camera_getRight = sm.camera.getRight
 function FreeCam:client_updateCamPos(character, dt)
 	local s_camera = self.camera
 
-	local c_options = s_camera.option_list[1]
-	local speed_val = c_options.subOptions[1].value * 250 * dt
+	local sub_opt = s_camera.option_list[1].subOptions
 
-	local friction_val = 1 - c_options.subOptions[2].value
-	local friction = sm.util.lerp(0.001, 1, friction_val)
+	local fov_val = sub_opt[3].value
+	s_camera.fov_value = sm.util.lerp(s_camera.fov_value, fov_val, dt * 7.5)
+	_sm_camera_setFov(s_camera.fov_value)
 
-	local speed_forward  = sm.camera.getDirection() * speed_val
-	local speed_sideways = sm.camera.getRight()     * speed_val
+	local speed_val = sub_opt[1].value * 250 * dt
+	local speed_forward  = _sm_camera_getDirection() * speed_val
+	local speed_sideways = _sm_camera_getRight()     * speed_val
+
 	local cam_mov = s_camera.input
-
 	if cam_mov[1] == 1 then s_camera.speed = s_camera.speed + speed_forward  end
 	if cam_mov[2] == 1 then s_camera.speed = s_camera.speed - speed_forward  end
 	if cam_mov[3] == 1 then s_camera.speed = s_camera.speed - speed_sideways end
 	if cam_mov[4] == 1 then s_camera.speed = s_camera.speed + speed_sideways end
+
+	local friction_val = 1 - sub_opt[2].value
+	local friction = sm.util.lerp(0.001, 1, friction_val)
 
 	s_camera.speed    = s_camera.speed * math.pow(friction, dt)
 	s_camera.position = s_camera.position + s_camera.speed * dt
@@ -347,40 +358,33 @@ function FreeCam:client_onFixedUpdate()
 	self:client_updatePermission()
 end
 
-local _sm_getKeyBinding = sm.gui.getKeyBinding
 function FreeCam:client_onInteract(character, state)
 	if not self:isAllowed() or not state then return end
 
-	self.camera.activationTime = sm.game.getCurrentTick()
-	self.camera.position       = sm.camera.getPosition()
+	local s_camera = self.camera
 
-	character:setLockingInteractable(self.interactable)
+	s_camera.fov_value      = sm.camera.getFov()
+	s_camera.activationTime = sm.game.getCurrentTick()
+	s_camera.position       = sm.camera.getPosition()
+	s_camera.state          = true
+
+	local sub_opt_one = s_camera.option_list[1].subOptions
+	sub_opt_one[6].value = OP.enable_free_cam_data
+	sub_opt_one[3].value = sm.camera.getFov()
+
+	self.camera_hud:setVisible("CamDataBP", OP.enable_free_cam_data)
 	self.camera_hud:open()
 
+	character:setLockingInteractable(self.interactable)
 	sm.camera.setCameraState(sm.camera.state.cutsceneTP)
-	_sm_setCamPos(self.camera.position)
+	_sm_setCamPos(s_camera.position)
 
-	self.camera.state = true
-	OP.print("Free Camera Mode enabled")
-	OP.display("blip", false, ("Free Camera Mode enabled, press #ffff00%s#ffffff to change the function and #ffff00%s#ffffff to change its parameters\nUse #ffff00%s#ffffff/#ffff00%s#ffffff or #ffff00%s#ffffff/#ffff00%s#ffffff to change the value of the parameter"):format(
-		_sm_getKeyBinding("MenuItem0"),
-		_sm_getKeyBinding("MenuItem1"),
-		_sm_getKeyBinding("PreviousMenuItem"),
-		_sm_getKeyBinding("NextMenuItem"),
-		_sm_getKeyBinding("ZoomIn"),
-		_sm_getKeyBinding("ZoomOut")
-	), 5)
-
+	FreeCamOldGui.client_displayStartInfo()
 	FREE_CAM_OPTIONS.display_guide()
 end
 
 function FreeCam:client_onDestroy()
-	if OP.exists(self.nametag_gui) then
-		if self.nametag_gui:isActive() then
-			self.nametag_gui:close()
-		end
-		self.nametag_gui:destroy()
-	end
+	GUI_STUFF.close_and_destroy_dialogs({ self.nametag_gui, self.camera_hud, self.camera_set_gui })
 
 	if not self.camera.state then return end
 
@@ -410,6 +414,7 @@ function FreeCam:client_canErase()
 end
 
 local _sm_guiSetInterText = sm.gui.setInteractionText
+local _sm_getKeyBinding = sm.gui.getKeyBinding
 function FreeCam:client_canInteract()
 	if self:isAllowed() then
 		if self.camera.state then

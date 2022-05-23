@@ -7,6 +7,14 @@ FREE_CAM_SUB = class()
 
 local free_cam_function_ids = FREE_CAM_OPTIONS.function_id_enum
 
+function FREE_CAM_SUB.SUB_updateCameraData(self, curCategory, curOpt)
+	local is_active = curOpt.value
+
+	self.camera_hud:setVisible("CamDataBP", is_active)
+
+	OP.enable_free_cam_data = is_active
+end
+
 function FREE_CAM_SUB.SUB_setTime(self, curCategory, curOpt)
 	self.network:sendToServer("server_getStuff", { free_cam_function_ids.set_global_time, curOpt.value })
 end

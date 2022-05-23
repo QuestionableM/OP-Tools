@@ -1,41 +1,43 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <MyGUI type="Layout" version="3.2.0">
     <Widget type="Widget" skin="PanelEmpty" position_real="0 0 1 1" name="BackPanel">
-        <Widget type="TextBox" skin="TextBox" position="15 300 400 25" align="Left Top" name="CamDataLabel">
-            <Property key="TextAlign" value="Left VCenter"/>
-            <Property key="FontName" value="SM_Button"/>
-            <Property key="Caption" value="Camera Data:"/>
-            <Property key="TextShadow" value="true"/>
-        </Widget>
-        <Widget type="TextBox" skin="TextBox" position="15 325 400 25" align="Left Top" name="FreeCamPos">
-            <Property key="FontName" value="SM_Button"/>
-            <Property key="TextShadow" value="true"/>
-            <Property key="TextAlign" value="Left VCenter"/>
-            <Property key="Caption" value="POSITION_TEXT"/>
-        </Widget>
-        <Widget type="TextBox" skin="TextBox" position="15 350 400 25" align="Left Top" name="FreeCamDir">
-            <Property key="Caption" value="DIRECTION_TEXT"/>
-            <Property key="FontName" value="SM_Button"/>
-            <Property key="TextAlign" value="Left VCenter"/>
-            <Property key="TextShadow" value="true"/>
-        </Widget>
-        <Widget type="TextBox" skin="TextBox" position="15 375 400 25" align="Left Top" name="FreeCamVel">
-            <Property key="Caption" value="SPEED_TEXT"/>
-            <Property key="FontName" value="SM_Button"/>
-            <Property key="TextAlign" value="Left VCenter"/>
-            <Property key="TextShadow" value="true"/>
-        </Widget>
-        <Widget type="TextBox" skin="TextBox" position="15 400 400 25" align="Left Top" name="FreeCamCategory">
-            <Property key="TextAlign" value="Left VCenter"/>
-            <Property key="TextShadow" value="true"/>
-            <Property key="FontName" value="SM_Button"/>
-            <Property key="Caption" value="CURRENT_CATEGORY"/>
-        </Widget>
-        <Widget type="TextBox" skin="TextBox" position="15 425 400 25" align="Left Top" name="FreeCamOption">
-            <Property key="Caption" value="CURRENT_OPTION"/>
-            <Property key="TextAlign" value="Left VCenter"/>
-            <Property key="TextShadow" value="true"/>
-            <Property key="FontName" value="SM_Button"/>
+        <Widget type="Widget" skin="PanelEmpty" position="15 257 440 170" align="Left Top" name="CamDataBP">
+            <Widget type="TextBox" skin="TextBox" position="0 10 430 25" align="Left Top" name="CamDataLabel">
+                <Property key="TextAlign" value="Left VCenter"/>
+                <Property key="FontName" value="SM_Button"/>
+                <Property key="Caption" value="Camera Data:"/>
+                <Property key="TextShadow" value="true"/>
+            </Widget>
+            <Widget type="TextBox" skin="TextBox" position="0 35 430 25" align="Left Top" name="FreeCamPos">
+                <Property key="FontName" value="SM_Button"/>
+                <Property key="TextShadow" value="true"/>
+                <Property key="TextAlign" value="Left VCenter"/>
+                <Property key="Caption" value="POSITION_TEXT"/>
+            </Widget>
+            <Widget type="TextBox" skin="TextBox" position="0 60 430 25" align="Left Top" name="FreeCamDir">
+                <Property key="Caption" value="DIRECTION_TEXT"/>
+                <Property key="FontName" value="SM_Button"/>
+                <Property key="TextAlign" value="Left VCenter"/>
+                <Property key="TextShadow" value="true"/>
+            </Widget>
+            <Widget type="TextBox" skin="TextBox" position="0 85 430 25" align="Left Top" name="FreeCamVel">
+                <Property key="Caption" value="SPEED_TEXT"/>
+                <Property key="FontName" value="SM_Button"/>
+                <Property key="TextAlign" value="Left VCenter"/>
+                <Property key="TextShadow" value="true"/>
+            </Widget>
+            <Widget type="TextBox" skin="TextBox" position="0 110 430 25" align="Left Top" name="FreeCamCategory">
+                <Property key="TextAlign" value="Left VCenter"/>
+                <Property key="TextShadow" value="true"/>
+                <Property key="FontName" value="SM_Button"/>
+                <Property key="Caption" value="CURRENT_CATEGORY"/>
+            </Widget>
+            <Widget type="TextBox" skin="TextBox" position="0 135 430 25" align="Left Top" name="FreeCamOption">
+                <Property key="Caption" value="CURRENT_OPTION"/>
+                <Property key="TextAlign" value="Left VCenter"/>
+                <Property key="TextShadow" value="true"/>
+                <Property key="FontName" value="SM_Button"/>
+            </Widget>
         </Widget>
     </Widget>
     <CodeGeneratorSettings/>

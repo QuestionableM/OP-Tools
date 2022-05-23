@@ -5,7 +5,17 @@
 if FreeCamOldGui then return end
 FreeCamOldGui = class()
 
-local _sm_guiGetKeyBinding = sm.gui.getKeyBinding
+local _sm_getKeyBinding = sm.gui.getKeyBinding
+function FreeCamOldGui.client_displayStartInfo()
+	OP.print("Free Camera Mode enabled")
+	OP.display("blip", false, ("Free Camera Mode enabled, press #ffff00%s#ffffff to change the category and #ffff00%s#ffffff to change its parameters\nUse #ffff00%s#ffffff/#ffff00%s#ffffff to change the value of the parameter"):format(
+		_sm_getKeyBinding("MenuItem0"),
+		_sm_getKeyBinding("MenuItem1"),
+		_sm_getKeyBinding("PreviousMenuItem"),
+		_sm_getKeyBinding("NextMenuItem")
+	), 5)
+end
+
 function FreeCamOldGui.client_changeSelectedCategory(self)
 	local s_camera = self.camera
 
@@ -14,7 +24,12 @@ function FreeCamOldGui.client_changeSelectedCategory(self)
 
 	local cur_category = s_camera.option_list[s_camera.category_id + 1]
 
-	OP.display("drag", false, ("[#ffff00%s#ffffff/#ffff00%s#ffffff] Camera category set to #ffff00%s#ffffff\nPress #ffff00%s#ffffff to change its parameters"):format(s_camera.category_id + 1, s_camera.option_count, cur_category.name, _sm_guiGetKeyBinding("MenuItem1")))
+	OP.display("drag", false, ("[#ffff00%s#ffffff/#ffff00%s#ffffff] Camera category set to #ffff00%s#ffffff\nPress #ffff00%s#ffffff to change its parameters"):format(
+		s_camera.category_id + 1,
+		s_camera.option_count,
+		cur_category.name,
+		_sm_getKeyBinding("MenuItem1")
+	))
 
 	self:client_HUD_updateSelectedOptions()
 end
@@ -36,14 +51,12 @@ function FreeCamOldGui.client_changeSelectedOption(self)
 	local option_type = cur_option.type
 
 	if option_type >= 1 and option_type <= 3 then
-		OP.display("release", false, ("[#ffff00%s#ffffff/#ffff00%s#ffffff] #ffff00%s#ffffff can be changed with #ffff00%s#ffffff/#ffff00%s#ffffff or #ffff00%s#ffffff/#ffff00%s#ffffff now"):format(
+		OP.display("release", false, ("[#ffff00%s#ffffff/#ffff00%s#ffffff] #ffff00%s#ffffff can be changed with #ffff00%s#ffffff/#ffff00%s#ffffff now"):format(
 			s_camera.option_id + 1,
 			option_count,
 			cur_option.name,
-			_sm_guiGetKeyBinding("PreviousMenuItem"),
-			_sm_guiGetKeyBinding("NextMenuItem"),
-			_sm_guiGetKeyBinding("ZoomIn"),
-			_sm_guiGetKeyBinding("ZoomOut")
+			_sm_getKeyBinding("PreviousMenuItem"),
+			_sm_getKeyBinding("NextMenuItem")
 		))
 	else
 		OP.display("release", false, ("[#ffff00%s#ffffff/#ffff00%s#ffffff] #ffff00%s#ffffff is selected"):format(s_camera.option_id + 1, option_count, cur_option.name))
@@ -85,6 +98,11 @@ local value_change_functions =
 
 		local cur_bool = OP.bools[subOpt.value]
 		OP.display(cur_bool.sound, false, ("#ffff00%s#ffffff set to #ffff00%s#ffffff"):format(subOpt.name, cur_bool.string))
+
+		local sub_opt_post_update = subOpt.post_update
+		if sub_opt_post_update ~= nil then
+			sub_opt_post_update(self, curCategory, subOpt)
+		end
 	end,
 	[4] = function(self, curCategory, subOpt, movement)
 		sm.gui.displayAlertText("This option has no changable values")

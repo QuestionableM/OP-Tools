@@ -5,6 +5,8 @@
 if OP then return end
 OP = class()
 
+OP.enable_free_cam_data = true
+
 local server_permissions = {}
 OP.server_admin = nil
 
