@@ -201,7 +201,7 @@ function FreeCam:client_onAction(movement, state)
 		elseif movement == int_actions.item1 then
 			FreeCamOldGui.client_changeSelectedOption(self)
 		elseif movement == int_actions.item2 then
-			self.camera_set_gui:open()
+			self:client_GUI_openGui()
 		end
 	end
 
