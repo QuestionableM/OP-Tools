@@ -317,14 +317,11 @@ local local_server_table =
 			
 			OP.print(("Character %s has been teleported. New position = %s"):format(d_character.id, d_char_pos))
 
-			local format_text
 			if d_character:isPlayer() then
-				format_text = ("#ffff00%s#ffffff has been teleported"):format(d_character:getPlayer().name)
+				self:server_sendMsg(caller, { 2, d_character:getPlayer() })
 			else
-				format_text = ("Character (id: #ffff00%s#ffffff) has been teleported"):format(d_character.id)
+				self:server_sendMsg(caller, { 3, d_character.id })
 			end
-
-			self:server_sendMessage(caller, format_text, "blip")
 		else
 			OP.display("ERROR: Tried to teleport a non-existant character")
 		end
@@ -335,8 +332,7 @@ local local_server_table =
 		self.network:sendToClients("client_getStuff", { client_function_id_enum.set_global_time, d_value })
 		OP.print(("Time set to %s"):format(d_value))
 
-		local frmt_text = ("#ffff00Time#ffffff set to #ffff00%.2f#ffffff for everyone"):format(d_value)
-		self:server_sendMessage(caller, frmt_text, "blip")
+		self:server_sendMsg(caller, { 4, d_value })
 	end,
 	[4] = function(self, data)
 		local d_unit_id = data[2]
@@ -412,19 +408,18 @@ local local_server_table =
 		end
 
 		OP.print(("%s players got their characters back"):format(amount))
-		local frmt_text = ("#ffff00%s#ffffff players got their characters back"):format(amount)
 
-		self:server_sendMessage(caller, frmt_text, "blip")
+		self:server_sendMsg(caller, { 5, amount })
 	end,
 	[7] = function(self, data, caller) --local controls
 		local d_player = data[2]
 		if d_player == OP.server_admin then
-			self:server_sendMessage(caller, "You can't lock controls for server admin!", "error")
+			self:server_sendMsg(caller, { 6 })
 			return
 		end
 
 		if d_player == caller then
-			self:server_sendMessage(caller, "You can't lock controls for your own character!", "error")
+			self:server_sendMsg(caller, { 7 })
 			return
 		end
 
@@ -446,9 +441,8 @@ local local_server_table =
 		end
 
 		OP.print(("%s players have been returned back to the world"):format(c_recovered_players))
-		local frmt_text = ("#ffff00%s#ffffff players were rescued from outside the world"):format(c_recovered_players)
 
-		self:server_sendMessage(caller, frmt_text, "blip")
+		self:server_sendMsg(caller, { 8, c_recovered_players })
 	end,
 	[9] = function(self, data, caller) --char speed
 		local d_character = data[2]
@@ -457,9 +451,8 @@ local local_server_table =
 			d_character:setMovementSpeedFraction(d_value)
 
 			OP.print(("character speed has been changed to %s (char id = %s)"):format(d_value, d_character.id))
-			local frmt_text = ("Set the speed of #ffff00%s#ffffff for a character [id: #ffff00%s#ffffff]"):format(d_value, d_character.id)
 
-			self:server_sendMessage(caller, frmt_text, "blip")
+			self:server_sendMsg(caller, { 9, d_value, d_character.id })
 		else
 			OP.print("ERROR: changing the speed for non-existant character")
 		end
@@ -473,9 +466,8 @@ local local_server_table =
 
 			local l_state_name = l_state_data.name
 			OP.print(("%s for character to %s, id = %s"):format(l_state_name, cur_setting, d_character.id))
-			local frmt_text = ("#ffff00%s#ffffff is %s for character [id: #ffff00%s#ffffff]"):format(l_state_name, OP.bools[cur_setting].string, d_character.id)
 
-			self:server_sendMessage(caller, frmt_text, "blip")
+			self:server_sendMsg(caller, { 10, d_type_id, cur_setting, d_character.id })
 		else
 			OP.print("ERROR: tried to down a non-existant character")
 		end

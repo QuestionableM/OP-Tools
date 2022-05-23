@@ -80,41 +80,57 @@ function FreeCam:client_getStuff(data)
 	end
 end
 
-local error_msg_table =
+local client_char_prop_names =
 {
-	p_noperm = "You do not have permission to call any server functions!"
+	[1] = "Set Tumble",
+	[2] = "Set Downed",
+	[3] = "Set Swimming",
+	[4] = "Set Diving"
 }
 
-function FreeCam:client_onErrorMessage(msg_id)
-	local cur_msg = error_msg_table[msg_id]
+local client_message_ids =
+{
+	[1]  = {msg = "You do not have permission to call any server functions!", sound = "error"},
+	[2]  = function(data) OP.display("blip", false, ("#ffff00%s#ffffff has been teleported"):format(data[2].name)) end,
+	[3]  = function(data) OP.display("blip", false, ("Character (id: #ffff00%s#ffffff) has been teleported"):format(data[2])) end,
+	[4]  = function(data) OP.display("blip", false, ("#ffff00Time#ffffff set to #ffff00%.2f#ffffff for everyone"):format(data[2])) end,
+	[5]  = function(data) OP.display("blip", false, ("#ffff00%s#ffffff players got their characters back"):format(data[2])) end,
+	[6]  = {msg = "You can't lock controls for server admin!"      , sound = "error"},
+	[7]  = {msg = "You can't lock controls for your own character!", sound = "error"},
+	[8]  = function(data) OP.display("blip", false, ("#ffff00%s#ffffff players were rescued from outside the world"):format(data[2])) end,
+	[9]  = function(data) OP.display("blip", false, ("Set the speed to #ffff00%s#ffffff for a character [id: #ffff00%s#ffffff]"):format(data[2], data[3])) end,
+	[10] = function(data)
+		local type_id = data[2]
+		local bool_data = data[3]
+		local char_id = data[4]
 
-	sm.gui.displayAlertText(cur_msg, 3)
-end
+		local cur_prop_name = client_char_prop_names[type_id]
+		local bool_string = OP.bools[bool_data].string
 
-function FreeCam:server_sendMessage(client, message, sound)
-	local out_data = {msg = message, snd = sound}
-
-	if client ~= nil then
-		self.network:sendToClient(client, "client_onMessage", out_data)
-	else
-		self.network:sendToClients("client_onMessage", out_data)
+		OP.display("blip", false, ("#ffff00%s#ffffff is %s for character [id: #ffff00%s#ffffff]"):format(cur_prop_name, bool_string, char_id))
 	end
+}
+
+function FreeCam:server_sendMsg(caller, data)
+	self.network:sendToClient(caller, "client_onMessage", data)
 end
 
 function FreeCam:client_onMessage(data)
-	local cur_msg = data.msg
-	local cur_snd = data.snd
-
-	OP.display(cur_snd, false, cur_msg)
+	local l_msg_id = data[1]
+	local l_msg_data = client_message_ids[l_msg_id]
+	if type(l_msg_data) == "function" then
+		l_msg_data(data)
+	else
+		OP.display(l_msg_data.sound, false, l_msg_data.msg)
+	end
 end
 
 function FreeCam:server_getStuff(data, caller)
 	if not OP.getPlayerPermission(caller, "FreeCamera") then
-		self.network:sendToClient(caller, "client_onErrorMessage", "p_noperm")
+		self.network:sendToClient(caller, "client_onMessage", { 1 })
 		return
 	end
 
-	assert(#data > 0)
 	local function_id = data[1]
 	local cur_func = self.serverFunctions[function_id]
 
