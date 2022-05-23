@@ -11,12 +11,10 @@ dofile("FreeCamGui.lua")
 dofile("FreeCamOldGui.lua")
 
 FreeCam = class(FreeCamGui)
-FreeCam.connectionInput = sm.interactable.connectionType.none
+FreeCam.connectionInput  = sm.interactable.connectionType.none
 FreeCam.connectionOutput = sm.interactable.connectionType.none
 
 function FreeCam:server_onCreate()
-	self.units = FREE_CAM_OPTIONS.loadUnitInfo()
-	self.harvestables = FREE_CAM_OPTIONS.loadHarvestableInfo()
 	self.serverFunctions = FREE_CAM_OPTIONS.server_callBacks()
 	self.server_admin = true
 end
@@ -74,9 +72,10 @@ function FreeCam:updateCamera()
 end
 
 function FreeCam:client_getStuff(data)
-	local cur_func = self.camera.callbacks[data.type]
+	local function_id = data[1]
+	local cur_func = self.camera.callbacks[function_id]
 
-	if type(cur_func) == "function" then
+	if cur_func ~= nil then
 		cur_func(self, data)
 	end
 end
@@ -115,9 +114,11 @@ function FreeCam:server_getStuff(data, caller)
 		return
 	end
 
-	local cur_func = self.serverFunctions[data.type]
+	assert(#data > 0)
+	local function_id = data[1]
+	local cur_func = self.serverFunctions[function_id]
 
-	if type(cur_func) == "function" then
+	if cur_func ~= nil then
 		cur_func(self, data, caller)
 	end
 end
@@ -128,10 +129,11 @@ function FreeCam:client_SpawnCharacter()
 
 	if (actTime and (curTick - actTime) > 5) or not actTime then
 		self.camera.activationTime = sm.game.getCurrentTick()
+
 		self.network:sendToServer("server_getStuff", {
-			type = "spawnChar",
-			position = self.camera.position,
-			dir = OP.directionToRadians(sm.camera.getDirection())
+			FREE_CAM_OPTIONS.function_id_enum.teleport_to_cam,
+			sm.localPlayer.getPlayer(),
+			sm.camera.getPosition()
 		})
 	end
 end

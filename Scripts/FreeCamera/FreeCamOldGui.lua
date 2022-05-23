@@ -2,6 +2,7 @@
 	Copyright (c) 2022 Questionable Mark
 ]]
 
+if FreeCamOldGui then return end
 FreeCamOldGui = class()
 
 local _sm_guiGetKeyBinding = sm.gui.getKeyBinding

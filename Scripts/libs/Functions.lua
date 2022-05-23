@@ -121,8 +121,10 @@ OP.tool_uuids =
 
 function OP.directionToRadians(dir)
 	local result = {}
-	result.pitch = math.asin(dir.z)
-	result.yaw = math.atan2(dir.y, dir.x) - math.pi / 2
+
+	result[1] = math.asin(dir.z) --pitch
+	result[2] = math.atan2(dir.y, dir.x) - math.pi / 2 --yaw
+
 	return result
 end
 
