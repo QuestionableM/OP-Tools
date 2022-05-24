@@ -5,7 +5,39 @@
 FreeCamGui = class()
 
 function FreeCamGui:client_GUI_buttonCallback(btn_name)
-	print("client_GUI_buttonCallback", btn_name)
+	local btn_idx = tonumber(btn_name:sub(-1))
+	local option_id = self:client_GUI_getSettingPageOffset(btn_idx)
+	local new_opt_id = option_id - 1
+
+	local s_camera = self.camera
+	local cur_tab = self.gui_current_tab
+	local cur_category = s_camera.option_list[cur_tab]
+	local cur_option   = cur_category.subOptions[option_id]
+
+	local l_should_update = false
+	local new_tab_id = (cur_tab - 1)
+	if s_camera.category_id ~= new_tab_id then
+		s_camera.category_id = new_tab_id
+		l_should_update = true
+	end
+
+	if cur_option.gui_ex then
+		local cur_opt_func = cur_option.func
+		if cur_opt_func ~= nil then
+			cur_opt_func(self, cur_category, cur_option)
+		end
+	else
+		if not l_should_update and s_camera.option_id == new_opt_id then
+			return
+		end
+
+		sm.audio.play("PotatoRifle - Equip", s_camera.position)
+	end
+
+	s_camera.option_id = new_opt_id
+
+	self:client_GUI_updateButtonNames()
+	self:client_HUD_updateSelectedOptions()
 end
 
 function FreeCamGui:client_GUI_toggleCallback(btn_name)
@@ -17,13 +49,46 @@ function FreeCamGui:client_GUI_getSettingPageOffset(widget_id)
 	return cur_setting_page + widget_id
 end
 
+function FreeCamGui:client_GUI_updateButtonNames()
+	local cur_tab = self.gui_current_tab
+	local page_offset = (self.gui_setting_page - 1) * 4
+
+	local s_camera = self.camera
+	local cur_category = s_camera.option_list[cur_tab]
+	local sub_opt = cur_category.subOptions
+	local cur_opt_id = s_camera.option_id + 1
+	local set_gui = self.camera_set_gui
+
+	for i = 1, 4 do
+		local cur_id = page_offset + i
+		local cur_option = sub_opt[cur_id]
+
+		if cur_option ~= nil and cur_option.type == 4 and not cur_option.gui_ex then --is button
+			local is_selected = (cur_opt_id == cur_id)
+			set_gui:setText("Button"..i, is_selected and "Option Selected" or "Select Option")
+		end
+	end
+end
+
 function FreeCamGui:client_GUI_setCamCategoryAndPage(widget_id)
 	local s_camera = self.camera
 	local option_id = self:client_GUI_getSettingPageOffset(widget_id)
 
-	s_camera.category_id = self.gui_current_tab - 1
-	s_camera.option_id   = option_id - 1
+	local new_category = self.gui_current_tab - 1
+	local l_should_update = false
+	if s_camera.category_id ~= new_category then
+		s_camera.category_id = new_category
+		l_should_update = true
+	end
 
+	local new_opt_id = option_id - 1
+	if not l_should_update and s_camera.option_id == new_opt_id then
+		return
+	end
+
+	s_camera.option_id = new_opt_id
+
+	self:client_GUI_updateButtonNames()
 	self:client_HUD_updateSelectedOptions()
 end
 
@@ -187,7 +252,7 @@ function FreeCamGui:client_GUI_updateTabs()
 		local cur_idx = tab_shift + i
 		local btn_name = "TabButton"..i
 
-		cam_gui:setText(btn_name, cam_options[cur_idx].name)
+		cam_gui:setText(btn_name, cam_options[cur_idx].tab_name)
 		cam_gui:setButtonState(btn_name, cur_idx == cur_tab)
 	end
 
@@ -228,7 +293,17 @@ local value_setter_functions =
 		--gui:setButtonState("ToggleOf"..slot, not cur_val)
 	end,
 	[4] = function(self, slot, cur_category, cur_option, gui) --init button data
+		local btn_name = "Button"..slot
+		local option_id = self:client_GUI_getSettingPageOffset(slot)
 
+		if cur_option.gui_ex then
+			gui:setText(btn_name, "Call Function")
+		else
+			local cur_opt_id = self.camera.option_id + 1
+			local l_selected = (cur_opt_id == option_id)
+
+			gui:setText(btn_name, l_selected and "Option Selected" or "Select Option")
+		end
 	end
 }
 

@@ -2,7 +2,7 @@
 	Copyright (c) 2022 Questionable Mark
 ]]
 
-if FREE_CAM_OPTIONS then return end
+--if FREE_CAM_OPTIONS then return end
 FREE_CAM_OPTIONS = class()
 
 local _sm_getKeyBind = sm.gui.getKeyBinding
@@ -63,6 +63,7 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 	local functionTable = {
 		[1] = {
 			name = "Camera Functions",
+			tab_name = "Camera Func.",
 			individual_functions = true,
 			subOptions = {
 				[1] = {name = "Camera Speed"      , type = option_type_enum.value  , value = 1, changer = 0.01, minValue = 0, maxValue = 20},
@@ -75,6 +76,7 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 		},
 		[2] = {
 			name = "Explosion Spawner",
+			tab_name = "Expl. Spawner",
 			func = function(self, cur_category, category_id, option_id)
 				local cam_pos = sm.camera.getPosition()
 				local bool, result = sm.physics.raycast(cam_pos, cam_pos + sm.camera.getDirection() * 1000)
@@ -99,6 +101,7 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 		},
 		[3] = {
 			name = "Projectile Launcher",
+			tab_name = "Proj. Launcher",
 			func = function(self, cur_category, category_id, option_id)
 				local sub_opt = cur_category.subOptions
 				local proj_id = sub_opt[1].value
@@ -148,6 +151,7 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 		},
 		[4] = {
 			name = "Unit Spawner",
+			tab_name = "Unit Spawner",
 			individual_functions = true,
 			subOptions = {
 				[1] = {name = "Spawn Unit"             , type = option_type_enum.list   , func = FREE_CAM_SUB.SUB_creatureSpawner, value = 0, maxValue = 7, listName = "creatures"},
@@ -169,6 +173,7 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 		},
 		[5] = {
 			name = "Harvestable Functions",
+			tab_name = "Harvest. Func.",
 			individual_functions = true,
 			subOptions = {
 				[1] = {name = "Spawn Harvestable" , type = option_type_enum.list  , func = FREE_CAM_SUB.SUB_createHarvestable, value = 0, maxValue = 37, listName = "harvestableNames"},
@@ -218,6 +223,7 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 		},
 		[6] = {
 			name = "Character Functions",
+			tab_name = "Char. Func.",
 			individual_functions = true,
 			subOptions = {
 				[1] = {name = "Character Hijacker"  , type = option_type_enum.button, func = FREE_CAM_SUB.SUB_charHijacker},
@@ -231,11 +237,12 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 		},
 		[7] = {
 			name = "Player Functions",
+			tab_name = "Player Func.",
 			individual_functions = true,
 			subOptions = {
-				[1] = {name = "Recover Missing Player Characters", type = option_type_enum.button, func = FREE_CAM_SUB.SUB_playerRecover},
-				[2] = {name = "Player Locker"                    , type = option_type_enum.button, func = FREE_CAM_SUB.SUB_playerLocker},
-				[3] = {name = "Recover Off-world Players"        , type = option_type_enum.value , func = FREE_CAM_SUB.SUB_recoverOffWorldPlayers, update = FREE_CAM_SUB.SUB_recoverOffWorldPlayersUpdate, value = 710, changer = 10, minValue = 0, maxValue = 1400}
+				[1] = {name = "Recover Missing Player Characters", type = option_type_enum.button, func = FREE_CAM_SUB.SUB_playerRecover, gui_ex = true},
+				[2] = {name = "Player Locker"                    , type = option_type_enum.button, func = FREE_CAM_SUB.SUB_playerLocker },
+				[3] = {name = "Recover Off-world Players"        , type = option_type_enum.value , func = FREE_CAM_SUB.SUB_recoverOffWorldPlayers, gui_ex = true, update = FREE_CAM_SUB.SUB_recoverOffWorldPlayersUpdate, value = 710, changer = 10, minValue = 0, maxValue = 1400}
 			}
 		}
 	}

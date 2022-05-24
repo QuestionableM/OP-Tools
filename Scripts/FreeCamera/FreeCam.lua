@@ -31,7 +31,7 @@ function FreeCam:client_onCreate()
 	tag_gui:setFadeRange(2500)
 	tag_gui:setText("Text", "#ffff00Your Character")
 
-	self.camera_hud = sm.gui.createGuiFromLayout("$CONTENT_DATA/Gui/Layouts/FreeCameraHUD_test.layout", false, { isHud = true, hidesHotbar = true, isInteractive = false })
+	self.camera_hud = sm.gui.createGuiFromLayout("$CONTENT_DATA/Gui/Layouts/FreeCameraHUD.layout", false, { isHud = true, hidesHotbar = true, isInteractive = false })
 
 	self:client_GUI_createFreeCamSettings()
 	self:client_HUD_updateSelectedOptions()

@@ -1,44 +1,44 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <MyGUI type="Layout" version="3.2.0">
-    <Widget type="Widget" skin="PanelEmpty" position_real="0 0 1 1" name="BackPanel">
-        <Widget type="Widget" skin="PanelEmpty" position="15 257 440 170" align="Left Top" name="CamDataBP">
-            <Widget type="TextBox" skin="TextBox" position="0 10 430 25" align="Left Top" name="CamDataLabel">
-                <Property key="TextAlign" value="Left VCenter"/>
-                <Property key="FontName" value="SM_Button"/>
-                <Property key="Caption" value="Camera Data:"/>
-                <Property key="TextShadow" value="true"/>
-            </Widget>
-            <Widget type="TextBox" skin="TextBox" position="0 35 430 25" align="Left Top" name="FreeCamPos">
-                <Property key="FontName" value="SM_Button"/>
-                <Property key="TextShadow" value="true"/>
-                <Property key="TextAlign" value="Left VCenter"/>
-                <Property key="Caption" value="POSITION_TEXT"/>
-            </Widget>
-            <Widget type="TextBox" skin="TextBox" position="0 60 430 25" align="Left Top" name="FreeCamDir">
-                <Property key="Caption" value="DIRECTION_TEXT"/>
-                <Property key="FontName" value="SM_Button"/>
-                <Property key="TextAlign" value="Left VCenter"/>
-                <Property key="TextShadow" value="true"/>
-            </Widget>
-            <Widget type="TextBox" skin="TextBox" position="0 85 430 25" align="Left Top" name="FreeCamVel">
-                <Property key="Caption" value="SPEED_TEXT"/>
-                <Property key="FontName" value="SM_Button"/>
-                <Property key="TextAlign" value="Left VCenter"/>
-                <Property key="TextShadow" value="true"/>
-            </Widget>
-            <Widget type="TextBox" skin="TextBox" position="0 110 430 25" align="Left Top" name="FreeCamCategory">
-                <Property key="TextAlign" value="Left VCenter"/>
-                <Property key="TextShadow" value="true"/>
-                <Property key="FontName" value="SM_Button"/>
-                <Property key="Caption" value="CURRENT_CATEGORY"/>
-            </Widget>
-            <Widget type="TextBox" skin="TextBox" position="0 135 430 25" align="Left Top" name="FreeCamOption">
-                <Property key="Caption" value="CURRENT_OPTION"/>
-                <Property key="TextAlign" value="Left VCenter"/>
-                <Property key="TextShadow" value="true"/>
-                <Property key="FontName" value="SM_Button"/>
-            </Widget>
-        </Widget>
-    </Widget>
-    <CodeGeneratorSettings/>
+	<Widget type="Widget" skin="PanelEmpty" position_real="0 0 1 1" name="BackPanel">
+		<Widget type="Widget" skin="PanelEmpty" position_real="0.0078125 0.23796296296296296 0.22916666666666666 0.15740740740740741" align="Left Top" name="CamDataBP">
+			<Widget type="TextBox" skin="TextBox" position_real="0 0.058823529411764705 0.97727272727272729 0.14705882352941177" align="Left Top" name="CamDataLabel">
+				<Property key="TextAlign" value="Left VCenter"/>
+				<Property key="FontName" value="SM_Button"/>
+				<Property key="Caption" value="Camera Data:"/>
+				<Property key="TextShadow" value="true"/>
+			</Widget>
+			<Widget type="TextBox" skin="TextBox" position_real="0 0.20588235294117646 0.97727272727272729 0.14705882352941177" align="Left Top" name="FreeCamPos">
+				<Property key="FontName" value="SM_Button"/>
+				<Property key="TextShadow" value="true"/>
+				<Property key="TextAlign" value="Left VCenter"/>
+				<Property key="Caption" value="POSITION_TEXT"/>
+			</Widget>
+			<Widget type="TextBox" skin="TextBox" position_real="0 0.35294117647058826 0.97727272727272729 0.14705882352941177" align="Left Top" name="FreeCamDir">
+				<Property key="Caption" value="DIRECTION_TEXT"/>
+				<Property key="FontName" value="SM_Button"/>
+				<Property key="TextAlign" value="Left VCenter"/>
+				<Property key="TextShadow" value="true"/>
+			</Widget>
+			<Widget type="TextBox" skin="TextBox" position_real="0 0.5 0.97727272727272729 0.14705882352941177" align="Left Top" name="FreeCamVel">
+				<Property key="Caption" value="SPEED_TEXT"/>
+				<Property key="FontName" value="SM_Button"/>
+				<Property key="TextAlign" value="Left VCenter"/>
+				<Property key="TextShadow" value="true"/>
+			</Widget>
+			<Widget type="TextBox" skin="TextBox" position_real="0 0.6470588235294118 0.97727272727272729 0.14705882352941177" align="Left Top" name="FreeCamCategory">
+				<Property key="TextAlign" value="Left VCenter"/>
+				<Property key="TextShadow" value="true"/>
+				<Property key="FontName" value="SM_Button"/>
+				<Property key="Caption" value="CURRENT_CATEGORY"/>
+			</Widget>
+			<Widget type="TextBox" skin="TextBox" position_real="0 0.79411764705882348 0.97727272727272729 0.14705882352941177" align="Left Top" name="FreeCamOption">
+				<Property key="Caption" value="CURRENT_OPTION"/>
+				<Property key="TextAlign" value="Left VCenter"/>
+				<Property key="TextShadow" value="true"/>
+				<Property key="FontName" value="SM_Button"/>
+			</Widget>
+		</Widget>
+	</Widget>
+	<CodeGeneratorSettings/>
 </MyGUI>
