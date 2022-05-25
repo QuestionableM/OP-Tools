@@ -3,12 +3,13 @@
 ]]
 
 if AdminTool then return end
+
 dofile("../libs/ScriptLoader.lua")
 dofile("AdminTool_Functions.lua")
 dofile("AdminToolGUI.lua")
 
 AdminTool = class(AdminToolGUI)
-AdminTool.connectionInput = sm.interactable.connectionType.none
+AdminTool.connectionInput  = sm.interactable.connectionType.none
 AdminTool.connectionOutput = sm.interactable.connectionType.none
 
 function AdminTool:server_onCreate()
