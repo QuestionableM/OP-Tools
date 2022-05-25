@@ -69,8 +69,8 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 				[1] = {name = "Camera Speed"      , type = option_type_enum.value  , value = 1, changer = 0.01, minValue = 0, maxValue = 20},
 				[2] = {name = "Camera Friction"   , type = option_type_enum.value  , value = 1, changer = 0.01, minValue = 0, maxValue = 1 },
 				[3] = {name = "Camera Fov"        , type = option_type_enum.value  , value = 0, changer = 1, minValue = 1, maxValue = 179},
-				[4] = {name = "Time"              , type = option_type_enum.value  , func = FREE_CAM_SUB.SUB_setTime    , update = FREE_CAM_SUB.SUB_timeUpdate       , value = sm.render.getOutdoorLighting(), changer = 0.01, minValue = 0, maxValue = 1},
-				[5] = {name = "Move to Player"    , type = option_type_enum.value  , func = FREE_CAM_SUB.SUB_teleportCam, update = FREE_CAM_SUB.SUB_teleportCamUpdate, value = 0, changer = 1, minValue = 1, maxValue = #sm.player.getAllPlayers()},
+				[4] = {name = "Time"              , type = option_type_enum.value  , func = FREE_CAM_SUB.SUB_setTime    , update = FREE_CAM_SUB.SUB_timeUpdate       , gui_ex = true, value = sm.render.getOutdoorLighting(), changer = 0.01, minValue = 0, maxValue = 1},
+				[5] = {name = "Move to Player"    , type = option_type_enum.value  , func = FREE_CAM_SUB.SUB_teleportCam, update = FREE_CAM_SUB.SUB_teleportCamUpdate, gui_ex = true, value = 0, changer = 1, minValue = 1, maxValue = #sm.player.getAllPlayers()},
 				[6] = {name = "Enable Camera Data", type = option_type_enum.boolean, post_update = FREE_CAM_SUB.SUB_updateCameraData, value = OP.enable_free_cam_data}
 			}
 		},
@@ -240,9 +240,9 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 			tab_name = "Player Func.",
 			individual_functions = true,
 			subOptions = {
-				[1] = {name = "Recover Missing Player Characters", type = option_type_enum.button, func = FREE_CAM_SUB.SUB_playerRecover, gui_ex = true},
-				[2] = {name = "Player Locker"                    , type = option_type_enum.button, func = FREE_CAM_SUB.SUB_playerLocker },
-				[3] = {name = "Recover Off-world Players"        , type = option_type_enum.value , func = FREE_CAM_SUB.SUB_recoverOffWorldPlayers, gui_ex = true, update = FREE_CAM_SUB.SUB_recoverOffWorldPlayersUpdate, value = 710, changer = 10, minValue = 0, maxValue = 1400}
+				[1] = {name = "Recover Characters", type = option_type_enum.button, func = FREE_CAM_SUB.SUB_playerRecover, gui_ex = true},
+				[2] = {name = "Player Locker"     , type = option_type_enum.button, func = FREE_CAM_SUB.SUB_playerLocker },
+				[3] = {name = "Recover Players"   , type = option_type_enum.value , func = FREE_CAM_SUB.SUB_recoverOffWorldPlayers, gui_ex = true, update = FREE_CAM_SUB.SUB_recoverOffWorldPlayersUpdate, value = 710, changer = 10, minValue = 0, maxValue = 1400}
 			}
 		}
 	}

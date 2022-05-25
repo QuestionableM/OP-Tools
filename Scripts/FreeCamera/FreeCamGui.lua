@@ -40,8 +40,27 @@ function FreeCamGui:client_GUI_buttonCallback(btn_name)
 	self:client_HUD_updateSelectedOptions()
 end
 
+function FreeCamGui:client_GUI_updateBooleanWidget(slot, cur_option)
+	local cam_gui = self.camera_set_gui
+	local cur_val = cur_option.value
+
+	cam_gui:setButtonState("ToggleOn"..slot, cur_val)
+	cam_gui:setButtonState("ToggleOf"..slot, not cur_val)
+end
+
 function FreeCamGui:client_GUI_toggleCallback(btn_name)
-	print("client_GUI_toggleCallback", btn_name)
+	local button_idx = tonumber(btn_name:sub(-1))
+	local button_act = btn_name:sub(7, 8)
+
+	local new_bool_state = (button_act == "On")
+
+	local cur_option = self:client_GUI_getCurrentSubOption(button_idx)
+	if new_bool_state == cur_option.value then return end
+	cur_option.value = new_bool_state
+
+	self:client_GUI_updateBooleanWidget(button_idx, cur_option)
+	
+	sm.audio.play(OP.bools[new_bool_state].sound, self.camera.position)
 end
 
 function FreeCamGui:client_GUI_getSettingPageOffset(widget_id)
@@ -92,18 +111,37 @@ function FreeCamGui:client_GUI_setCamCategoryAndPage(widget_id)
 	self:client_HUD_updateSelectedOptions()
 end
 
+local _sm_guiGetKeyBinding = sm.gui.getKeyBinding
+function FreeCamGui:client_GUI_updateStatusWidget(slot, is_valid, self_ex)
+	local cam_gui = self.camera_set_gui
+	local l_status_name = "ValStatus"..slot
+
+	if is_valid then
+		if self_ex then
+			local chat_btn = _sm_guiGetKeyBinding("Chat")
+
+			cam_gui:setText(l_status_name, ("Press #ffff00%s#ffffff to use"):format(chat_btn))
+		end
+	else
+		cam_gui:setText(l_status_name, "#ff0000Invalid Value#ffffff")
+	end
+
+	cam_gui:setVisible(l_status_name, self_ex or not is_valid)
+end
+
 function FreeCamGui:client_GUI_onTextChangedCallback(widget, text)
 	local cam_gui = self.camera_set_gui
 	local widget_idx = tonumber(widget:sub(-1))
 
 	local status_widget = "ValStatus"..widget_idx
 
-	local number_value = tonumber(text)
-	if number_value ~= nil then
-		local page_offset = (self.gui_setting_page - 1) * 4
-		local cur_category = self.camera.option_list[self.gui_current_tab]
+	local page_offset = (self.gui_setting_page - 1) * 4
+	local cur_category = self.camera.option_list[self.gui_current_tab]
+	local cur_opt = cur_category.subOptions[page_offset + widget_idx]
 
-		local cur_opt = cur_category.subOptions[page_offset + widget_idx]
+	local number_value = tonumber(text)
+	local is_num_valid = (number_value ~= nil)
+	if is_num_valid then
 		if cur_opt.value ~= number_value then
 			cur_opt.value = sm.util.clamp(number_value, cur_opt.minValue, cur_opt.maxValue)
 
@@ -112,12 +150,9 @@ function FreeCamGui:client_GUI_onTextChangedCallback(widget, text)
 				cur_opt_update(self, cur_category, cur_opt)
 			end
 		end
-	else
-		cam_gui:setText(status_widget, "#ff0000Invalid Value#ffffff")
 	end
 
-	cam_gui:setVisible(status_widget, number_value == nil)
-
+	self:client_GUI_updateStatusWidget(widget_idx, is_num_valid, cur_opt.gui_ex)
 	self:client_GUI_setCamCategoryAndPage(widget_idx)
 end
 
@@ -142,17 +177,28 @@ function FreeCamGui:client_GUI_onTextAcceptedCallback(widget, text)
 
 		cam_gui:setText(widget, tostring(cur_option.value))
 
-		local cur_opt_func = cur_option.func
-		if cur_opt_func ~= nil then
-			cur_opt_func(self, cur_category, cur_option)
+		if cur_option.gui_ex then
+			local cur_opt_func = cur_option.func
+			if cur_opt_func ~= nil then
+				cur_opt_func(self, cur_category, cur_option)
 
-			sm.audio.play("Retrowildblip", s_camera.position)
+				sm.audio.play("Retrowildblip", s_camera.position)
+			end
 		end
 	else
 		sm.audio.play("WeldTool - Error", s_camera.position)
 	end
 
 	self:client_GUI_setCamCategoryAndPage(widget_idx)
+end
+
+function FreeCamGui:client_GUI_updateListBoxWidget(slot, cur_category, cur_option)
+	local cur_option_list = cur_category.listStorage[cur_option.listName]
+	local cur_list_val = cur_option_list[cur_option.value]
+
+	local cam_gui = self.camera_set_gui
+	cam_gui:setText("ListValue"..slot, cur_list_val and cur_list_val.name or "Select Item")
+	cam_gui:setText("ListPage"..slot, ("%s / %s"):format(cur_option.value, cur_option.maxValue))
 end
 
 function FreeCamGui:client_GUI_onListBoxUpdateCallback(btn_name)
@@ -169,12 +215,7 @@ function FreeCamGui:client_GUI_onListBoxUpdateCallback(btn_name)
 	if new_val ~= cur_option.value then
 		cur_option.value = new_val
 
-		local cur_obj_list = cur_category.listStorage[cur_option.listName]
-		local cur_list_obj = cur_obj_list[cur_option.value]
-
-		local cam_gui = self.camera_set_gui
-		cam_gui:setText("ListValue"..btn_idx, cur_list_obj.name)
-		cam_gui:setText("ListPage"..btn_idx, ("%s / %s"):format(cur_option.value, cur_option.maxValue))
+		self:client_GUI_updateListBoxWidget(btn_idx, cur_category, cur_option)
 		
 		sm.audio.play("GUI Item drag", self.camera.position)
 		self:client_GUI_setCamCategoryAndPage(btn_idx)
@@ -210,6 +251,10 @@ function FreeCamGui:client_GUI_tabSelectCallback(button_name)
 
 	self.gui_setting_page = 1
 	self.gui_current_tab = cur_tab_idx
+
+	self.camera.category_id = cur_tab_idx - 1
+	self.camera.option_id = -1
+	self:client_HUD_updateSelectedOptions()
 
 	self:client_GUI_updateTabName()
 	self:client_GUI_updateTabSelection()
@@ -272,25 +317,14 @@ local value_setter_functions =
 {
 	[1] = function(self, slot, cur_category, cur_option, gui) --init value input data
 		gui:setText("ValInput"..slot, tostring(cur_option.value))
-		gui:setVisible("ValStatus"..slot, false)
+
+		self:client_GUI_updateStatusWidget(slot, true, cur_option.gui_ex)
 	end,
 	[2] = function(self, slot, cur_category, cur_option, gui) --init list box data
-		local list_name = cur_option.listName
-		local list_data = cur_category.listStorage[list_name]
-
-		local cur_value = cur_option.value
-		local cur_item = list_data[cur_value]
-		local item_name = (cur_item ~= nil and cur_item.name or "Select Item")
-
-		gui:setText("ListValue"..slot, item_name)
-		gui:setText("ListPage"..slot, ("%s / %s"):format(cur_value, cur_option.maxValue))
+		self:client_GUI_updateListBoxWidget(slot, cur_category, cur_option)
 	end,
 	[3] = function(self, slot, cur_category, cur_option, gui) --init boolean data
-		local cur_val = cur_option.value
-
-		--IMPLEMENT LATER, WAITING FOR BUG FIX UPDATE
-		--gui:setButtonState("ToggleOn"..slot,     cur_val)
-		--gui:setButtonState("ToggleOf"..slot, not cur_val)
+		self:client_GUI_updateBooleanWidget(slot, cur_option)
 	end,
 	[4] = function(self, slot, cur_category, cur_option, gui) --init button data
 		local btn_name = "Button"..slot
@@ -300,7 +334,9 @@ local value_setter_functions =
 			gui:setText(btn_name, "Call Function")
 		else
 			local cur_opt_id = self.camera.option_id + 1
-			local l_selected = (cur_opt_id == option_id)
+			local cur_cat_id = self.camera.category_id + 1
+
+			local l_selected = (cur_opt_id == option_id and self.gui_current_tab == cur_cat_id)
 
 			gui:setText(btn_name, l_selected and "Option Selected" or "Select Option")
 		end
