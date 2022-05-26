@@ -363,14 +363,16 @@ function FreeCam:client_onInteract(character, state)
 
 	local s_camera = self.camera
 
-	s_camera.fov_value      = sm.camera.getFov()
+	local cur_fov = sm.camera.getFov()
+	s_camera.fov_value      = cur_fov
 	s_camera.activationTime = sm.game.getCurrentTick()
 	s_camera.position       = sm.camera.getPosition()
 	s_camera.state          = true
 
 	local sub_opt_one = s_camera.option_list[1].subOptions
-	sub_opt_one[6].value = OP.enable_free_cam_data
-	sub_opt_one[3].value = sm.camera.getFov()
+	sub_opt_one[6].value   = OP.enable_free_cam_data
+	sub_opt_one[3].value   = cur_fov
+	sub_opt_one[3].default = cur_fov
 
 	self.camera_hud:setVisible("CamDataBP", OP.enable_free_cam_data)
 	self.camera_hud:open()

@@ -59,7 +59,15 @@ function FreeCamGui:client_GUI_toggleCallback(btn_name)
 	cur_option.value = new_bool_state
 
 	self:client_GUI_updateBooleanWidget(button_idx, cur_option)
-	
+	self:client_GUI_setCamCategoryAndPage(button_idx)
+
+	local sub_opt_post_update = cur_option.post_update
+	if sub_opt_post_update ~= nil then
+		local cur_category = self.camera.option_list[self.gui_current_tab]
+
+		sub_opt_post_update(self, cur_category, cur_option)
+	end
+
 	sm.audio.play(OP.bools[new_bool_state].sound, self.camera.position)
 end
 
@@ -385,6 +393,35 @@ function FreeCamGui:client_GUI_updateSettingsTab()
 	cam_gui:setText("SettingsPage", ("%s / %s"):format(self.gui_setting_page, self.gui_setting_page_count))
 end
 
+local option_type_to_func_name =
+{
+	[1] = "update",
+	[3] = "post_update"
+}
+
+function FreeCamGui:client_GUI_resetValuesCallback()
+	local cam_category_list = self.camera.option_list
+
+	for k, cur_category in ipairs(cam_category_list) do
+		for v, cur_opt_obj in ipairs(cur_category.subOptions) do
+			if cur_opt_obj.default ~= nil then
+				cur_opt_obj.value = cur_opt_obj.default
+			end
+
+			local cur_func_name = option_type_to_func_name[cur_opt_obj.type]
+			if cur_func_name ~= nil then
+				local cur_update_func = cur_opt_obj[cur_func_name]
+
+				if cur_update_func ~= nil then
+					cur_update_func(self, cur_category, cur_opt_obj)
+				end
+			end
+		end
+	end
+
+	self:client_GUI_updateSettingsTab()
+end
+
 function FreeCamGui:client_GUI_openGui()
 	self.camera_set_gui:open()
 
@@ -417,6 +454,7 @@ function FreeCamGui:client_GUI_createFreeCamSettings()
 
 	cam_gui:setButtonCallback("R_SetTurnPage", "client_GUI_switchTabPage")
 	cam_gui:setButtonCallback("L_SetTurnPage", "client_GUI_switchTabPage")
+	cam_gui:setButtonCallback("RestoreDefaults", "client_GUI_resetValuesCallback")
 
 	self.gui_current_tab  = 1
 

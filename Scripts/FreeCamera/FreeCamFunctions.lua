@@ -2,7 +2,7 @@
 	Copyright (c) 2022 Questionable Mark
 ]]
 
---if FREE_CAM_OPTIONS then return end
+if FREE_CAM_OPTIONS then return end
 FREE_CAM_OPTIONS = class()
 
 local _sm_getKeyBind = sm.gui.getKeyBinding
@@ -66,12 +66,12 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 			tab_name = "Camera Func.",
 			individual_functions = true,
 			subOptions = {
-				[1] = {name = "Camera Speed"      , type = option_type_enum.value  , value = 1, changer = 0.01, minValue = 0, maxValue = 20},
-				[2] = {name = "Camera Friction"   , type = option_type_enum.value  , value = 1, changer = 0.01, minValue = 0, maxValue = 1 },
-				[3] = {name = "Camera Fov"        , type = option_type_enum.value  , value = 0, changer = 1, minValue = 1, maxValue = 179},
-				[4] = {name = "Time"              , type = option_type_enum.value  , func = FREE_CAM_SUB.SUB_setTime    , update = FREE_CAM_SUB.SUB_timeUpdate       , gui_ex = true, value = sm.render.getOutdoorLighting(), changer = 0.01, minValue = 0, maxValue = 1},
-				[5] = {name = "Move to Player"    , type = option_type_enum.value  , func = FREE_CAM_SUB.SUB_teleportCam, update = FREE_CAM_SUB.SUB_teleportCamUpdate, gui_ex = true, value = 0, changer = 1, minValue = 1, maxValue = #sm.player.getAllPlayers()},
-				[6] = {name = "Enable Camera Data", type = option_type_enum.boolean, post_update = FREE_CAM_SUB.SUB_updateCameraData, value = OP.enable_free_cam_data}
+				[1] = {name = "Camera Speed"      , type = option_type_enum.value  , value = 1, default = 1, changer = 0.01, minValue = 0, maxValue = 20},
+				[2] = {name = "Camera Friction"   , type = option_type_enum.value  , value = 1, default = 1, changer = 0.01, minValue = 0, maxValue = 1 },
+				[3] = {name = "Camera Fov"        , type = option_type_enum.value  , value = 0, default = 0, changer = 1, minValue = 1, maxValue = 179},
+				[4] = {name = "Time"              , type = option_type_enum.value  , default = 0.5 , func = FREE_CAM_SUB.SUB_setTime    , update = FREE_CAM_SUB.SUB_timeUpdate       , gui_ex = true, value = sm.render.getOutdoorLighting(), changer = 0.01, minValue = 0, maxValue = 1},
+				[5] = {name = "Move to Player"    , type = option_type_enum.value  , default = 0   , func = FREE_CAM_SUB.SUB_teleportCam, update = FREE_CAM_SUB.SUB_teleportCamUpdate, gui_ex = true, value = 0, changer = 1, minValue = 1, maxValue = #sm.player.getAllPlayers()},
+				[6] = {name = "Enable Camera Data", type = option_type_enum.boolean, default = true, post_update = FREE_CAM_SUB.SUB_updateCameraData, value = OP.enable_free_cam_data}
 			}
 		},
 		[2] = {
@@ -93,10 +93,10 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 				end
 			end,
 			subOptions = {
-				[1] = {name = "Explosion Level"           , type = option_type_enum.value, value = 5   , changer = 1  , minValue = 1  , maxValue = 99999999},
-				[2] = {name = "Explosion Radius"          , type = option_type_enum.value, value = 0.3 , changer = 0.1, minValue = 0.3, maxValue = 50},
-				[3] = {name = "Explosion Impulse Strength", type = option_type_enum.value, value = 1000, changer = 500, minValue = 10 , maxValue = 99999999},
-				[4] = {name = "Explosion Impulse Radius"  , type = option_type_enum.value, value = 10  , changer = 1  , minValue = 1  , maxValue = 500}
+				[1] = {name = "Explosion Level"           , type = option_type_enum.value, value = 5   , default = 5   , changer = 1  , minValue = 1  , maxValue = 99999999},
+				[2] = {name = "Explosion Radius"          , type = option_type_enum.value, value = 0.3 , default = 0.3 , changer = 0.1, minValue = 0.3, maxValue = 50},
+				[3] = {name = "Explosion Impulse Strength", type = option_type_enum.value, value = 1000, default = 1000, changer = 500, minValue = 10 , maxValue = 99999999},
+				[4] = {name = "Explosion Impulse Radius"  , type = option_type_enum.value, value = 10  , default = 10  , changer = 1  , minValue = 1  , maxValue = 500}
 			}
 		},
 		[3] = {
@@ -119,10 +119,10 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 				end
 			end,
 			subOptions = {
-				[1] = {name = "Projectile",           type = option_type_enum.list , value = 0  , maxValue = 20, listName = "projectiles"},
-				[2] = {name = "Projectile Speed",     type = option_type_enum.value, value = 100, changer = 1, minValue = 1, maxValue = 99999999 },
-				[3] = {name = "Spread",               type = option_type_enum.value, value = 1  , changer = 1, minValue = 0, maxValue = 180      },
-				[4] = {name = "Projectiles Per Shot", type = option_type_enum.value, value = 1  , changer = 1, minValue = 1, maxValue = 100      }
+				[1] = {name = "Projectile",           type = option_type_enum.list , value = 0  , default = 0  , maxValue = 20, listName = "projectiles"},
+				[2] = {name = "Projectile Speed",     type = option_type_enum.value, value = 100, default = 100, changer = 1, minValue = 1, maxValue = 99999999 },
+				[3] = {name = "Spread",               type = option_type_enum.value, value = 1  , default = 1  , changer = 1, minValue = 0, maxValue = 180      },
+				[4] = {name = "Projectiles Per Shot", type = option_type_enum.value, value = 1  , default = 1  , changer = 1, minValue = 1, maxValue = 100      }
 			},
 			listStorage = {
 				projectiles = {
@@ -154,9 +154,9 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 			tab_name = "Unit Spawner",
 			individual_functions = true,
 			subOptions = {
-				[1] = {name = "Spawn Unit"             , type = option_type_enum.list   , func = FREE_CAM_SUB.SUB_creatureSpawner, value = 0, maxValue = 7, listName = "creatures"},
-				[2] = {name = "Amount of Units"        , type = option_type_enum.value  , value = 1, changer = 1, minValue = 1, maxValue = 100},
-				[3] = {name = "Spawn Without Spreading", type = option_type_enum.boolean, value = false},
+				[1] = {name = "Spawn Unit"             , type = option_type_enum.list   , func = FREE_CAM_SUB.SUB_creatureSpawner, value = 0, default = 0, maxValue = 7, listName = "creatures"},
+				[2] = {name = "Amount of Units"        , type = option_type_enum.value  , value = 1    , default = 1, changer = 1, minValue = 1, maxValue = 100},
+				[3] = {name = "Spawn Without Spreading", type = option_type_enum.boolean, value = false, default = false},
 				[4] = {name = "Remove Unit"            , type = option_type_enum.button , func = FREE_CAM_SUB.SUB_destroyUnit}
 			},
 			listStorage = {
@@ -176,7 +176,7 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 			tab_name = "Harvest. Func.",
 			individual_functions = true,
 			subOptions = {
-				[1] = {name = "Spawn Harvestable" , type = option_type_enum.list  , func = FREE_CAM_SUB.SUB_createHarvestable, value = 0, maxValue = 37, listName = "harvestableNames"},
+				[1] = {name = "Spawn Harvestable" , type = option_type_enum.list  , func = FREE_CAM_SUB.SUB_createHarvestable, value = 0, default = 0, maxValue = 37, listName = "harvestableNames"},
 				[2] = {name = "Remove Harvestable", type = option_type_enum.button, func = FREE_CAM_SUB.SUB_removeHarvestable}
 			},
 			listStorage = {
@@ -227,7 +227,7 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 			individual_functions = true,
 			subOptions = {
 				[1] = {name = "Character Hijacker"  , type = option_type_enum.button, func = FREE_CAM_SUB.SUB_charHijacker},
-				[2] = {name = "Character Speed"     , type = option_type_enum.value , func = FREE_CAM_SUB.SUB_charSpeed, value = 0, changer = 1, minValue = -100, maxValue = 100},
+				[2] = {name = "Character Speed"     , type = option_type_enum.value , func = FREE_CAM_SUB.SUB_charSpeed, value = 0, default = 0, changer = 1, minValue = -100, maxValue = 100},
 				[3] = {name = "Character Teleporter", type = option_type_enum.button, func = FREE_CAM_SUB.SUB_charTeleporter},
 				[4] = {name = "Set Tumble"          , type = option_type_enum.button, func = FREE_CAM_SUB.SUB_CharFunctions, id = 1},
 				[5] = {name = "Set Downed"          , type = option_type_enum.button, func = FREE_CAM_SUB.SUB_CharFunctions, id = 2},
@@ -242,7 +242,7 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 			subOptions = {
 				[1] = {name = "Recover Characters", type = option_type_enum.button, func = FREE_CAM_SUB.SUB_playerRecover, gui_ex = true},
 				[2] = {name = "Player Locker"     , type = option_type_enum.button, func = FREE_CAM_SUB.SUB_playerLocker },
-				[3] = {name = "Recover Players"   , type = option_type_enum.value , func = FREE_CAM_SUB.SUB_recoverOffWorldPlayers, gui_ex = true, update = FREE_CAM_SUB.SUB_recoverOffWorldPlayersUpdate, value = 710, changer = 10, minValue = 0, maxValue = 1400}
+				[3] = {name = "Recover Players"   , type = option_type_enum.value , func = FREE_CAM_SUB.SUB_recoverOffWorldPlayers, gui_ex = true, update = FREE_CAM_SUB.SUB_recoverOffWorldPlayersUpdate, value = 710, default = 710, changer = 10, minValue = 0, maxValue = 1400}
 			}
 		}
 	}

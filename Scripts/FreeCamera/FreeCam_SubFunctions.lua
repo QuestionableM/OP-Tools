@@ -52,9 +52,11 @@ function FREE_CAM_SUB.SUB_teleportCamUpdate(self, curCategory, curOpt)
 	curOpt.maxValue = #player_list
 	
 	local pl_idx = math.min(curOpt.value, curOpt.maxValue)
-	local cur_player = player_list[pl_idx]
+	if pl_idx > 0 then
+		local cur_player = player_list[pl_idx]
 
-	sm.gui.displayAlertText(("Move to #ffff00%s#ffffff"):format(cur_player.name))
+		sm.gui.displayAlertText(("Move to #ffff00%s#ffffff"):format(cur_player.name))
+	end
 end
 
 local function cameraRaycast(distance)
