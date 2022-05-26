@@ -141,15 +141,17 @@ function FreeCamGui:client_GUI_onTextChangedCallback(widget, text)
 		if cur_opt.value ~= number_value then
 			cur_opt.value = sm.util.clamp(number_value, cur_opt.minValue, cur_opt.maxValue)
 
-			local cur_opt_update = cur_opt.update
-			if cur_opt_update ~= nil then
-				cur_opt_update(self, cur_category, cur_opt)
+			local cur_opt_post_update = cur_opt.post_update
+			if cur_opt_post_update ~= nil then
+				cur_opt_post_update(self, cur_category, cur_opt)
 			end
 		end
 	end
 
 	self:client_GUI_updateStatusWidget(widget_idx, is_num_valid, cur_opt.gui_ex)
 	self:client_GUI_setCamCategoryAndPage(widget_idx)
+
+	sm.audio.play("GUI Inventory highlight", self.camera.position)
 end
 
 function FreeCamGui:client_GUI_getCurrentSubOption(widget_id) --remove if not used
@@ -381,12 +383,6 @@ function FreeCamGui:client_GUI_updateSettingsTab()
 	cam_gui:setText("SettingsPage", ("%s / %s"):format(self.gui_setting_page, self.gui_setting_page_count))
 end
 
-local option_type_to_func_name =
-{
-	[1] = "update",
-	[3] = "post_update"
-}
-
 function FreeCamGui:client_GUI_resetValuesCallback()
 	local cam_category_list = self.camera.option_list
 
@@ -396,13 +392,9 @@ function FreeCamGui:client_GUI_resetValuesCallback()
 				cur_opt_obj.value = cur_opt_obj.default
 			end
 
-			local cur_func_name = option_type_to_func_name[cur_opt_obj.type]
-			if cur_func_name ~= nil then
-				local cur_update_func = cur_opt_obj[cur_func_name]
-
-				if cur_update_func ~= nil then
-					cur_update_func(self, cur_category, cur_opt_obj)
-				end
+			local cur_post_update_func = cur_opt_obj.post_update
+			if cur_post_update_func ~= nil then
+				cur_post_update_func(self, cur_category, cur_opt_obj)
 			end
 		end
 	end

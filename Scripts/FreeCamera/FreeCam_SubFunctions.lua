@@ -19,16 +19,19 @@ function FREE_CAM_SUB.SUB_setTime(self, curCategory, curOpt)
 	self.network:sendToServer("server_getStuff", { free_cam_function_ids.set_global_time, curOpt.value })
 end
 
-function FREE_CAM_SUB.SUB_timeUpdate(self, curCategory, curOpt)
+function FREE_CAM_SUB.SUB_timeUpdateLighting(self, curCategory, curOpt)
+	sm.render.setOutdoorLighting(curOpt.value)
+end
+
+function FREE_CAM_SUB.SUB_timeUpdateText(self, curCategory, curOpt)
 	local l_value = curOpt.value
-	sm.render.setOutdoorLighting(l_value)
 
 	local l_time = l_value * 24
 	local t_hours = math.floor(l_time) % 24
 	local t_minutes = math.floor(l_time * 60) % 60
 	local t_seconds = math.floor(l_time * 3600) % 60
 
-	OP.display("highlight", false, ("#ffff00Time#ffffff set to #ffff00%.2f#ffffff or #ffff00%02d#ffffff:#ffff00%02d#ffffff:#ffff00%02d#ffffff"):format(l_value, t_hours, t_minutes, t_seconds))
+	sm.gui.displayAlertText(("#ffff00Time#ffffff set to #ffff00%.2f#ffffff or #ffff00%02d#ffffff:#ffff00%02d#ffffff:#ffff00%02d#ffffff"):format(l_value, t_hours, t_minutes, t_seconds))
 end
 
 function FREE_CAM_SUB.SUB_teleportCam(self, curCategory, curOpt)
@@ -243,7 +246,7 @@ function FREE_CAM_SUB.SUB_recoverOffWorldPlayers(self, cur_category, cur_option)
 end
 
 function FREE_CAM_SUB.SUB_recoverOffWorldPlayersUpdate(self, cur_category, cur_option)
-	OP.display("highlight", true, ("Safe distance set to #ffff00%s#ffffff"):format(cur_option.value))
+	sm.gui.displayAlertText(("Safe distance set to #ffff00%s#ffffff"):format(cur_option.value))
 end
 
 function FREE_CAM_SUB.SUB_creatureSpawner(self, cur_category, cur_option)

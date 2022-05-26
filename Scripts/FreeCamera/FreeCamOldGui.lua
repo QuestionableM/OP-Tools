@@ -77,8 +77,15 @@ local value_change_functions =
 		if sub_opt_update ~= nil then
 			sub_opt_update(self, curCategory, subOpt)
 		else
-			OP.display("highlight", false, ("#ffff00%s#ffffff set to #ffff00%.2f#ffffff"):format(subOpt.name, subOpt.value))
+			sm.gui.displayAlertText(("#ffff00%s#ffffff set to #ffff00%.2f#ffffff"):format(subOpt.name, subOpt.value))
 		end
+
+		local sub_opt_post_update = subOpt.post_update
+		if sub_opt_post_update ~= nil then
+			sub_opt_post_update(self, curCategory, subOpt)
+		end
+
+		sm.audio.play("GUI Inventory highlight", self.camera.position)
 	end,
 	[2] = function(self, curCategory, subOpt, movement)
 		subOpt.value = _sm_util_clamp(subOpt.value + movement, 1, subOpt.maxValue)
@@ -90,8 +97,10 @@ local value_change_functions =
 		if sub_opt_update ~= nil then
 			sub_opt_update(self, curCategory, subOpt)
 		else
-			OP.display("highlight", false, ("[#ffff00%s#ffffff/#ffff00%s#ffffff] #ffff00%s#ffffff set to #ffff00%s#ffffff"):format(subOpt.value, subOpt.maxValue, subOpt.name, cur_list_obj.name))
+			sm.gui.displayAlertText(("[#ffff00%s#ffffff/#ffff00%s#ffffff] #ffff00%s#ffffff set to #ffff00%s#ffffff"):format(subOpt.value, subOpt.maxValue, subOpt.name, cur_list_obj.name))
 		end
+
+		sm.audio.play("GUI Inventory highlight", self.camera.position)
 	end,
 	[3] = function(self, curCategory, subOpt, movement)
 		subOpt.value = not subOpt.value
