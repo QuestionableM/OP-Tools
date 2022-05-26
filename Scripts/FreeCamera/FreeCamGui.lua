@@ -179,8 +179,6 @@ function FreeCamGui:client_GUI_onTextAcceptedCallback(widget, text)
 			local cur_opt_func = cur_option.func
 			if cur_opt_func ~= nil then
 				cur_opt_func(self, cur_category, cur_option)
-
-				sm.audio.play("Retrowildblip", s_camera.position)
 			end
 		end
 	else
@@ -191,12 +189,17 @@ function FreeCamGui:client_GUI_onTextAcceptedCallback(widget, text)
 end
 
 function FreeCamGui:client_GUI_updateListBoxWidget(slot, cur_category, cur_option)
-	local cur_option_list = cur_category.listStorage[cur_option.listName]
-	local cur_list_val = cur_option_list[cur_option.value]
+	local cur_gui_update_func = cur_option.gui_update
+	if cur_gui_update_func ~= nil then
+		cur_gui_update_func(self, cur_option, slot)
+	else
+		local cur_option_list = cur_category.listStorage[cur_option.listName]
+		local cur_list_val = cur_option_list[cur_option.value]
 
-	local cam_gui = self.camera_set_gui
-	cam_gui:setText("ListValue"..slot, cur_list_val and cur_list_val.name or "Select Item")
-	cam_gui:setText("ListPage"..slot, ("%s / %s"):format(cur_option.value, cur_option.maxValue))
+		local cam_gui = self.camera_set_gui
+		cam_gui:setText("ListValue"..slot, cur_list_val and cur_list_val.name or "Select Item")
+		cam_gui:setText("ListPage"..slot, ("%s / %s"):format(cur_option.value, cur_option.maxValue))
+	end
 end
 
 function FreeCamGui:client_GUI_onListBoxUpdateCallback(btn_name)
@@ -406,8 +409,19 @@ function FreeCamGui:client_GUI_setListBoxFocus(btn_name)
 	local btn_idx = tonumber(btn_name:sub(-1))
 
 	local is_updated = self:client_GUI_setCamCategoryAndPage(btn_idx)
-	if is_updated then
-		sm.audio.play("PotatoRifle - Equip", self.camera.position)
+
+	local cur_category = self.camera.option_list[self.gui_current_tab]
+	local cur_option = self:client_GUI_getCurrentSubOption(btn_idx)
+
+	if cur_option.gui_ex then
+		local cur_opt_func = cur_option.func
+		if cur_opt_func ~= nil then
+			cur_opt_func(self, cur_category, cur_option)
+		end
+	else
+		if is_updated then
+			sm.audio.play("PotatoRifle - Equip", self.camera.position)
+		end
 	end
 end
 

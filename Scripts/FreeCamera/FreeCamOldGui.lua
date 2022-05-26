@@ -90,13 +90,13 @@ local value_change_functions =
 	[2] = function(self, curCategory, subOpt, movement)
 		subOpt.value = _sm_util_clamp(subOpt.value + movement, 1, subOpt.maxValue)
 
-		local cur_list = curCategory.listStorage[subOpt.listName]
-		local cur_list_obj = cur_list[subOpt.value]
-
 		local sub_opt_update = subOpt.update
 		if sub_opt_update ~= nil then
 			sub_opt_update(self, curCategory, subOpt)
 		else
+			local cur_list = curCategory.listStorage[subOpt.listName]
+			local cur_list_obj = cur_list[subOpt.value]
+
 			sm.gui.displayAlertText(("[#ffff00%s#ffffff/#ffff00%s#ffffff] #ffff00%s#ffffff set to #ffff00%s#ffffff"):format(subOpt.value, subOpt.maxValue, subOpt.name, cur_list_obj.name))
 		end
 

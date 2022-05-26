@@ -70,7 +70,7 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 				[2] = {name = "Camera Friction"   , type = option_type_enum.value  , value = 1, default = 1, changer = 0.01, minValue = 0, maxValue = 1 },
 				[3] = {name = "Camera Fov"        , type = option_type_enum.value  , value = 0, default = 0, changer = 1, minValue = 1, maxValue = 179},
 				[4] = {name = "Time"              , type = option_type_enum.value  , default = 0.5 , func = FREE_CAM_SUB.SUB_setTime    , update = FREE_CAM_SUB.SUB_timeUpdateText   , post_update = FREE_CAM_SUB.SUB_timeUpdateLighting, gui_ex = true, value = sm.render.getOutdoorLighting(), changer = 0.01, minValue = 0, maxValue = 1},
-				[5] = {name = "Move to Player"    , type = option_type_enum.value  , default = 0   , func = FREE_CAM_SUB.SUB_teleportCam, update = FREE_CAM_SUB.SUB_teleportCamUpdate, gui_ex = true, value = 0, changer = 1, minValue = 1, maxValue = #sm.player.getAllPlayers()},
+				[5] = {name = "Move to Player"    , type = option_type_enum.list   , default = 0   , func = FREE_CAM_SUB.SUB_teleportCam, gui_update = FREE_CAM_SUB.SUB_teleportCamGuiUpdate, update = FREE_CAM_SUB.SUB_teleportCamUpdate, gui_ex = true, value = 0, changer = 1, minValue = 1, maxValue = #sm.player.getAllPlayers()},
 				[6] = {name = "Enable Camera Data", type = option_type_enum.boolean, default = true, post_update = FREE_CAM_SUB.SUB_updateCameraData, value = OP.enable_free_cam_data}
 			}
 		},

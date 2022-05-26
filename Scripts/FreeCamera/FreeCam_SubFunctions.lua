@@ -50,6 +50,18 @@ function FREE_CAM_SUB.SUB_teleportCam(self, curCategory, curOpt)
 	end
 end
 
+function FREE_CAM_SUB.SUB_teleportCamGuiUpdate(self, cur_option, slot)
+	local player_list = sm.player.getAllPlayers()
+	cur_option.maxValue = #player_list
+
+	local pl_idx = math.min(cur_option.value, cur_option.maxValue)
+	local cur_player = player_list[pl_idx]
+
+	local cam_gui = self.camera_set_gui
+	cam_gui:setText("ListValue"..slot, (cur_player ~= nil) and cur_player.name or "Select Player")
+	cam_gui:setText("ListPage"..slot, ("%s / %s"):format(cur_option.value, cur_option.maxValue))
+end
+
 function FREE_CAM_SUB.SUB_teleportCamUpdate(self, curCategory, curOpt)
 	local player_list = sm.player.getAllPlayers()
 	curOpt.maxValue = #player_list
