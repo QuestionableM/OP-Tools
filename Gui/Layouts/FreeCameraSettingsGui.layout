@@ -281,6 +281,29 @@
 				<Property key="FontName" value="SM_Button"/>
 			</Widget>
 		</Widget>
+		<Widget type="Widget" skin="NonBlurryBackgroundDarkRoundedLowerLeft" position_real="0 0.3046875 1 0.6953125" align="HStretch Bottom" name="InfoBG">
+			<Property key="Visible" value="false"/>
+			<Widget type="Button" skin="DressbotArrowRight" position_real="0.91874999999999996 0.8539325842696629 0.056250000000000001 0.10112359550561797" align="Right Bottom" name="R_InfoTurnPage"/>
+			<Widget type="Button" skin="DressbotArrowLeft" position_real="0.71250000000000002 0.8539325842696629 0.056250000000000001 0.10112359550561797" align="Right Bottom" name="L_InfoTurnPage"/>
+			<Widget type="TextBox" skin="TextBox" position_real="0.76875000000000004 0.8539325842696629 0.14999999999999999 0.10112359550561797" align="Right Bottom" name="InfoPage">
+				<Property key="FontName" value="SM_Button"/>
+				<Property key="TextAlign" value="Center"/>
+				<Property key="TextShadow" value="true"/>
+				<Property key="Caption" value="PAGE"/>
+			</Widget>
+			<Widget type="TextBox" skin="TextBox" position_real="0.28625 0.033707865168539325 0.42625000000000002 0.11235955056179775" align="HCenter Top" name="InfoPageTitle">
+				<Property key="Caption" value="INFO_TITLE"/>
+				<Property key="FontName" value="SM_Button"/>
+				<Property key="TextShadow" value="true"/>
+				<Property key="TextAlign" value="Center"/>
+			</Widget>
+			<Widget type="TextBox" skin="TextBox" position_real="0.025000000000000001 0.19101123595505617 0.94999999999999996 0.6179775280898876" align="HStretch Top" name="InfoDescription">
+				<Property key="FontName" value="SM_Button"/>
+				<Property key="TextShadow" value="true"/>
+				<Property key="Caption" value="CAMERA_INFO"/>
+				<Property key="TextAlign" value="Left Top"/>
+			</Widget>
+		</Widget>
 		<Widget type="Button" skin="InventoryTab" position_real="0.09375 0.2265625 0.1875 0.078125" align="Left Bottom" name="TabButton1">
 			<Property key="Caption" value="Tab1"/>
 			<Property key="FontName" value="SM_ButtonTiny"/>

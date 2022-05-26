@@ -5,32 +5,6 @@
 if FREE_CAM_OPTIONS then return end
 FREE_CAM_OPTIONS = class()
 
-local _sm_getKeyBind = sm.gui.getKeyBinding
-function FREE_CAM_OPTIONS.display_guide()
-	sm.gui.chatMessage(
-		(
-			"\n#ff0000FREE CAMERA INSTRUCTIONS#ffffff:\n"..
-			"#ffff00%s#ffffff - close the free camera tool\n"..
-			"#ffff00%s#ffffff - use the chosen function\n"..
-			"#ffff00%s#ffffff - spawn your own character at the location of the camera\n"..
-			"#ffff00%s%s%s%s#ffffff - move\n"..
-			"#ffff00%s#ffffff - switch the function\n"..
-			"#ffff00%s#ffffff - switch the parameters of the selected function\n"..
-			"#ffff00%s#ffffff/#ffff00%s#ffffff - change the chosen parameter of the function\n"..
-			"#ffff00%s#ffffff - double the scrolling speed\n"
-		):format(
-			_sm_getKeyBind("Use"),
-			_sm_getKeyBind("Create"),
-			_sm_getKeyBind("Attack"),
-			_sm_getKeyBind("Forward"),_sm_getKeyBind("StrafeLeft"),_sm_getKeyBind("Backward"),_sm_getKeyBind("StrafeRight"),
-			_sm_getKeyBind("MenuItem0"),
-			_sm_getKeyBind("MenuItem1"),
-			_sm_getKeyBind("PreviousMenuItem"),_sm_getKeyBind("NextMenuItem"),
-			_sm_getKeyBind("Jump")
-		)
-	)
-end
-
 local option_type_enum =
 {
 	value   = 1,

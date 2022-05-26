@@ -382,7 +382,6 @@ function FreeCam:client_onInteract(character, state)
 	_sm_setCamPos(s_camera.position)
 
 	FreeCamOldGui.client_displayStartInfo()
-	FREE_CAM_OPTIONS.display_guide()
 end
 
 function FreeCam:client_onDestroy()

@@ -189,6 +189,7 @@ function FreeCamGui:client_GUI_onTextAcceptedCallback(widget, text)
 end
 
 function FreeCamGui:client_GUI_updateListBoxWidget(slot, cur_category, cur_option)
+	local cam_gui = self.camera_set_gui
 	local cur_gui_update_func = cur_option.gui_update
 	if cur_gui_update_func ~= nil then
 		cur_gui_update_func(self, cur_option, slot)
@@ -196,10 +197,12 @@ function FreeCamGui:client_GUI_updateListBoxWidget(slot, cur_category, cur_optio
 		local cur_option_list = cur_category.listStorage[cur_option.listName]
 		local cur_list_val = cur_option_list[cur_option.value]
 
-		local cam_gui = self.camera_set_gui
 		cam_gui:setText("ListValue"..slot, cur_list_val and cur_list_val.name or "Select Item")
 		cam_gui:setText("ListPage"..slot, ("%s / %s"):format(cur_option.value, cur_option.maxValue))
 	end
+
+	cam_gui:setVisible("L_ListButton"..slot, cur_option.value > 1)
+	cam_gui:setVisible("R_ListButton"..slot, cur_option.value < cur_option.maxValue)
 end
 
 function FreeCamGui:client_GUI_onListBoxUpdateCallback(btn_name)
@@ -252,6 +255,7 @@ function FreeCamGui:client_GUI_tabSelectCallback(button_name)
 
 	self.gui_setting_page = 1
 	self.gui_current_tab = cur_tab_idx
+	self:client_GUI_switchBgPage()
 
 	self.camera.category_id = cur_tab_idx - 1
 	self.camera.option_id = -1
@@ -384,6 +388,9 @@ function FreeCamGui:client_GUI_updateSettingsTab()
 
 	self.gui_setting_page_count = math.ceil(#sub_options / 4)
 	cam_gui:setText("SettingsPage", ("%s / %s"):format(self.gui_setting_page, self.gui_setting_page_count))
+
+	cam_gui:setVisible("R_SetTurnPage", self.gui_setting_page < self.gui_setting_page_count)
+	cam_gui:setVisible("L_SetTurnPage", self.gui_setting_page > 1)
 end
 
 function FreeCamGui:client_GUI_resetValuesCallback()
@@ -432,6 +439,88 @@ function FreeCamGui:client_GUI_openGui()
 	self:client_GUI_updateSettingsTab()
 end
 
+function FreeCamGui:client_GUI_switchBgPage()
+	local cur_tab = self.gui_current_tab
+	local set_gui = self.camera_set_gui
+
+	set_gui:setVisible("InfoBG", cur_tab == 0)
+	set_gui:setVisible("SettingsBG", cur_tab > 0)
+
+	set_gui:setButtonState("InfoTab", cur_tab == 0)
+end
+
+local info_page_data =
+{
+	[1] = {
+		name = "Controls",
+		desc = function()
+			return (
+				"#ffff00%s%s%s%s#ffffff - Move.\n"..
+				"#ffff00%s#ffffff - Close the Free Camera tool.\n"..
+				"#ffff00%s#ffffff - Use selected function.\n"..
+				"#ffff00%s#ffffff - Spawn your own character at the location of the camera.\n"..
+				"#ffff00%s#ffffff - Switch the category.\n"..
+				"#ffff00%s#ffffff - Switch the parameters of selected category.\n"..
+				"#ffff00%s#ffffff - Open Free Camera Settings GUI\n"..
+				"#ffff00%s#ffffff/#ffff00%s#ffffff - Change selected option of the category.\n"..
+				"#ffff00%s#ffffff - Double the scrolling speed.\n"..
+				"\nThis list might get updated in the future."
+			):format(
+				_sm_guiGetKeyBinding("Forward"), _sm_guiGetKeyBinding("StrafeLeft"), _sm_guiGetKeyBinding("Backward"), _sm_guiGetKeyBinding("StrafeRight"),
+				_sm_guiGetKeyBinding("Use"),
+				_sm_guiGetKeyBinding("Create"),
+				_sm_guiGetKeyBinding("Attack"),
+				_sm_guiGetKeyBinding("MenuItem0"),
+				_sm_guiGetKeyBinding("MenuItem1"),
+				_sm_guiGetKeyBinding("MenuItem2"),
+				_sm_guiGetKeyBinding("PreviousMenuItem"), _sm_guiGetKeyBinding("NextMenuItem"),
+				_sm_guiGetKeyBinding("Jump")
+			)
+		end
+	}
+}
+local info_page_data_count = #info_page_data
+
+function FreeCamGui:client_GUI_switchInfoTabPage(btn_name)
+	local btn_pref = btn_name:sub(0, 1)
+	local step_value = (btn_pref == "R" and 1 or -1)
+
+	local new_info_page = sm.util.clamp(self.gui_cur_info_page + step_value, 1, info_page_data_count)
+	if self.gui_cur_info_page == new_info_page then return end
+	self.gui_cur_info_page = new_info_page
+
+	self:client_GUI_updateInfoTab()
+
+	sm.audio.play("GUI Item drag", self.camera.position)
+end
+
+function FreeCamGui:client_GUI_updateInfoTab()
+	local set_gui = self.camera_set_gui
+	local cur_info_page = self.gui_cur_info_page
+	local cur_info_data = info_page_data[cur_info_page]
+
+	set_gui:setText("InfoPageTitle", cur_info_data.name)
+
+	local cur_desc_text = cur_info_data.desc()
+	set_gui:setText("InfoDescription", cur_desc_text)
+
+	set_gui:setText("InfoPage", ("%s / %s"):format(cur_info_page, info_page_data_count))
+	set_gui:setVisible("R_InfoTurnPage", cur_info_page < info_page_data_count)
+	set_gui:setVisible("L_InfoTurnPage", cur_info_page > 1)
+end
+
+function FreeCamGui:client_GUI_showInfoTab()
+	if self.gui_current_tab == 0 then return end
+	self.gui_current_tab = 0
+
+	self:client_GUI_switchBgPage()
+	self:client_GUI_updateTabs()
+
+	self:client_GUI_updateInfoTab()
+
+	sm.audio.play("Handbook - Turn page", self.camera.position)
+end
+
 function FreeCamGui:client_GUI_createFreeCamSettings()
 	local cam_gui = sm.gui.createGuiFromLayout("$CONTENT_DATA/Gui/Layouts/FreeCameraSettingsGui.layout", false, { hidesHotbar = true, backgroundAlpha = 0.5 })
 
@@ -455,12 +544,16 @@ function FreeCamGui:client_GUI_createFreeCamSettings()
 
 	cam_gui:setButtonCallback("L_ShiftTab", "client_GUI_shiftPageCallback")
 	cam_gui:setButtonCallback("R_ShiftTab", "client_GUI_shiftPageCallback")
+	cam_gui:setButtonCallback("L_InfoTurnPage", "client_GUI_switchInfoTabPage")
+	cam_gui:setButtonCallback("R_InfoTurnPage", "client_GUI_switchInfoTabPage")
 
 	cam_gui:setButtonCallback("R_SetTurnPage", "client_GUI_switchTabPage")
 	cam_gui:setButtonCallback("L_SetTurnPage", "client_GUI_switchTabPage")
 	cam_gui:setButtonCallback("RestoreDefaults", "client_GUI_resetValuesCallback")
+	cam_gui:setButtonCallback("InfoTab", "client_GUI_showInfoTab")
 
-	self.gui_current_tab  = 1
+	self.gui_current_tab   = 1
+	self.gui_cur_info_page = 1
 
 	self.gui_tab_shift    = 0
 	self.gui_tab_shift_max = #self.camera.option_list - 3
