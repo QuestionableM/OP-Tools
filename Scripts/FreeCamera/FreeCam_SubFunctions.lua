@@ -2,7 +2,7 @@
 	Copyright (c) 2022 Questionable Mark
 ]]
 
---if FREE_CAM_SUB then return end
+if FREE_CAM_SUB then return end
 FREE_CAM_SUB = class()
 
 local free_cam_function_ids = FREE_CAM_OPTIONS.function_id_enum

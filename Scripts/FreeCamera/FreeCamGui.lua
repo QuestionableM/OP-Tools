@@ -7,19 +7,12 @@ FreeCamGui = class()
 function FreeCamGui:client_GUI_buttonCallback(btn_name)
 	local btn_idx = tonumber(btn_name:sub(-1))
 	local option_id = self:client_GUI_getSettingPageOffset(btn_idx)
-	local new_opt_id = option_id - 1
 
 	local s_camera = self.camera
-	local cur_tab = self.gui_current_tab
-	local cur_category = s_camera.option_list[cur_tab]
+	local cur_category = s_camera.option_list[self.gui_current_tab]
 	local cur_option   = cur_category.subOptions[option_id]
 
-	local l_should_update = false
-	local new_tab_id = (cur_tab - 1)
-	if s_camera.category_id ~= new_tab_id then
-		s_camera.category_id = new_tab_id
-		l_should_update = true
-	end
+	local is_updated = self:client_GUI_setCamCategoryAndPage(btn_idx)
 
 	if cur_option.gui_ex then
 		local cur_opt_func = cur_option.func
@@ -27,17 +20,10 @@ function FreeCamGui:client_GUI_buttonCallback(btn_name)
 			cur_opt_func(self, cur_category, cur_option)
 		end
 	else
-		if not l_should_update and s_camera.option_id == new_opt_id then
-			return
+		if is_updated then
+			sm.audio.play("PotatoRifle - Equip", s_camera.position)
 		end
-
-		sm.audio.play("PotatoRifle - Equip", s_camera.position)
 	end
-
-	s_camera.option_id = new_opt_id
-
-	self:client_GUI_updateButtonNames()
-	self:client_HUD_updateSelectedOptions()
 end
 
 function FreeCamGui:client_GUI_updateBooleanWidget(slot, cur_option)
@@ -110,13 +96,15 @@ function FreeCamGui:client_GUI_setCamCategoryAndPage(widget_id)
 
 	local new_opt_id = option_id - 1
 	if not l_should_update and s_camera.option_id == new_opt_id then
-		return
+		return false
 	end
 
 	s_camera.option_id = new_opt_id
 
 	self:client_GUI_updateButtonNames()
 	self:client_HUD_updateSelectedOptions()
+
+	return true
 end
 
 local _sm_guiGetKeyBinding = sm.gui.getKeyBinding
@@ -422,6 +410,15 @@ function FreeCamGui:client_GUI_resetValuesCallback()
 	self:client_GUI_updateSettingsTab()
 end
 
+function FreeCamGui:client_GUI_setListBoxFocus(btn_name)
+	local btn_idx = tonumber(btn_name:sub(-1))
+
+	local is_updated = self:client_GUI_setCamCategoryAndPage(btn_idx)
+	if is_updated then
+		sm.audio.play("PotatoRifle - Equip", self.camera.position)
+	end
+end
+
 function FreeCamGui:client_GUI_openGui()
 	self.camera_set_gui:open()
 
@@ -439,6 +436,7 @@ function FreeCamGui:client_GUI_createFreeCamSettings()
 
 		cam_gui:setButtonCallback("L_ListButton"..i, "client_GUI_onListBoxUpdateCallback")
 		cam_gui:setButtonCallback("R_ListButton"..i, "client_GUI_onListBoxUpdateCallback")
+		cam_gui:setButtonCallback("ListValue"..i, "client_GUI_setListBoxFocus")
 
 		local val_inp_name = "ValInput"..i
 		cam_gui:setTextAcceptedCallback(val_inp_name, "client_GUI_onTextAcceptedCallback")

@@ -92,13 +92,11 @@
 					<Property key="Visible" value="false"/>
 					<Widget type="Button" skin="DressbotArrowLeft" position_real="0.01 0.059999999999999998 0.087999999999999995 0.88" align="Left VStretch" name="L_ListButton1"/>
 					<Widget type="Button" skin="DressbotArrowRight" position_real="0.622 0.059999999999999998 0.087999999999999995 0.88" align="Left VStretch" name="R_ListButton1"/>
-					<Widget type="Widget" skin="SearchBarBackground" position_real="0.098000000000000004 0.059999999999999998 0.52400000000000002 0.88" align="Left VStretch">
-						<Widget type="TextBox" skin="TextBox" position_real="0.0076335877862595417 0.045454545454545456 0.98473282442748089 0.90909090909090906" name="ListValue1">
-							<Property key="Caption" value="CURRENT_ITEM"/>
-							<Property key="FontName" value="SM_Button"/>
-							<Property key="TextShadow" value="true"/>
-							<Property key="TextAlign" value="Center"/>
-						</Widget>
+					<Widget type="Button" skin="SecondaryButton" position_real="0.098000000000000004 0.059999999999999998 0.52400000000000002 0.88" align="Left VStretch" name="ListValue1">
+						<Property key="Caption" value="CURRENT_ITEM"/>
+						<Property key="FontName" value="SM_Button"/>
+						<Property key="TextShadow" value="true"/>
+						<Property key="TextAlign" value="Center"/>
 					</Widget>
 					<Widget type="TextBox" skin="TextBox" position_real="0.71999999999999997 0.10000000000000001 0.27000000000000002 0.80000000000000004" name="ListPage1">
 						<Property key="Caption" value="LIST_PAGE"/>
@@ -150,13 +148,11 @@
 					<Property key="Visible" value="false"/>
 					<Widget type="Button" skin="DressbotArrowLeft" position_real="0.01 0.059999999999999998 0.087999999999999995 0.88" align="Left VStretch" name="L_ListButton2"/>
 					<Widget type="Button" skin="DressbotArrowRight" position_real="0.622 0.059999999999999998 0.087999999999999995 0.88" align="Left VStretch" name="R_ListButton2"/>
-					<Widget type="Widget" skin="SearchBarBackground" position_real="0.098000000000000004 0.059999999999999998 0.52400000000000002 0.88" align="Left VStretch">
-						<Widget type="TextBox" skin="TextBox" position_real="0.0076335877862595417 0.045454545454545456 0.98473282442748089 0.90909090909090906" name="ListValue2">
-							<Property key="Caption" value="CURRENT_ITEM"/>
-							<Property key="FontName" value="SM_Button"/>
-							<Property key="TextShadow" value="true"/>
-							<Property key="TextAlign" value="Center"/>
-						</Widget>
+					<Widget type="Button" skin="SecondaryButton" position_real="0.098000000000000004 0.059999999999999998 0.52400000000000002 0.88" align="Left VStretch" name="ListValue2">
+						<Property key="Caption" value="CURRENT_ITEM"/>
+						<Property key="FontName" value="SM_Button"/>
+						<Property key="TextShadow" value="true"/>
+						<Property key="TextAlign" value="Center"/>
 					</Widget>
 					<Widget type="TextBox" skin="TextBox" position_real="0.71999999999999997 0.10000000000000001 0.27000000000000002 0.80000000000000004" name="ListPage2">
 						<Property key="Caption" value="LIST_PAGE"/>
@@ -208,13 +204,11 @@
 					<Property key="Visible" value="false"/>
 					<Widget type="Button" skin="DressbotArrowLeft" position_real="0.01 0.059999999999999998 0.087999999999999995 0.88" align="Left VStretch" name="L_ListButton3"/>
 					<Widget type="Button" skin="DressbotArrowRight" position_real="0.622 0.059999999999999998 0.087999999999999995 0.88" align="Left VStretch" name="R_ListButton3"/>
-					<Widget type="Widget" skin="SearchBarBackground" position_real="0.098000000000000004 0.059999999999999998 0.52400000000000002 0.88" align="Left VStretch">
-						<Widget type="TextBox" skin="TextBox" position_real="0.0076335877862595417 0.045454545454545456 0.98473282442748089 0.90909090909090906" name="ListValue3">
-							<Property key="Caption" value="CURRENT_ITEM"/>
-							<Property key="FontName" value="SM_Button"/>
-							<Property key="TextShadow" value="true"/>
-							<Property key="TextAlign" value="Center"/>
-						</Widget>
+					<Widget type="Button" skin="SecondaryButton" position_real="0.098000000000000004 0.059999999999999998 0.52400000000000002 0.88" align="Left VStretch" name="ListValue3">
+						<Property key="Caption" value="CURRENT_ITEM"/>
+						<Property key="FontName" value="SM_Button"/>
+						<Property key="TextShadow" value="true"/>
+						<Property key="TextAlign" value="Center"/>
 					</Widget>
 					<Widget type="TextBox" skin="TextBox" position_real="0.71999999999999997 0.10000000000000001 0.27000000000000002 0.80000000000000004" name="ListPage3">
 						<Property key="Caption" value="LIST_PAGE"/>
@@ -266,13 +260,11 @@
 					<Property key="Visible" value="false"/>
 					<Widget type="Button" skin="DressbotArrowLeft" position_real="0.01 0.059999999999999998 0.087999999999999995 0.88" align="Left VStretch" name="L_ListButton4"/>
 					<Widget type="Button" skin="DressbotArrowRight" position_real="0.622 0.059999999999999998 0.087999999999999995 0.88" align="Left VStretch" name="R_ListButton4"/>
-					<Widget type="Widget" skin="SearchBarBackground" position_real="0.098000000000000004 0.059999999999999998 0.52400000000000002 0.88" align="Left VStretch">
-						<Widget type="TextBox" skin="TextBox" position_real="0.0076335877862595417 0.045454545454545456 0.98473282442748089 0.90909090909090906" name="ListValue4">
-							<Property key="Caption" value="CURRENT_ITEM"/>
-							<Property key="FontName" value="SM_Button"/>
-							<Property key="TextShadow" value="true"/>
-							<Property key="TextAlign" value="Center"/>
-						</Widget>
+					<Widget type="Button" skin="SecondaryButton" position_real="0.098000000000000004 0.059999999999999998 0.52400000000000002 0.88" align="Left VStretch" name="ListValue4">
+						<Property key="Caption" value="CURRENT_ITEM"/>
+						<Property key="FontName" value="SM_Button"/>
+						<Property key="TextShadow" value="true"/>
+						<Property key="TextAlign" value="Center"/>
 					</Widget>
 					<Widget type="TextBox" skin="TextBox" position_real="0.71999999999999997 0.10000000000000001 0.27000000000000002 0.80000000000000004" name="ListPage4">
 						<Property key="Caption" value="LIST_PAGE"/>
