@@ -2,6 +2,7 @@
 	Copyright (c) 2022 Questionable Mark
 ]]
 
+if FreeCamGui then return end
 FreeCamGui = class()
 
 function FreeCamGui:client_GUI_buttonCallback(btn_name)
@@ -394,7 +395,8 @@ function FreeCamGui:client_GUI_updateSettingsTab()
 end
 
 function FreeCamGui:client_GUI_resetValuesCallback()
-	local cam_category_list = self.camera.option_list
+	local s_camera = self.camera
+	local cam_category_list = s_camera.option_list
 
 	for k, cur_category in ipairs(cam_category_list) do
 		for v, cur_opt_obj in ipairs(cur_category.subOptions) do
@@ -410,6 +412,8 @@ function FreeCamGui:client_GUI_resetValuesCallback()
 	end
 
 	self:client_GUI_updateSettingsTab()
+
+	sm.audio.play("Retrowildblip", s_camera.position)
 end
 
 function FreeCamGui:client_GUI_setListBoxFocus(btn_name)

@@ -8,11 +8,8 @@ FreeCamOldGui = class()
 local _sm_getKeyBinding = sm.gui.getKeyBinding
 function FreeCamOldGui.client_displayStartInfo()
 	OP.print("Free Camera Mode enabled")
-	OP.display("blip", false, ("Free Camera Mode enabled, press #ffff00%s#ffffff to change the category and #ffff00%s#ffffff to change its parameters\nUse #ffff00%s#ffffff/#ffff00%s#ffffff to change the value of the parameter"):format(
-		_sm_getKeyBinding("MenuItem0"),
-		_sm_getKeyBinding("MenuItem1"),
-		_sm_getKeyBinding("PreviousMenuItem"),
-		_sm_getKeyBinding("NextMenuItem")
+	OP.display("blip", false, ("Free Camera Mode enabled. Press #ffff00%s#ffffff to open the Free Camera GUI\nand click on #ffff00Info#ffffff tab for more instructions"):format(
+		_sm_getKeyBinding("MenuItem2")
 	), 5)
 end
 

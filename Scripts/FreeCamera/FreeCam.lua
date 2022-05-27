@@ -2,7 +2,7 @@
 	Copyright (c) 2022 Questionable Mark
 ]]
 
---if FreeCam then return end
+if FreeCam then return end
 
 dofile("../libs/ScriptLoader.lua")
 dofile("FreeCamFunctions.lua")
@@ -416,7 +416,7 @@ end
 
 local _sm_guiSetInterText = sm.gui.setInteractionText
 local _sm_getKeyBinding = sm.gui.getKeyBinding
-local can_interact_error = "<p textShadow='false' bg='gui_keybinds_bg_orange' color='#66440C' spacing='9'>Only Allowed players can use this tool</p>"
+local cam_interact_error = OP.getHypertext("Only allowed players can use this tool")
 function FreeCam:client_canInteract()
 	if self:isAllowed() then
 		if self.camera.state then
@@ -432,7 +432,7 @@ function FreeCam:client_canInteract()
 		return true
 	end
 
-	_sm_guiSetInterText(can_interact_error)
+	_sm_guiSetInterText(cam_interact_error)
 	_sm_guiSetInterText("")
 
 	return false
