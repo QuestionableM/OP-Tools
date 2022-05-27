@@ -182,6 +182,10 @@ function OP.display(sound, globalSound, text, duration)
 	end
 end
 
+function OP.getHypertext(string)
+	return ("<p textShadow='false' bg='gui_keybinds_bg_orange' color='#66440C' spacing='9'>%s</p>"):format(string)
+end
+
 function OP.exists(cur_item)
 	local success, result = pcall(_sm_exists, cur_item)
 	if success and result == true then
