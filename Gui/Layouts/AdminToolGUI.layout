@@ -80,7 +80,6 @@
 		<Widget type="Button" skin="InventoryTab" position_real="0.0194301 0.224702 0.15544 0.0669643" align="Left Bottom" name="FiltersTab">
 			<Property key="Caption" value="Filters"/>
 			<Property key="FontName" value="InventoryTabLabel"/>
-			<Property key="TextShadow" value="true"/>
 			<Property key="TextAlign" value="Center"/>
 			<Property key="Visible" value="false"/>
 		</Widget>
@@ -88,21 +87,18 @@
 			<Property key="Caption" value="Modes"/>
 			<Property key="TextAlign" value="Center"/>
 			<Property key="FontName" value="InventoryTabLabel"/>
-			<Property key="TextShadow" value="true"/>
 			<Property key="Visible" value="false"/>
 		</Widget>
 		<Widget type="Button" skin="InventoryTab" position_real="0.382124 0.224702 0.284974 0.0669643" align="Left Bottom" name="SecondaryFuncTab">
 			<Property key="Caption" value="Secondary Functions"/>
 			<Property key="FontName" value="InventoryTabLabel"/>
 			<Property key="TextAlign" value="Center"/>
-			<Property key="TextShadow" value="true"/>
 			<Property key="Visible" value="false"/>
 		</Widget>
 		<Widget type="Button" skin="InventoryTab" position_real="0.693005 0.224702 0.259067 0.0669643" align="Left Bottom" name="CreationPropTab">
 			<Property key="Caption" value="Creation Properties"/>
 			<Property key="TextAlign" value="Center"/>
 			<Property key="FontName" value="InventoryTabLabel"/>
-			<Property key="TextShadow" value="true"/>
 			<Property key="Visible" value="false"/>
 		</Widget>
 	</Widget>
