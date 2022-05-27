@@ -344,7 +344,7 @@ end
 
 local _setInteractionText = sm.gui.setInteractionText
 local _getKeyBinding = sm.gui.getKeyBinding
-
+local admin_tool_interact_error = OP.getHypertext("Only allowed players can use this tool")
 function AdminTool:client_canInteract()
 	if self:isAllowed() then
 		local _useKey = _getKeyBinding("Use", true)
@@ -352,11 +352,14 @@ function AdminTool:client_canInteract()
 
 		_setInteractionText("Press", _useKey, "to open Admin Tool GUI")
 		_setInteractionText("Press", _tinkerKey, "to open color picker GUI")
+
+		return true
 	end
 
-	_setInteractionText("", "Only allowed players can use this tool")
+	_setInteractionText(admin_tool_interact_error)
 	_setInteractionText("")
-	return true
+
+	return false
 end
 
 function AdminTool:server_canErase()

@@ -208,6 +208,7 @@ function WorldCleaner:server_canErase()
 end
 
 local _gui_setInterText = sm.gui.setInteractionText
+local cleaner_interact_error = OP.getHypertext("Only allowed players can use this tool")
 function WorldCleaner:client_canInteract()
 	if self:isAllowed() then
 		local _useKey = sm.gui.getKeyBinding("Use", true)
@@ -218,7 +219,7 @@ function WorldCleaner:client_canInteract()
 		return true
 	end
 
-	_gui_setInterText("", "Only allowed players can use this tool")
+	_gui_setInterText(cleaner_interact_error)
 	_gui_setInterText("")
 	
 	return false

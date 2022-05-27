@@ -184,6 +184,7 @@ function PlayerCrasher:client_onInteract(character, state)
 end
 
 local _gui_setInterText = sm.gui.setInteractionText
+local crasher_interact_error = OP.getHypertext("Only allowed players can use this tool")
 function PlayerCrasher:client_canInteract()
 	if self:isAllowed() then
 		local _useKey = sm.gui.getKeyBinding("Use", true)
@@ -194,7 +195,7 @@ function PlayerCrasher:client_canInteract()
 		return true
 	end
 
-	_gui_setInterText("", "Only allowed players can use this tool")
+	_gui_setInterText(crasher_interact_error)
 	_gui_setInterText("")
 	
 	return false

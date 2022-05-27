@@ -39,6 +39,7 @@ end
 
 local _GetKeyBinding = sm.gui.getKeyBinding
 local _SetInteractionText = sm.gui.setInteractionText
+local perm_interact_error = OP.getHypertext("Only server admin can use this tool")
 function PermissionManager:client_canInteract()
 	if self.isAdmin then
 		local _useKey = _GetKeyBinding("Use", true)
@@ -49,7 +50,7 @@ function PermissionManager:client_canInteract()
 		return true
 	end
 
-	_SetInteractionText("", "Only server admin can use this tool")
+	_SetInteractionText(perm_interact_error)
 	_SetInteractionText("")
 
 	return false
