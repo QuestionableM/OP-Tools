@@ -93,33 +93,34 @@ function FREE_CAM_OPTIONS.freeCamera_options()
 				end
 			end,
 			subOptions = {
-				[1] = {name = "Projectile",           type = option_type_enum.list , value = 0  , default = 0  , maxValue = 20, listName = "projectiles"},
+				[1] = {name = "Projectile",           type = option_type_enum.list , value = 0  , default = 0  , maxValue = 21, listName = "projectiles"},
 				[2] = {name = "Projectile Speed",     type = option_type_enum.value, value = 100, default = 100, changer = 1, minValue = 1, maxValue = 99999999 },
 				[3] = {name = "Spread",               type = option_type_enum.value, value = 1  , default = 1  , changer = 1, minValue = 0, maxValue = 180      },
 				[4] = {name = "Projectiles Per Shot", type = option_type_enum.value, value = 1  , default = 1  , changer = 1, minValue = 1, maxValue = 100      }
 			},
 			listStorage = {
 				projectiles = {
-					[1]  = {name = "Potato",         id = "potato"       },
-					[2]  = {name = "Small potato",   id = "smallpotato"  },
-					[3]  = {name = "Fries",          id = "fries"        },
-					[4]  = {name = "Tomato",         id = "tomato"       },
-					[5]  = {name = "Carrot",         id = "carrot"       },
-					[6]  = {name = "Redbeet",        id = "redbeet"      },
-					[7]  = {name = "Broccoli",       id = "broccoli"     },
-					[8]  = {name = "Pineapple",      id = "pineapple"    },
-					[9]  = {name = "Orange",         id = "orange"       },
-					[10] = {name = "Blueberry",      id = "blueberry"    },
-					[11] = {name = "Banana",         id = "banana"       },
-					[12] = {name = "Tape",           id = "tape"         },
-					[13] = {name = "Explosive Tape", id = "explosivetape"},
-					[14] = {name = "Water",          id = "water"        },
-					[15] = {name = "Fertilizer",     id = "fertilizer"   },
-					[16] = {name = "Chemical",       id = "chemical"     },
-					[17] = {name = "Pesticide",      id = "pesticide"    },
-					[18] = {name = "Seed",           id = "seed"         },
-					[19] = {name = "Glowstick",      id = "glowstick"    },
-					[20] = {name = "Epic Loot",      id = "epicloot"     }
+					[1]  = {name = "Potato"        , uuid = _sm_newUuid("5e8eeaae-b5c1-4992-bb21-dec5254ce722") },
+					[2]  = {name = "Small potato"  , uuid = _sm_newUuid("132c44d3-7436-419d-ac6b-fc178336dcb7") },
+					[3]  = {name = "Fries"         , uuid = _sm_newUuid("9b6b4c56-fba1-400f-94fa-23f9613c0423") },
+					[4]  = {name = "Tomato"        , uuid = _sm_newUuid("b72b01a5-59ad-4882-bbd3-3cbc9f357823") },
+					[5]  = {name = "Carrot"        , uuid = _sm_newUuid("69fc1a2b-77d2-40da-9a82-03fbe3c35a18") },
+					[6]  = {name = "Redbeet"       , uuid = _sm_newUuid("358700c1-7555-41dc-90d1-92374051f985") },
+					[7]  = {name = "Broccoli"      , uuid = _sm_newUuid("b6f296d0-bc03-4098-85b5-52546daad1d7") },
+					[8]  = {name = "Pineapple"     , uuid = _sm_newUuid("65d509b9-09f8-4e32-8b1a-0a6aa11f8660") },
+					[9]  = {name = "Orange"        , uuid = _sm_newUuid("9963fbc0-1314-4db4-8866-1237ace867c3") },
+					[10] = {name = "Blueberry"     , uuid = _sm_newUuid("599b112d-2ff9-4f14-9051-0f58bebb2c94") },
+					[11] = {name = "Banana"        , uuid = _sm_newUuid("4e259125-d1c0-4678-ae41-2652cf224692") },
+					[12] = {name = "Tape"          , uuid = _sm_newUuid("1a981b70-dc08-4105-89b1-79819511a2fb") },
+					[13] = {name = "Explosive Tape", uuid = _sm_newUuid("31b92b9a-a9f8-4f6d-988b-04ad479978ec") },
+					[14] = {name = "Pesticide"     , uuid = _sm_newUuid("68029b35-2028-42a5-8509-286d78656561") },
+					[15] = {name = "Water"         , uuid = _sm_newUuid("2c3fc640-1a2e-4328-a872-f6d3f92d0fea") },
+					[16] = {name = "Fertilizer"    , uuid = _sm_newUuid("5610b246-774e-4c1c-9adc-f87b4d993c43") },
+					[17] = {name = "Chemical"      , uuid = _sm_newUuid("46292783-af41-49a5-91ef-092f22dfae91") },
+					[18] = {name = "Seed"          , uuid = _sm_newUuid("9512029a-3f1d-4aa2-92bf-cb876d5c8cb0") },
+					[19] = {name = "Glowstick"     , uuid = _sm_newUuid("bdd04d53-2103-4c17-a3cb-ddbbae934ebb") },
+					[20] = {name = "Loot"          , uuid = _sm_newUuid("45209992-1a59-479e-a446-57140b605836") },
+					[21] = {name = "Epic Loot"     , uuid = _sm_newUuid("17cd4768-3123-4ce3-835a-362321dcf9de") }
 				}
 			}
 		},
@@ -495,7 +496,7 @@ local local_server_table =
 		local d_cam_dir = data[6]
 
 		local cur_category = self.camera.option_list[3]
-		local cur_projectile = cur_category.listStorage.projectiles[d_proj_id].id
+		local cur_projectile = cur_category.listStorage.projectiles[d_proj_id].uuid
 
 		local _sm_gunSpread = sm.noise.gunSpread
 		local _sm_projAttack = sm.projectile.projectileAttack
