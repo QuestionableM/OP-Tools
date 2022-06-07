@@ -1,7 +1,7 @@
 {
    "allow_add_mods" : true,
    "custom_icons" : true,
-   "description" : "This mod contains some useful tools for an admin.\n\nCurrently this mod has:\n- Admin Tool (allows the admin to destroy/paint/explode stuff by just aiming on the object with a spudgun)\n- Player Kicker\n- World Cleaner\n- Free Camera Tool\n- Permission Manager\n\nThis mod will get more updates in the future.",
+   "description" : "This mod contains some useful tools for an admin.\r\n\r\n[code][h1][b]Currently this mod has[/b][/h1]\r\n- [b]Admin Tool[/b] (allows the admin to destroy/paint/explode stuff by just aiming on the object with a spudgun)\r\n- [b]Player Kicker[/b]\r\n- [b]World Cleaner[/b]\r\n- [b]Free Camera Tool[/b]\r\n- [b]Permission Manager[/b][/code]\r\n\r\nThis mod will get more updates in the future.",
    "fileId" : 2022198450,
    "localId" : "d14c9984-f872-411b-8e0e-993e829e9bbb",
    "name" : "OP Tools",
