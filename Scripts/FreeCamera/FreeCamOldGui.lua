@@ -17,6 +17,7 @@ function FreeCamOldGui.client_displayStartInfo()
 	), 5)
 end
 
+---@param self FreeCamClass
 function FreeCamOldGui.client_changeSelectedCategory(self)
 	local s_camera = self.camera
 
@@ -35,6 +36,7 @@ function FreeCamOldGui.client_changeSelectedCategory(self)
 	self:client_HUD_updateSelectedOptions()
 end
 
+---@param self FreeCamClass
 function FreeCamOldGui.client_changeSelectedOption(self)
 	local s_camera = self.camera
 
@@ -119,6 +121,7 @@ local value_change_functions =
 	end
 }
 
+---@param self FreeCamClass
 function FreeCamOldGui.client_changeOptionValue(self, movement)
 	local s_camera = self.camera
 
@@ -138,6 +141,7 @@ function FreeCamOldGui.client_changeOptionValue(self, movement)
 	value_change_functions[cur_sub_opt.type](self, cur_category, cur_sub_opt, movement)
 end
 
+---@param self FreeCamClass
 function FreeCamOldGui.client_callFunction(self)
 	local s_camera = self.camera
 

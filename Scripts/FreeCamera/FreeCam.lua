@@ -22,7 +22,7 @@ dofile("FreeCamOldGui.lua")
 ---@field activationTime integer
 ---@field move_target Character
 ---@field position Vec3
----@field option_count Vec3
+---@field option_count integer
 ---@field charToTeleport Character
 
 ---@class FreeCamClass : ShapeClass
