@@ -3,6 +3,8 @@
 ]]
 
 if WorldCleanerGUI then return end
+
+---@class WorldCleanerGUI : WorldCleanerClass
 WorldCleanerGUI = class()
 
 local message_id_enum =

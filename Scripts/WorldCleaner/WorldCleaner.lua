@@ -7,6 +7,9 @@ if WorldCleaner then return end
 dofile("../libs/ScriptLoader.lua")
 dofile("WorldCleanerGUI.lua")
 
+---@class WorldCleanerClass : ShapeClass
+---@field gui GuiInterface
+---@field client_initializeGui function
 WorldCleaner = class(WorldCleanerGUI)
 WorldCleaner.connectionInput = sm.interactable.connectionType.none
 WorldCleaner.connectionOutput = sm.interactable.connectionType.none
