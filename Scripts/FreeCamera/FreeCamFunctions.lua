@@ -290,7 +290,7 @@ local local_server_table =
 		local expl_impulse_str = data[4]
 		local expl_impulse_rad = data[5]
 		local expl_pos         = data[6]
-	
+
 		OP.betterExplosion(expl_pos, expl_level, expl_radius, expl_impulse_str, expl_impulse_rad, "PropaneTank - ExplosionSmall", true)
 	end,
 	[2] = function(self, data, caller)
@@ -299,7 +299,7 @@ local local_server_table =
 
 		if OP.exists(d_character) then
 			d_character:setWorldPosition(d_char_pos)
-			
+
 			OP.print(("Character %s has been teleported. New position = %s"):format(d_character.id, d_char_pos))
 
 			if d_character:isPlayer() then
