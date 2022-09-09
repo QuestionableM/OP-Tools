@@ -3,6 +3,8 @@
 ]]
 
 if PlayerCrasherGUI then return end
+
+---@class PlayerCrasherGui : PlayerCrasherClass
 PlayerCrasherGUI = class()
 
 function PlayerCrasherGUI:client_GUI_switchWidget(is_main_gui)

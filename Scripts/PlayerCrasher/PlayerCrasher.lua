@@ -7,6 +7,8 @@ if PlayerCrasher then return end
 dofile("../libs/ScriptLoader.lua")
 dofile("PlayerCrasherGUI.lua")
 
+---@class PlayerCrasherClass : ShapeClass
+---@field client_GUI_openGui function
 PlayerCrasher = class(PlayerCrasherGUI)
 PlayerCrasher.connectionInput = sm.interactable.connectionType.none
 PlayerCrasher.connectionOutput = sm.interactable.connectionType.none

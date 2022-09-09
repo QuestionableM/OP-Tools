@@ -12,6 +12,7 @@ OP.enable_free_cam_data = true
 local server_permissions = {}
 OP.server_admin = nil
 
+---@param self any
 function OP.getAdminPermission(self)
 	if self.server_admin then
 		OP.server_admin = sm.localPlayer.getPlayer()
