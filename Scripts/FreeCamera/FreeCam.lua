@@ -2,7 +2,7 @@
 	Copyright (c) 2022 Questionable Mark
 ]]
 
-if FreeCam then return end
+--if FreeCam then return end
 
 dofile("../libs/ScriptLoader.lua")
 dofile("FreeCamFunctions.lua")
@@ -46,18 +46,10 @@ function FreeCam:client_onCreate()
 	OP.getAdminPermission(self)
 	self:client_updatePermission()
 
-	local tag_gui = sm.gui.createNameTagGui()
-	tag_gui:setRequireLineOfSight(false)
-	tag_gui:setMaxRenderDistance(10000)
-	tag_gui:setFadeRange(2500)
-	tag_gui:setText("Text", "#ffff00Your Character")
-
 	self.camera_hud = sm.gui.createGuiFromLayout("$CONTENT_DATA/Gui/Layouts/FreeCameraHUD.layout", false, { isHud = true, hidesHotbar = true, isInteractive = false })
 
 	self:client_GUI_createFreeCamSettings()
 	self:client_HUD_updateSelectedOptions()
-
-	self.nametag_gui = tag_gui
 end
 
 function FreeCam:client_updatePermission()
@@ -69,8 +61,13 @@ function FreeCam:isAllowed()
 end
 
 function FreeCam:updateCamera()
-	if OP.exists(self.nametag_gui) and self.nametag_gui:isActive() then
-		self.nametag_gui:close()
+	local s_cam = self.camera
+	if s_cam and s_cam.state then
+		local loc_pl = sm.localPlayer.getPlayer()
+		local pl_char = loc_pl.character
+		if OP.exists(pl_char) then
+			pl_char:setNameTag("")
+		end
 	end
 
 	if OP.exists(self.camera_hud) and self.camera_hud:isActive() then
@@ -306,26 +303,6 @@ function FreeCam:client_updateCamState(character)
 	end
 end
 
-local char_offset = sm.vec3.new(0, 0, 0.8)
----@param character Character
-function FreeCam:client_updateNameTag(character)
-	local tag_gui = self.nametag_gui
-	local gui_active = tag_gui:isActive()
-
-	if character then
-		if not gui_active then
-			tag_gui:open()
-		end
-
-		local tag_pos = character.worldPosition + char_offset
-		self.nametag_gui:setWorldPosition(tag_pos)
-	else
-		if gui_active then
-			tag_gui:close()
-		end
-	end
-end
-
 function FreeCam:client_HUD_updateSelectedOptions()
 	local cam_hud = self.camera_hud
 	local cam_options = self.camera.option_list[self.camera.category_id + 1]
@@ -349,8 +326,6 @@ end
 function FreeCam:client_onUpdate(dt)
 	if self.camera.state then
 		local playerCharacter = sm.localPlayer.getPlayer():getCharacter()
-
-		self:client_updateNameTag(playerCharacter)
 
 		if self.camera.move_target then
 			self:client_camInterpolation()
@@ -396,6 +371,8 @@ function FreeCam:client_onInteract(character, state)
 	sub_opt_one[3].value   = cur_fov
 	sub_opt_one[3].default = cur_fov
 
+	character:setNameTag("Your Character", sm.color.new(0xffff00ff))
+
 	self.camera_hud:setVisible("CamDataBP", OP.enable_free_cam_data)
 	self.camera_hud:open()
 
@@ -407,18 +384,19 @@ function FreeCam:client_onInteract(character, state)
 end
 
 function FreeCam:client_onDestroy()
-	GUI_STUFF.close_and_destroy_dialogs({ self.nametag_gui, self.camera_hud, self.camera_set_gui })
+	GUI_STUFF.close_and_destroy_dialogs({ self.camera_hud, self.camera_set_gui })
 
-	if not self.camera.state then return end
+	if self.camera.state then
+		local pl_char = sm.localPlayer.getPlayer():getCharacter()
+		if OP.exists(pl_char) then
+			pl_char:setLockingInteractable(nil)
+			pl_char:setNameTag("")
+		end
 
-	local plChar = sm.localPlayer.getPlayer():getCharacter()
-	if plChar then
-		plChar:setLockingInteractable(nil)
-	end
-
-	local def_state = sm.camera.state.default
-	if sm.camera.getCameraState() ~= def_state then
-		sm.camera.setCameraState(def_state)
+		local def_state = sm.camera.state.default
+		if sm.camera.getCameraState() ~= def_state then
+			sm.camera.setCameraState(def_state)
+		end
 	end
 end
 
