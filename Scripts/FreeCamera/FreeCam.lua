@@ -10,6 +10,27 @@ dofile("FreeCam_SubFunctions.lua")
 dofile("FreeCamGui.lua")
 dofile("FreeCamOldGui.lua")
 
+---@class CameraDataClass
+---@field speed Vec3
+---@field state boolean
+---@field input integer[]
+---@field multiplier integer
+---@field category_id integer
+---@field option_id integer
+---@field option_list table
+---@field callbacks table
+---@field activationTime integer
+---@field move_target Character
+---@field position Vec3
+---@field option_count Vec3
+---@field charToTeleport Character
+
+---@class FreeCamClass : ShapeClass
+---@field camera CameraDataClass
+---@field camera_hud GuiInterface
+---@field camera_set_gui GuiInterface
+---@field client_GUI_createFreeCamSettings function
+---@field client_GUI_openGui function
 FreeCam = class(FreeCamGui)
 FreeCam.connectionInput  = sm.interactable.connectionType.none
 FreeCam.connectionOutput = sm.interactable.connectionType.none
@@ -21,7 +42,7 @@ end
 
 function FreeCam:client_onCreate()
 	self:updateCamera()
-	
+
 	OP.getAdminPermission(self)
 	self:client_updatePermission()
 
@@ -286,6 +307,7 @@ function FreeCam:client_updateCamState(character)
 end
 
 local char_offset = sm.vec3.new(0, 0, 0.8)
+---@param character Character
 function FreeCam:client_updateNameTag(character)
 	local tag_gui = self.nametag_gui
 	local gui_active = tag_gui:isActive()

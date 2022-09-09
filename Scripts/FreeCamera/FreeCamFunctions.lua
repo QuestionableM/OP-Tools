@@ -3,6 +3,8 @@
 ]]
 
 if FREE_CAM_OPTIONS then return end
+
+---@class FreeCameraOptionsClass
 FREE_CAM_OPTIONS = class()
 
 local option_type_enum =

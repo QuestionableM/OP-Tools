@@ -3,6 +3,9 @@
 ]]
 
 if FreeCamGui then return end
+
+---@class FreeCameraNewGui : FreeCamClass
+---@field camera CameraDataClass
 FreeCamGui = class()
 
 function FreeCamGui:client_GUI_buttonCallback(btn_name)

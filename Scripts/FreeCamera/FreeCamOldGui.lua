@@ -3,6 +3,10 @@
 ]]
 
 if FreeCamOldGui then return end
+
+---@class FreeCameraOldGui
+---@field camera CameraDataClass
+---@field client_HUD_updateSelectedOptions function
 FreeCamOldGui = class()
 
 local _sm_getKeyBinding = sm.gui.getKeyBinding
