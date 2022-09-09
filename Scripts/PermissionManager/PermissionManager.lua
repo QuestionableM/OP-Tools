@@ -7,6 +7,11 @@ if PermissionManager then return end
 dofile("../libs/ScriptLoader.lua")
 dofile("PermissionManagerGUI.lua")
 
+---@class PermissionManagerClass : ShapeClass
+---@field client_loadPMGUI function
+---@field client_GUI_UpdateWaitAnimation function
+---@field client_GUI_OpenGui function
+---@field gui PermManagerGuiData
 PermissionManager = class(PermissionManagerGUI)
 PermissionManager.connectionInput = sm.interactable.connectionType.none
 PermissionManager.connectionOutput = sm.interactable.connectionType.none
@@ -72,7 +77,7 @@ end
 function PermissionManager:server_canErase()
 	local pl_list = OP.getShapeIntersections(self.shape)
 	local can_delete = (#pl_list == 1 and pl_list[1] == OP.server_admin)
-	
+
 	return can_delete
 end
 

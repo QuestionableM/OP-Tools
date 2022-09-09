@@ -3,6 +3,13 @@
 ]]
 
 if PermissionManagerGUI then return end
+
+---@class PermManagerGuiData
+---@field buttonData table
+---@field cur_page integer
+---@field interface GuiInterface
+
+---@class PermManagerGui : PermissionManagerClass
 PermissionManagerGUI = class()
 
 function PermissionManagerGUI:client_loadPMGUI()

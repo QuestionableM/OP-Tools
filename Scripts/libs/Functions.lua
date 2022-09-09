@@ -3,6 +3,8 @@
 ]]
 
 if OP then return end
+
+---@class OPDataClass
 OP = class()
 
 OP.enable_free_cam_data = true
@@ -197,10 +199,18 @@ end
 
 local _opExists = OP.exists
 local _sm_applyImpulse = sm.physics.applyImpulse
+
+---@param position Vec3
+---@param ExplosionLevel integer
+---@param explosionRadius integer
+---@param explosionImpulse integer
+---@param explosionMagnitude integer
+---@param effect string
+---@param pushPlayers boolean
 function OP.betterExplosion(position, ExplosionLevel, explosionRadius, explosionImpulse, explosionMagnitude, effect, pushPlayers)
 	sm.physics.explode(position, ExplosionLevel, explosionRadius, 1, 1, effect)
-	
-	for _,body in pairs(sm.body.getAllBodies()) do
+
+	for _, body in pairs(sm.body.getAllBodies()) do
 		if _opExists(body) then
 			local b_DistanceVec = position - body.worldPosition
 			local b_Distance = b_DistanceVec:length()

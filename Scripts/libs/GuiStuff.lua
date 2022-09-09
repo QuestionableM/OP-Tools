@@ -3,6 +3,8 @@
 ]]
 
 if GUI_STUFF then return end
+
+---@class GuiStuffClass
 GUI_STUFF = class()
 
 function GUI_STUFF.close_and_destroy_dialogs(d_table)
