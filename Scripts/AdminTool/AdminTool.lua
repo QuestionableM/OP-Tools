@@ -2,12 +2,19 @@
 	Copyright (c) 2022 Questionable Mark
 ]]
 
-if AdminTool then return end
+--if AdminTool then return end
 
 dofile("../libs/ScriptLoader.lua")
 dofile("AdminTool_Functions.lua")
 dofile("AdminToolGUI.lua")
 
+---@class AdminToolClass : ShapeClass
+---@field gui AdminToolGuiData
+---@field color_picker_gui AdminToolColorPickerGuiData
+---@field create_AT_GUI function
+---@field client_updateWaitingDataLabel function
+---@field create_ColorPicker_GUI function
+---@field client_requestButtonData function
 AdminTool = class(AdminToolGUI)
 AdminTool.connectionInput  = sm.interactable.connectionType.none
 AdminTool.connectionOutput = sm.interactable.connectionType.none
@@ -34,16 +41,18 @@ function AdminTool:server_getPlayerSettings(player)
 	end
 end
 
+---@param res RaycastResult
 function AdminTool:SecondaryFunction(res, cOp)
 	if cOp.pushMode and not cOp.explosionMode then
-		if res.type == "body" then
+		local res_type = res.type
+		if res_type == "body" then
 			local direction = res.directionWorld
 			local impulse = res:getBody():getMass() / 300
 			sm.physics.applyImpulse(res:getShape(), direction * impulse, true)
-		elseif res.type == "character" then
+		elseif res_type == "character" then
 			local cur_char = res:getCharacter()
 			local impulse = cur_char:getMass() / 25
-			local direction = red.directionWorld * impulse
+			local direction = res.directionWorld * impulse
 
 			if cur_char:isTumbling() then
 				cur_char:applyTumblingImpulse(direction)
@@ -227,6 +236,7 @@ end
 
 function AdminTool:ColorPickerFunction(res)
 	if (res.type == "body" and res:getShape() ~= self.shape) or res.type == "joint" or res.type == "harvestable" or res.type == "character" then
+		---@type any
 		local _CurShapeColor = (res.type == "body" and res:getShape()) or (res.type == "harvestable" and res:getHarvestable()) or (res.type == "joint" and res:getJoint()) or (res.type == "character" and res:getCharacter())
 		_CurShapeColor = _CurShapeColor:getColor()
 		local _shape = self.shape

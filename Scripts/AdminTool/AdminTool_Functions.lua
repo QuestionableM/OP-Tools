@@ -5,6 +5,7 @@
 if ADMIN_F then return end
 ADMIN_F = class()
 
+---@return table
 function ADMIN_F.server_load_playerFunctions()
 	local player_functions =
 	{
@@ -32,8 +33,9 @@ function ADMIN_F.server_load_playerFunctions()
 	return player_functions
 end
 
+---@return boolean, boolean, boolean, boolean, boolean
 function ADMIN_F.checkFunctions(object_mode, paint_mode, material_mode, lose_only, static_only, tool_raycast, other_raycast)
-	local object, color, material, lose, static = nil
+	local object, color, material, lose, static
 
 	local isValid = type(tool_raycast) == "RaycastResult" and tool_raycast.valid and tool_raycast.type == "body"
 	local isRaycast = type(other_raycast) == "RaycastResult"
@@ -51,6 +53,6 @@ function ADMIN_F.checkFunctions(object_mode, paint_mode, material_mode, lose_onl
 	return (object == nil or object),
 	(color == nil or color),
 	(material == nil or material),
-	(lose == nil or lose), 
+	(lose == nil or lose),
 	(static == nil or static)
 end

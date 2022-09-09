@@ -3,6 +3,17 @@
 ]]
 
 if AdminToolGUI then return end
+
+---@class AdminToolGuiData
+---@field cur_page integer
+---@field btn_data table
+---@field interface GuiInterface
+
+---@class AdminToolColorPickerGuiData
+---@field rgb table
+---@field interface GuiInterface
+
+---@class AdminToolGui : AdminToolClass
 AdminToolGUI = class()
 
 function AdminToolGUI:client_disableLinkedButtons(links, page)
@@ -377,7 +388,7 @@ end
 
 function AdminToolGUI:client_CP_onRGBValueChange(btn_name, new_value)
 	self.color_picker_gui.rgb[btn_name] = sm.util.clamp(new_value, 0, 255)
-	
+
 	self:client_CP_updateColorInputText()
 	self:client_CP_updateColorPreview()
 	self:client_CP_updateValues()
