@@ -1,5 +1,5 @@
 --[[
-	Copyright (c) 2022 Questionable Mark
+	Copyright (c) 2023 Questionable Mark
 ]]
 
 --if AdminTool then return end
