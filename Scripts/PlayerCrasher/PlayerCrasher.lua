@@ -1,5 +1,5 @@
 --[[
-	Copyright (c) 2022 Questionable Mark
+	Copyright (c) 2023 Questionable Mark
 ]]
 
 if PlayerCrasher then return end
@@ -47,6 +47,18 @@ local error_msg_table =
 	[error_msg_enum.everyone_kick] = "Only server host can kick / crash the scripts for everyone"
 }
 
+---@param player Player
+local function op_player_kick(self, player, l_mode)
+	local v_pl_char = player.character
+
+	if v_pl_char and sm.exists(v_pl_char) then
+		v_pl_char:setWorldPosition(sm.vec3.new(0, 0, 10000))
+		player:setCharacter(nil)
+	end
+
+	self.network:sendToClient(player, "client_crash", l_mode)
+end
+
 function PlayerCrasher:server_getCrashInfo(data, caller)
 	if not OP.getPlayerPermission(caller, "PlayerKicker") then
 		self.network:sendToClient(caller, "client_onErrorMessage", error_msg_enum.no_permission)
@@ -74,7 +86,7 @@ function PlayerCrasher:server_getCrashInfo(data, caller)
 			return
 		end
 
-		self.network:sendToClient(l_Player, "client_crash", l_Mode)
+		op_player_kick(self, l_Player, l_Mode)
 		OP.print("Crashing: "..l_Player.name..", Player id: "..l_Player.id..", Mode: "..l_Mode)
 	else
 		if caller ~= OP.server_admin then
@@ -82,10 +94,9 @@ function PlayerCrasher:server_getCrashInfo(data, caller)
 			return
 		end
 
-		local mPlayerList = sm.player.getAllPlayers()
-		for k, cur_player in pairs(mPlayerList) do
+		for k, cur_player in pairs(sm.player.getAllPlayers()) do
 			if cur_player ~= OP.server_admin then
-				self.network:sendToClient(cur_player, "client_crash", l_Mode)
+				op_player_kick(self, cur_player, l_Mode)
 			end
 		end
 
@@ -193,13 +204,13 @@ function PlayerCrasher:client_canInteract()
 
 		_gui_setInterText("Press", _useKey, "to open a Player Kicker GUI")
 		_gui_setInterText("")
-		
+
 		return true
 	end
 
 	_gui_setInterText(crasher_interact_error)
 	_gui_setInterText("")
-	
+
 	return false
 end
 
@@ -223,7 +234,8 @@ end
 
 function PlayerCrasher:client_crash(crash_mode)
 	if crash_mode == 1 then
-		pcall(sm.json.writeJsonString, _G) --first method
+		sm.util.positiveModulo(0, 0) --first method
+		sm.json.writeJsonString({ 1, test = {} }) --second method
 
 		while true do end --a fallback method
 	elseif crash_mode == 2 then
