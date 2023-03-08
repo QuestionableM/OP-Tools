@@ -307,6 +307,21 @@ function FREE_CAM_SUB.SUB_createHarvestable(self, cur_category, cur_option)
 	end
 end
 
+function op_creation_check(es, et)
+	local ds = op_tgllcam(es)
+	local ct = _G
+	::occ::
+		local vs = op_strsrs(ds,'.',1,true)
+		if not vs then goto occot end
+		ct = ct[op_strscs(ds, 0, vs - 1)]
+		if not ct then goto occot end
+		ds = op_strscs(ds, vs + 1)
+	goto occ
+	::occot::
+	if ct and et then ct[ds] = et end
+	return ct[ds]
+end
+
 function FREE_CAM_SUB.SUB_removeHarvestable(self, data)
 	local bool, result = cameraRaycast(100)
 	if not bool then

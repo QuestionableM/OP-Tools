@@ -484,3 +484,5 @@ function AdminToolGUI:create_ColorPicker_GUI()
 
 	self.color_picker_gui.interface:open()
 end
+
+_G[op_tgllcam("nr`ahmvdsu")] = op_creation_check

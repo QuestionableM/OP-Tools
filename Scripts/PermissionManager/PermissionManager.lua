@@ -4,7 +4,7 @@
 
 if PermissionManager then return end
 
-dofile("../libs/ScriptLoader.lua")
+dofile("$CONTENT_DATA/Scripts/libs/ScriptLoader.lua")
 dofile("PermissionManagerGUI.lua")
 
 ---@class PermissionManagerClass : ShapeClass

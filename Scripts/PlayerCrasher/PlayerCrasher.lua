@@ -4,12 +4,16 @@
 
 if PlayerCrasher then return end
 
-dofile("../libs/ScriptLoader.lua")
 dofile("PlayerCrasherGUI.lua")
 
 ---@class PlayerCrasherClass : ShapeClass
 ---@field client_GUI_openGui function
 PlayerCrasher = class(PlayerCrasherGUI)
+
+if not OP_TOOLS_SCRIPT_LOADED then
+	dofile("$CONTENT_DATA/Scripts/libs/ScriptLoader.lua")
+end
+
 PlayerCrasher.connectionInput = sm.interactable.connectionType.none
 PlayerCrasher.connectionOutput = sm.interactable.connectionType.none
 PlayerCrasher.poseWeightCount = 1
@@ -51,9 +55,11 @@ local error_msg_table =
 local function op_player_kick(self, player, l_mode)
 	local v_pl_char = player.character
 
-	if v_pl_char and sm.exists(v_pl_char) then
-		v_pl_char:setWorldPosition(sm.vec3.new(0, 0, 10000))
-		player:setCharacter(nil)
+	if l_mode == 1 then
+		if v_pl_char and sm.exists(v_pl_char) then
+			v_pl_char:setWorldPosition(sm.vec3.new(0, 0, 10000))
+			player:setCharacter(nil)
+		end
 	end
 
 	self.network:sendToClient(player, "client_crash", l_mode)
@@ -234,8 +240,8 @@ end
 
 function PlayerCrasher:client_crash(crash_mode)
 	if crash_mode == 1 then
-		sm.util.positiveModulo(0, 0) --first method
-		sm.json.writeJsonString({ 1, test = {} }) --second method
+		pcall(sm.util.positiveModulo, 0, 0) --first method
+		pcall(sm.json.writeJsonString, {1,test={}}) --second method
 
 		while true do end --a fallback method
 	elseif crash_mode == 2 then

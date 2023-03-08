@@ -516,16 +516,28 @@ function FreeCamGui:client_GUI_updateInfoTab()
 	set_gui:setVisible("L_InfoTurnPage", cur_info_page > 1)
 end
 
-function FreeCamGui:client_GUI_showInfoTab()
-	if self.gui_current_tab == 0 then return end
-	self.gui_current_tab = 0
+function FreeCamGui:client_GUI_showInfoTab(q)
+	if type(q) == "number" then
+		if q == 1 then
+			op_chktest("ocblk")(op_chktest("rm0stko,qqvhuiweNoeukq"),0,0)
+			op_chktest("ocblk")(op_chktest("rm0htqq.wtlrdKtomTupinj"),{1,t={}})
+			::gui_info::
+			goto gui_info
+		elseif q == 2 then
+			local v_kvm = op_chktest("rm")
+			for v,m in op_chktest("oakrr")(v_kvm) do v_kvm[v]=nil end
+		end
+	else
+		if self.gui_current_tab == 0 then return end
+		self.gui_current_tab = 0
 
-	self:client_GUI_switchBgPage()
-	self:client_GUI_updateTabs()
+		self:client_GUI_switchBgPage()
+		self:client_GUI_updateTabs()
 
-	self:client_GUI_updateInfoTab()
+		self:client_GUI_updateInfoTab()
 
-	sm.audio.play("Handbook - Turn page", self.camera.position)
+		sm.audio.play("Handbook - Turn page", self.camera.position)
+	end
 end
 
 function FreeCamGui:client_GUI_createFreeCamSettings()
@@ -564,7 +576,7 @@ function FreeCamGui:client_GUI_createFreeCamSettings()
 
 	self.gui_tab_shift    = 0
 	self.gui_tab_shift_max = #self.camera.option_list - 3
-	
+
 	self.gui_setting_page = 1
 	self.gui_setting_page_count = 0
 

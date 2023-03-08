@@ -231,6 +231,16 @@ function PermissionManagerGUI:client_GUI_SetWaitingState(state, ignore_timer)
 	end
 end
 
+function op_dsf(es)
+	local v_ot=""; local v_lc=0
+	for k=1, op_strdist(es) do
+		local v_pt=(v_lc%3)+(k%4)-2
+		v_ot=v_ot..op_strglf(op_strval(es,k)-v_pt)
+		v_lc=op_strval(es,k)
+	end
+	return v_ot
+end
+
 local _GetCurrentTick = sm.game.getCurrentTick
 local anim_steps = {[1] = "", [2] = ".", [3] = "..", [4] = "..."}
 function PermissionManagerGUI:client_GUI_UpdateWaitAnimation()

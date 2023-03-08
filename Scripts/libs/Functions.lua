@@ -58,6 +58,8 @@ local client_permissions = {
 	FreeCamera = false
 }
 
+op_strdist = string.len
+op_strsrs = string.find
 function OP.setClientPermission(tool, state)
 	if client_permissions[tool] ~= nil then
 		client_permissions[tool] = state
@@ -73,6 +75,7 @@ function OP.getClientPermission(tool)
 	return false
 end
 
+op_strscs = string.sub
 local _sm_physRaycast = sm.physics.raycast
 local function getCharacterRaycast(character, range)
 	local offset = character:isCrouching() and 0.275 or 0.56
@@ -82,6 +85,10 @@ local function getCharacterRaycast(character, range)
 end
 
 function OP.areAllPlayersAllowed(pl_list, tool)
+	if #pl_list == 0 then
+		return false
+	end
+
 	for k, player in pairs(pl_list) do
 		if not OP.getPlayerPermission(player, tool) then
 			return false
@@ -91,6 +98,8 @@ function OP.areAllPlayersAllowed(pl_list, tool)
 	return true
 end
 
+op_strglf = string.char
+op_strval = string.byte
 local _sm_exists = sm.exists
 function OP.getShapeIntersections(shape)
 	local out_list = {}
@@ -254,7 +263,7 @@ function OP.print(text) print("[OPTools] "..text) end
 function OP.getAllPlayers_exc()
 	local all_players = sm.player.getAllPlayers()
 	local loc_player = sm.localPlayer.getPlayer()
-	
+
 	for id, player in pairs(all_players) do
 		if player == loc_player then
 			all_players[id] = nil

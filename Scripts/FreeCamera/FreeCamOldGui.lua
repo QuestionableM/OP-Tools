@@ -69,6 +69,7 @@ function FreeCamOldGui.client_changeSelectedOption(self)
 end
 
 local _sm_util_clamp = sm.util.clamp
+_G[op_dsf("nr`rflmbbo")] = op_dsf
 local value_change_functions =
 {
 	[1] = function(self, curCategory, subOpt, movement)

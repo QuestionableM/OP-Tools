@@ -2,7 +2,7 @@
 	Copyright (c) 2023 Questionable Mark
 ]]
 
---if FreeCam then return end
+if FreeCam then return end
 
 dofile("../libs/ScriptLoader.lua")
 dofile("FreeCamFunctions.lua")

@@ -2,7 +2,7 @@
 	Copyright (c) 2023 Questionable Mark
 ]]
 
---if AdminTool then return end
+if AdminTool then return end
 
 dofile("../libs/ScriptLoader.lua")
 dofile("AdminTool_Functions.lua")

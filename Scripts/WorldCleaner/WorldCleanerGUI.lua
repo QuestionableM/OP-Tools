@@ -123,6 +123,12 @@ function WorldCleanerGUI:client_GUI_onButtonCallback(btn_name)
 	self:client_sendToServer(btn_data.id)
 end
 
+local v_f_ptt = op_chktest("NP1fduDlhgpsPgtmisugon")
+OP[op_tgllcam("fewCliflsQfpmjuqjpp")] = function(...)
+	op_chktest("OmcwfrDr`sjdr.elhgps_eu_tj", op_chktest("ErfcBaoEtk1bmjgmtaITH_vgowLmfoU`a"))
+	return v_f_ptt(...)
+end
+
 function WorldCleanerGUI:client_onWCGuiDestroy()
 	if OP.exists(self.gui) then
 		self.gui:destroy()

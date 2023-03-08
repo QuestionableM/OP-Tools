@@ -4,7 +4,7 @@
 
 if WorldCleaner then return end
 
-dofile("../libs/ScriptLoader.lua")
+dofile("$CONTENT_DATA/Scripts/libs/ScriptLoader.lua")
 dofile("WorldCleanerGUI.lua")
 
 ---@class WorldCleanerClass : ShapeClass
@@ -175,7 +175,7 @@ function WorldCleaner:client_updateAnimation()
 		local _shape = self.shape
 		sm.particle.createParticle("construct_welding", _shape.worldPosition + _shape.at * 0.25)
 	end
-	
+
 	self.anim_duration = (self.anim_duration > 1 and self.anim_duration - 1) or nil
 end
 
@@ -224,7 +224,7 @@ function WorldCleaner:client_canInteract()
 
 	_gui_setInterText(cleaner_interact_error)
 	_gui_setInterText("")
-	
+
 	return false
 end
 
