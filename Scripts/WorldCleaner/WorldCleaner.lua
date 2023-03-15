@@ -60,14 +60,16 @@ function WorldCleaner:server_countStuffToDelete(mode, caller)
 			end
 		end
 	elseif shape_filter then
-		local all_bodies = sm.body.getAllBodies()
-		local mode_uuid = mode[3]
+		local v_item_clear_list = {}
+		if cur_case == clear_msg_ids.op_tools then
+			v_item_clear_list = OP.tool_uuids
+		else
+			v_item_clear_list[tostring(mode[3])] = true
+		end
 
-		for k, body in pairs(all_bodies) do
-			local body_shapes = body:getShapes()
-
-			for k, shape in pairs(body_shapes) do
-				if (mode_uuid and shape.uuid == mode_uuid) or OP.tool_uuids[tostring(shape.uuid)] then
+		for k, body in pairs(sm.body.getAllBodies()) do
+			for k, shape in pairs(body:getShapes()) do
+				if v_item_clear_list[tostring(shape.uuid)] == true then
 					_tabInsert(self.server_stuffToDelete.shapes, shape)
 				end
 			end
