@@ -7,7 +7,7 @@
 			"previewRotation": [ -1, 0, 0, 0, 0, 1, 0, 1, 0 ],
 			"showInInventory": false,
 			"autoTool": true,
-			"script": { "class": "SelfCheck", "file": "$CONTENT_DATA/Scripts/libs/SelfCheck.lua" }
+			"script": { "class": "SelfCheck", "file": "$CONTENT_DATA/Scripts/libs/SelfCheck.lua", "data": {} }
 		}
 	]
 }
