@@ -1,0 +1,13 @@
+{
+	"toolList": [
+		{
+			"name": "self_check",
+			"uuid": "920a0e3d-fa2a-4062-8d55-e29f05ac24f4",
+			"previewRenderable": "$GAME_DATA/Character/Char_Tools/char_connecttool_preview.rend",
+			"previewRotation": [ -1, 0, 0, 0, 0, 1, 0, 1, 0 ],
+			"showInInventory": false,
+			"autoTool": true,
+			"script": { "class": "SelfCheck", "file": "$CONTENT_DATA/Scripts/libs/SelfCheck.lua" }
+		}
+	]
+}
