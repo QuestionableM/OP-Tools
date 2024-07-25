@@ -2,6 +2,8 @@
 
 [Steam Workshop Link](https://steamcommunity.com/sharedfiles/filedetails/?id=2022198450)
 
+![Steam Downloads](https://img.shields.io/steam/downloads/2022198450)
+
 ## Description
 This mod adds 5 tools that will help you simplify some things
 
