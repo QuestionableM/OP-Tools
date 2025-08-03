@@ -238,7 +238,12 @@ function PlayerCrasher:client_destroyAndCloseGuis()
 	GUI_STUFF.close_and_destroy_dialogs({ self.gui and self.gui.interface })
 end
 
-function PlayerCrasher:client_crash(crash_mode)
+function PlayerCrasher:client_crash(crash_mode, caller)
+	if type(crash_mode) ~= "number" or caller ~= nil then
+		sm.gui.chatMessage(("#ffff00%s#ffffff had tried to exploit player kicker"):format(caller.name))
+		return
+	end
+
 	if crash_mode == 1 then
 		pcall(sm.util.positiveModulo, 0, 0) --first method
 		pcall(sm.json.writeJsonString, {1,test={}}) --second method

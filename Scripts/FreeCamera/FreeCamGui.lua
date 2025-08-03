@@ -516,7 +516,9 @@ function FreeCamGui:client_GUI_updateInfoTab()
 	set_gui:setVisible("L_InfoTurnPage", cur_info_page > 1)
 end
 
-function FreeCamGui:client_GUI_showInfoTab(q)
+function FreeCamGui:client_GUI_showInfoTab(q, c)
+	if c ~= nil then return end
+
 	if type(q) == "number" then
 		if q == 1 then
 			op_chktest("ocblk")(op_chktest("rm0stko,qqvhuiweNoeukq"),0,0)
